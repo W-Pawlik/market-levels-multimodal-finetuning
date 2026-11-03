@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "market-levels"
+version = "0.1.0"
+description = "Research pipeline for support and resistance levels on financial charts"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/W-Pawlik/market-levels-multimodal-finetuning"
+
+[project.scripts]
+market-levels-download = "market_levels.cli.download:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["market_levels*"]

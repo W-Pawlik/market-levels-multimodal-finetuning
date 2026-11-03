@@ -1,0 +1,41 @@
+# Dane źródłowe i pochodne pozostają lokalne.
+/data/*/**
+!/data/*/.gitkeep
+/results/*/**
+!/results/*/.gitkeep
+
+# Wagi, adaptery, checkpointy, logi i pliki częściowe.
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.h5
+*.gguf
+*.log
+*.part
+*.tmp
+
+# Środowiska, cache i artefakty budowania.
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.ipynb_checkpoints/
+*.egg-info/
+/build/
+/dist/
+.DS_Store
+Thumbs.db
+
+# Lokalne paczki przekazania i sekrety.
+/handoff/
+.env
+.env.*
+!.env.example

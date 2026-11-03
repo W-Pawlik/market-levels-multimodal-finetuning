@@ -1,0 +1,24 @@
+{
+  "source": "Binance Vision",
+  "market": "spot",
+  "symbols": ["BTCUSDT", "ETHUSDT"],
+  "interval": "4h",
+  "history_start_month": "2020-01",
+  "history_end_month": "2026-10",
+  "download": {
+    "output": "data",
+    "offline": false,
+    "strict_gaps": false,
+    "daily_fallback": true
+  },
+  "candles_per_chart": 120,
+  "train_stride_candles": 60,
+  "validation_stride_candles": 120,
+  "test_stride_candles": 120,
+  "target_total_charts": 800,
+  "target_real_share": 0.45,
+  "target_synthetic_share": 0.55,
+  "chart_width_px_initial": 1024,
+  "chart_height_px_initial": 768,
+  "notes": "Podział czasowy zbiorów, szczegóły generatora syntetycznego oraz dobór modelu wymagają osobnego zatwierdzenia. Docelowa liczba przykładów jest robocza."
+}

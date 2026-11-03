@@ -1,0 +1,46 @@
+{
+  "processed/BTCUSDT_4h_2024-01_2024-01.csv": "open_time_utc,open,high,low,close\n2024-01-01T04:00:00+00:00,100,112,91,110\n2024-01-01T12:00:00+00:00,100,112,91,110\n",
+  "reports/BTCUSDT_2024-01_2024-01.json": {
+    "count": 2,
+    "start": "2024-01-01T04:00:00+00:00",
+    "end": "2024-01-01T12:00:00+00:00",
+    "gaps": [
+      {
+        "after": "2024-01-01T04:00:00+00:00",
+        "before": "2024-01-01T12:00:00+00:00",
+        "missing_candles": 1
+      }
+    ],
+    "missing_total": 184,
+    "missing_at_start": 1,
+    "missing_at_end": 182,
+    "symbol": "BTCUSDT",
+    "market": "spot",
+    "interval": "4h",
+    "processed_csv": "<OUTPUT>\\processed\\BTCUSDT_4h_2024-01_2024-01.csv",
+    "archive_count": 1,
+    "coverage_note": "Nie uzupełniano brakujących świec; okna z lukami należy odrzucić."
+  },
+  "reports/manifest_2024-01_2024-01.json": {
+    "start_month": "2024-01",
+    "end_month": "2024-01",
+    "interval": "4h",
+    "market": "spot",
+    "sources": {
+      "BTCUSDT": [
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/4h/BTCUSDT-4h-2024-01.zip",
+          "file": "<OUTPUT>\\raw\\BTCUSDT\\4h\\monthly\\BTCUSDT-4h-2024-01.zip",
+          "sha256": "<SHA256>",
+          "checksum_file": "<OUTPUT>\\raw\\BTCUSDT\\4h\\monthly\\BTCUSDT-4h-2024-01.zip.CHECKSUM",
+          "period": "2024-01",
+          "source": "Binance Vision Spot Klines",
+          "license": "CC BY-NC-SA 4.0 + Vision Dataset Terms",
+          "candle_count": 2
+        }
+      ]
+    },
+    "license_url": "https://github.com/binance/binance-public-data/blob/master/TERMS_AND_CONDITIONS.md"
+  },
+  "stdout": "BTCUSDT 2024-01: OK\nBTCUSDT: 2 świec; brakujących: 184\n"
+}
