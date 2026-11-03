@@ -14,9 +14,15 @@ Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają
   osobne seedy, kalibracja z jawnym okresem, diagnostyka i atomowy zapis partii.
 - CLI market-levels-generate-synthetic i sekcja synthetic; domyślnie brak profili
   blokuje wykonanie. Tryb roboczy wymaga --diagnostic. Zatwierdzanie profilu
-  wymaga jawnych granic treningu i decyzji autora; nie ustalono jeszcze podziału.
-- Testy jednostkowe i integracyjne offline. Wyniki bieżącej weryfikacji:
-  [raport generatora](../docs/SYNTHETIC_IMPLEMENTATION_REPORT.md).
+  wymaga jawnych granic treningu i decyzji autora. Podział chronological_v1 jest
+  zatwierdzony w konfiguracji; parametry i profile nie zostały zatwierdzone.
+- CLI market-levels-calibrate i market-levels-compare-synthetic: kontrola okresu
+  treningu, niezatwierdzone profile, rozłączne okna diagnostyczne bez luk,
+  sprawdzanie manifestów oraz raport JSON/Markdown. Szczegóły i polecenia:
+  [instrukcja](../docs/SYNTHETIC_CALIBRATION_COMPARISON.md).
+- Testy jednostkowe i integracyjne offline: ostatni pełny zestaw 77 testów OK.
+  [Bieżący raport](../docs/CALIBRATION_COMPARISON_REPORT.md);
+  [wcześniejsze wdrożenie generatora](../docs/SYNTHETIC_IMPLEMENTATION_REPORT.md).
 
 ## Ważne decyzje organizacyjne
 
@@ -40,10 +46,18 @@ Parametry przyszłego eksperymentu to 120 świec/wykres, przesunięcia 60 dla tr
 i 120 dla walidacji/testu, roboczo 800 wykresów, 45% rzeczywistych i 55%
 syntetycznych, początkowo 1024 × 768 px. Nie są obecnie używane przez pobieranie.
 Model oraz hiperparametry treningu nie zostały zatwierdzone.
+Podział chronologiczny jest zatwierdzony: trening 2020–2023, walidacja 2024,
+test 2025–2026-10. Dokładne granice otwarcia świec UTC włącznie są w konfiguracji.
+Potwierdzono po 8765/2196/4014 świec dla obu instrumentów, razem po 14 975.
+Trening ma maksymalnie 72 rozłączne okna 120 świec; sprawdzono selekcję 60.
 Wykonano tylko 5 diagnostycznych serii BTC i 5 ETH, seed 20261103, bez danych
 rynkowych w kalibracji. Nie wygenerowano docelowego zbioru; kontrola wizualna czeka
 na renderer. Parametry projektowe i diagnostyczne opisuje
 [SYNTHETIC_GENERATOR.md](../docs/SYNTHETIC_GENERATOR.md).
+Narzędzia kalibracji/porównania sprawdzono na danych sztucznych; nie uruchomiono
+nowej kalibracji rynku ani pełnej próbki 60+60. Właściwe uruchomienie wykona autor.
+Porównanie z treningiem nie stanowi niezależnej walidacji. Bieżący raport:
+[CALIBRATION_COMPARISON_REPORT.md](../docs/CALIBRATION_COMPARISON_REPORT.md).
 
 ## Dopiero planowane
 

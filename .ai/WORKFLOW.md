@@ -50,6 +50,13 @@ syntetyków w processed/. Kalibracja wymaga jawnych granic, a kandydaci profilu
 zatwierdzonego względem treningu. Szczegóły w
 [SYNTHETIC_GENERATOR.md](../docs/SYNTHETIC_GENERATOR.md).
 
+Podział `chronological_v1` jest zatwierdzony w `configs/experiment.json`.
+Nowe CLI `market-levels-calibrate` i `market-levels-compare-synthetic` wymagają
+jawnego okresu zawartego w treningu. Nie używaj walidacji/testu do dopasowania
+generatora. Profile pozostają `unapproved`; porównanie jest opisowe z treningiem.
+Pełna procedura PowerShell, w tym przechwycenie automatycznego run_id:
+[SYNTHETIC_CALIBRATION_COMPARISON.md](../docs/SYNTHETIC_CALIBRATION_COMPARISON.md).
+
 ## W trakcie i po zmianie
 
 - Zmieniaj źródła, nie kopie w build/ ani stary ZIP.

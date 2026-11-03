@@ -26,6 +26,11 @@ Jest to jeden pakiet, bez mikroserwisów, bazy danych i MLOps.
 | `data_processing/synthetic/quality.py` | wspólna walidacja + kontrola syntetyczna, hash, statystyki i porównania |
 | `data_processing/pipelines/synthetic.py` | niezależne przykłady, kontrola duplikatów, round-trip, atomowa partia |
 | `cli/generate_synthetic.py` | nowe CLI i nadpisania sekcji synthetic |
+| `data_processing/synthetic/training_period.py` | zatwierdzony podział z JSON i kontrola przynależności okresu do treningu |
+| `data_processing/synthetic/selection.py` | nienakładające się rzeczywiste okna wyłącznie do diagnostyki |
+| `data_processing/synthetic/comparison.py` | odczyt i weryfikacja partii, agregacja obserwacji/okien, korelacja lag 1 |
+| `data_processing/pipelines/compare_synthetic.py` | koordynacja porównania i atomowy zapis JSON/Markdown |
+| `cli/calibrate_synthetic.py`, `cli/compare_synthetic.py` | dwa nowe entry pointy, bez zmiany interfejsów pobierania/generowania |
 
 Przepływ: CLI → konfiguracja JSON + nadpisania CLI → pipeline → archiwa i SHA-256 → parser ZIP → walidacja okresu
 i szeregu → kontrola brzegów → CSV → raport → manifest. Przy `strict_gaps`
@@ -49,12 +54,32 @@ bez cichych ponowień losowania i bez częściowo opublikowanych przykładów.
 Kalibracja jest osobną operacją API i nigdy nie uruchamia się automatycznie.
 Szczegóły: [generator](SYNTHETIC_GENERATOR.md).
 
+Kalibracja CLI korzysta z istniejących `calibrate_csv` i `save_profile`, po
+kontroli jawnego okresu przez `ChronologicalSplit.require_training`. Odczytuje
+pełny CSV, a estymacja wybiera tylko wskazaną część treningu. Profil v1 ma
+dodatkowe metadane podziału w `source.chronological_split`; status `unapproved`.
+Funkcje podstawowego API kalibracji i ich format nie uległy zmianie.
+
+Porównanie: CSV → ograniczenie do treningu → ciągłe odcinki → pojemność okien
+→ deterministyczny wybór rozłącznych pozycji; osobno manifest → metadane/profil
+→ CSV → weryfikacja hasha, walidacji i zapisanych statystyk. Dopiero potem
+agregujemy surowe obserwacje wewnątrz okien. `series_observations` udostępnia
+te same wzory, których używa `series_statistics`, bez zmiany dotychczasowych
+wyników. Nie wprowadzono osobnych definicji zwrotów/knotów. Porównanie nie tworzy
+zwrotów ani par korelacyjnych między oknami. JSON i Markdown publikowane są
+razem przez rename katalogu. Nie jest to moduł końcowego podziału zbioru.
+Instrukcja: [kalibracja i porównanie](SYNTHETIC_CALIBRATION_COMPARISON.md).
+
 ## Pakiet i uruchamianie
 
 Setuptools odkrywa `market_levels*` w `src/`. Instalacja udostępnia
 `market_levels.cli.download`, `market-levels-download` oraz
 `market-levels-generate-synthetic` (moduł `market_levels.cli.generate_synthetic`). Python 3.10+,
 bez zewnętrznych zależności uruchomieniowych.
+
+Pozostałe entry pointy: `market-levels-calibrate` (`cli.calibrate_synthetic`)
+i `market-levels-compare-synthetic` (`cli.compare_synthetic`). Wszystkie operacje
+danych mogą działać offline. Instalacja pakietu wymaga dostępnego setuptools.
 
 Na prośbę autora usunięto warstwę zgodności: `src/download_data.py`,
 `src/validate_data.py` oraz `src/__init__.py`. `src` jest teraz wyłącznie

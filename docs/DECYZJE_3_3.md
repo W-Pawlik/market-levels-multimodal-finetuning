@@ -23,7 +23,7 @@ Status techniczny:
   oraz jedną lukę 2020-02-19 12:00 UTC w obu szeregach; bez interpolacji;
 - wdrożono generator syntetyczny, kalibrację z jawnym okresem, walidację,
   raporty i CLI. Nie przeprowadzono końcowej kalibracji;
-- do wykonania: zatwierdzenie chronologicznego podziału, kalibracja wyłącznie
+- do wykonania: kalibracja wyłącznie
   treningowa, kontrola statystyczna i wizualna, generator obrazów, etykietowanie
   i niezależny audyt testu.
 
@@ -44,6 +44,23 @@ ceny i sigma są wartościami roboczymi implementacji. Nie zatwierdzono ich jako
 empirycznej kalibracji. Zakresy i statusy: [opis generatora](SYNTHETIC_GENERATOR.md).
 Cel 440 syntetycznych przykładów przy 800 wykresach pozostaje roboczy;
 nie jest stałą generatora i nie został automatycznie wygenerowany.
+
+Zatwierdzony podział rzeczywistych danych: `chronological_v1` (kolejna decyzja
+autora, obowiązuje jednakowo dla BTCUSDT i ETHUSDT):
+
+| Zbiór | Początek UTC włącznie | Koniec UTC włącznie | Liczba świec / instrument |
+| --- | --- | --- | ---: |
+| Trening | 2020-01-01 00:00 | 2023-12-31 20:00 | 8765 |
+| Walidacja | 2024-01-01 00:00 | 2024-12-31 20:00 | 2196 |
+| Test | 2025-01-01 00:00 | 2026-10-31 20:00 | 4014 |
+
+Granice dotyczą otwarcia świecy 4h. Liczby potwierdzono w lokalnych CSV.
+Luka z 19 lutego 2020 znajduje się w treningu; bez interpolacji.
+Zapis wykonawczy jest w `configs/experiment.json`, sekcja `chronological_split`.
+Decyzja o podziale nie zatwierdza parametrów generatora ani profili.
+Przygotowano narzędzia do kalibracji i opisowego porównania z treningiem.
+Próbka 60 BTC + 60 ETH ma korzystać z profili empirycznych `unapproved` w trybie
+diagnostycznym. Nie jest docelowym zbiorem ani niezależną walidacją.
 
 Kwestie prawne otwarte: upublicznienie pełnych danych, obrazów z danych Binance,
 wytrenowanego adaptera lub całego modelu; obowiązki uczelni w repozytorium prac.

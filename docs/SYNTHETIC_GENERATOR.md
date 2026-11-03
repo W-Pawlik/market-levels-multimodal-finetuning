@@ -91,6 +91,13 @@ liczebności ani proporcji docelowego zbioru.
 **Nie ma domyślnego okresu kalibracji ani automatycznego uznania całego pliku
 historycznego za trening.** Nie uruchomiono końcowej kalibracji rynku.
 
+Zatwierdzono podział `chronological_v1`: trening 2020–2023, walidacja 2024,
+test 2025–2026-10, granice otwarcia świec UTC włącznie. Nowe CLI
+`market-levels-calibrate` sprawdza jawne `--start`/`--end` względem treningu
+z konfiguracji; nie udostępnia obejścia na dane walidacyjne/testowe. Podstawowe
+API nadal wymaga okresu przekazanego przez wywołującego.
+Krok po kroku: [kalibracja i porównanie](SYNTHETIC_CALIBRATION_COMPARISON.md).
+
 API w `market_levels.data_processing.synthetic.calibration`:
 
 ```python
@@ -124,8 +131,8 @@ instrument, obie pary granic, liczbę obserwacji, pominięte przejścia, statyst
 parametry generatora, status i wersję.
 
 Nowa kalibracja zawsze daje `status="unapproved"`. Można jej użyć diagnostycznie,
-ale kandydaci wymagają profilu `approved`. Po decyzji autora dotyczącej podziału
-i przeglądzie parametrów można jawnie wykonać:
+ale kandydaci wymagają profilu `approved`. Podział jest już zatwierdzony;
+po osobnym przeglądzie i zatwierdzeniu parametrów przez autora można jawnie wykonać:
 
 ```python
 approved = approve_profile(
@@ -247,7 +254,7 @@ knotów. Dodatkowe statystyki empiryczne są diagnostyką, a nie dowodem dopasow
 wszystkich aspektów generatora.
 
 Kontrola wizualna jest **niewykonana**: wymaga przyszłego renderera wykresów.
-Przed docelową generacją trzeba zatwierdzić granice podziału, skalibrować osobno
+Przed docelową generacją trzeba skalibrować osobno
 BTC/ETH na treningu, sprawdzić rozkłady i parametry projektowe, obejrzeć próbki,
 zatwierdzić profile i liczebność. Dane kalibrowane na Binance nie stają się
 automatycznie wolne od ograniczeń publikacji; zobacz [licencję danych](LICENCJA_DANYCH.md).

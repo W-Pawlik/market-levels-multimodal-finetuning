@@ -23,7 +23,7 @@
   "target_synthetic_share": 0.55,
   "chart_width_px_initial": 1024,
   "chart_height_px_initial": 768,
-  "notes": "Podział czasowy zbiorów, szczegóły generatora syntetycznego oraz dobór modelu wymagają osobnego zatwierdzenia. Docelowa liczba przykładów jest robocza.",
+  "notes": "Podzia? chronological_v1 zatwierdzony. Parametry generatora i dob?r modelu wymagaj? osobnego zatwierdzenia. Docelowa liczba przyk?ad?w jest robocza.",
   "synthetic": {
     "candles": 120,
     "internal_steps": 12,
@@ -101,6 +101,26 @@
         0.05,
         0.2
       ]
+    }
+  },
+  "chronological_split": {
+    "split_id": "chronological_v1",
+    "status": "approved",
+    "bounds": "inclusive",
+    "timestamp_role": "candle_open_utc",
+    "periods": {
+      "train": {
+        "start": "2020-01-01T00:00:00+00:00",
+        "end": "2023-12-31T20:00:00+00:00"
+      },
+      "validation": {
+        "start": "2024-01-01T00:00:00+00:00",
+        "end": "2024-12-31T20:00:00+00:00"
+      },
+      "test": {
+        "start": "2025-01-01T00:00:00+00:00",
+        "end": "2026-10-31T20:00:00+00:00"
+      }
     }
   }
 }

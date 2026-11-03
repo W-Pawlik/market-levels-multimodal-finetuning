@@ -2,6 +2,10 @@
 
 Data: 2026-11-03. Środowisko weryfikacji: Windows, CPython 3.13.15.
 
+Raport historyczny z wdrożenia generatora. Późniejsza decyzja autora zatwierdziła
+podział `chronological_v1`; granice nie są już oczekującą decyzją. Aktualny proces
+kalibracji i porównania opisuje [osobna instrukcja](SYNTHETIC_CALIBRATION_COMPARISON.md).
+
 ## Zakres i wynik
 
 Wdrożono generator w istniejącym pakiecie `market_levels`, wraz z osobną
@@ -158,7 +162,8 @@ Alternatywnie ten sam interfejs przez
 
 ## Ograniczenia i następne decyzje
 
-Przed docelową generacją należy zatwierdzić podział chronologiczny, skalibrować
+Na etapie tego raportu podział oczekiwał na decyzję; później został zatwierdzony
+jako `chronological_v1`. Przed docelową generacją należy skalibrować
 oddzielnie BTC/ETH wyłącznie na treningu, sprawdzić statystyki i ręczne parametry
 faz, obejrzeć reprezentatywne wykresy po wdrożeniu renderera, a następnie jawnie
 zatwierdzić profile i liczebność zbioru.

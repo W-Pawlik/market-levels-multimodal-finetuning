@@ -136,7 +136,7 @@ Te parametry nie są używane przez pobieranie; będą odczytywane przez kolejne
 etapy po ich implementacji.
 
 Planowane są: okna cenowe, wykresy Matplotlib/mplfinance,
-etykiety, podział chronologiczny, pary obraz–instrukcja–JSON, obsługa modeli,
+etykiety, przygotowanie zbiorów zgodnie z podziałem, pary obraz–instrukcja–JSON, obsługa modeli,
 trening, osobna inferencja i ewaluacja. Model i hiperparametry wymagają osobnej
 decyzji; struktura nie narzuca rodziny modeli.
 
@@ -163,13 +163,38 @@ Wyniki zawierają CSV, metadane JSON, statystyki i manifest. Data od 2000-01-01 
 jest wyłącznie indeksem symulacji. Nie przypisujemy przykładów do train/validation/test.
 
 Kalibracja wymaga jawnego dozwolonego okresu, osobno dla BTC i ETH; pomija
-przejścia przez luki. Profil pozostaje niezatwierdzony do czasu jawnej decyzji
-dotyczącej podziału treningowego. Nie wykonano końcowej kalibracji ani generowania
+przejścia przez luki. Podział `chronological_v1` jest zatwierdzony: trening 2020–2023,
+walidacja 2024, test 2025–2026-10. Parametry i profile generatora wymagają osobnej
+oceny i zatwierdzenia. Nie wykonano końcowej kalibracji ani generowania
 docelowego zbioru. Kontrola wizualna czeka na renderer.
 
 Opis parametrów, API kalibracji, format wyników i ograniczenia:
 [SYNTHETIC_GENERATOR.md](docs/SYNTHETIC_GENERATOR.md).
 Wyniki wykonanej weryfikacji: [raport wdrożenia](docs/SYNTHETIC_IMPLEMENTATION_REPORT.md).
+
+## Kalibracja i opisowe porównanie z treningiem
+
+Nowe polecenia po `pip install -e .`:
+
+- `market-levels-calibrate`: jawne `--symbol`, `--input`, `--start`, `--end`,
+  `--output`, opcjonalne `--config` i `--dry-run`; zakres musi należeć do treningu.
+  Profil zawsze pozostaje `unapproved`.
+- `market-levels-compare-synthetic`: odczyt rzeczywistych OHLC i istniejącego
+  manifestu syntetycznego, losowanie nienakładających się okien bez luk,
+  statystyki zbiorcze/okienne, autokorelacja i raport JSON/Markdown.
+
+Granice w `chronological_split` odnoszą się do otwarcia świecy UTC i są włącznie.
+Potwierdzono lokalnie po 8765/2196/4014 świec w treningu/walidacji/teście dla obu
+instrumentów. Z treningu można wybrać maksymalnie 72 rozłączne okna po 120 świec;
+selekcja 60 jest wykonalna mimo luki. Nie używamy walidacji/testu do kalibracji
+ani dopasowania generatora. Odczytywany jest pełny CSV; ceny poza treningiem nie
+wchodzą do obliczeń diagnostycznych.
+
+Pełne polecenia PowerShell: kalibracja BTC i ETH, generowanie 60+60 ze seedem
+20261105, przechwycenie ścieżki automatycznej partii i porównania osobno dla
+instrumentów: [instrukcja procesu](docs/SYNTHETIC_CALIBRATION_COMPARISON.md).
+Właściwe uruchomienie pozostawiono autorowi. Wyniki są opisowym porównaniem
+z treningiem użytym do kalibracji, nie niezależną walidacją generatora.
 
 ## Dane i licencja
 

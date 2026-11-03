@@ -88,9 +88,13 @@ def distribution(values: list[float]) -> dict:
             "quantiles": {str(q): quantile(q) for q in (0.01, 0.05, 0.5, 0.95, 0.99)}}
 
 
-def series_statistics(candles: list[Candle]) -> dict:
-    """Stopy close-close tylko przez dokładnie 4h; proporcje względem zakresu."""
-    report = validate_values(candles)
+def series_observations(candles: list[Candle]) -> dict[str, list[float]]:
+    """Surowe obserwacje dla wspólnych statystyk, bez przejść przez luki."""
+    validate_values(candles)
+    return _series_observations(candles)
+
+
+def _series_observations(candles: list[Candle]) -> dict[str, list[float]]:
     returns = [math.log(float(b.close)) - math.log(float(a.close))
                for a, b in zip(candles, candles[1:]) if b.timestamp - a.timestamp == CANDLE_DELTA]
     if not returns:
@@ -104,15 +108,20 @@ def series_statistics(candles: list[Candle]) -> dict:
         upper.append((h - max(o, c)) / span if span else 0.0)
         lower.append((min(o, c) - l) / span if span else 0.0)
         body_proportions.append(abs(c - o) / span if span else 0.0)
-    return {"log_returns": distribution(returns),
-            "absolute_log_returns": distribution([abs(r) for r in returns]),
-            "relative_range": distribution(ranges), "relative_body": distribution(bodies),
-            "body_fraction": distribution(body_proportions),
-            "upper_wick_fraction": distribution(upper), "lower_wick_fraction": distribution(lower),
-            "close_prices": distribution([float(c.close) for c in candles]),
-            "window_close_change": float(candles[-1].close / candles[0].open) - 1,
+    return {"log_returns": returns, "absolute_log_returns": [abs(r) for r in returns],
+            "relative_range": ranges, "relative_body": bodies,
+            "body_fraction": body_proportions, "upper_wick_fraction": upper,
+            "lower_wick_fraction": lower, "close_prices": [float(c.close) for c in candles]}
+
+
+def series_statistics(candles: list[Candle]) -> dict:
+    """Stopy close-close tylko przez dokładnie 4h; proporcje względem zakresu."""
+    report = validate_values(candles)
+    result = {key: distribution(values) for key, values in _series_observations(candles).items()}
+    result.update({"window_close_change": float(candles[-1].close / candles[0].open) - 1,
             "window_relative_range": float(max(c.high for c in candles) / min(c.low for c in candles)) - 1,
-            "skipped_noncontiguous_transitions": len(report["gaps"])}
+            "skipped_noncontiguous_transitions": len(report["gaps"])})
+    return result
 
 
 def compare_statistics(observed: dict, reference: dict) -> dict:
