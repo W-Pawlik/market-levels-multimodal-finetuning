@@ -16,6 +16,7 @@ Repository = "https://github.com/W-Pawlik/market-levels-multimodal-finetuning"
 
 [project.scripts]
 market-levels-download = "market_levels.cli.download:main"
+market-levels-generate-synthetic = "market_levels.cli.generate_synthetic:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

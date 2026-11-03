@@ -10,7 +10,13 @@ Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają
 - CLI market-levels-download oraz python -m market_levels.cli.download.
 - Aktywna konfiguracja JSON: zakres miesięcy, symbole oraz download.output, offline, strict_gaps i daily_fallback.
 - Walidacja obsługiwanego źródła, rynku, interwału i symboli; błędy konfiguracji kończą wykonanie przed zapisem.
-- Testy jednostkowe i integracyjne offline. Ostatni wykonany pełny zestaw: 30 testów OK. Liczba jest informacyjna, nie limitem rozwoju.
+- Generator niezależnych syntetycznych serii 120 świec / 12 kroków, 1–3 fazy,
+  osobne seedy, kalibracja z jawnym okresem, diagnostyka i atomowy zapis partii.
+- CLI market-levels-generate-synthetic i sekcja synthetic; domyślnie brak profili
+  blokuje wykonanie. Tryb roboczy wymaga --diagnostic. Zatwierdzanie profilu
+  wymaga jawnych granic treningu i decyzji autora; nie ustalono jeszcze podziału.
+- Testy jednostkowe i integracyjne offline. Wyniki bieżącej weryfikacji:
+  [raport generatora](../docs/SYNTHETIC_IMPLEMENTATION_REPORT.md).
 
 ## Ważne decyzje organizacyjne
 
@@ -25,17 +31,23 @@ zapisem ustaleń” są nieaktualne.
 
 Aktualne wartości sprawdzaj w [experiment.json](../configs/experiment.json).
 Zatwierdzono Binance Vision spot, BTCUSDT i ETHUSDT, 4h i zakres
-2020-01–2026-10. Lokalnie potwierdzono jedynie styczeń 2020: po 186 świec dla
-obu instrumentów, bez braków. Sprawdź stan dysku; nie zakładaj pobrania całej historii.
+2020-01–2026-10. Autor potwierdził pobranie pełnej historii (82 archiwa/symbol).
+Odczyt lokalnych CSV potwierdził po 14 975 świec i jedną lukę w obu instrumentach:
+2020-02-19 12:00 UTC. Nie interpolowano. SHA-256 wszystkich siedmiu plików
+w processed/ pozostały bez zmian podczas wdrożenia generatora.
 
 Parametry przyszłego eksperymentu to 120 świec/wykres, przesunięcia 60 dla treningu
 i 120 dla walidacji/testu, roboczo 800 wykresów, 45% rzeczywistych i 55%
 syntetycznych, początkowo 1024 × 768 px. Nie są obecnie używane przez pobieranie.
 Model oraz hiperparametry treningu nie zostały zatwierdzone.
+Wykonano tylko 5 diagnostycznych serii BTC i 5 ETH, seed 20261103, bez danych
+rynkowych w kalibracji. Nie wygenerowano docelowego zbioru; kontrola wizualna czeka
+na renderer. Parametry projektowe i diagnostyczne opisuje
+[SYNTHETIC_GENERATOR.md](../docs/SYNTHETIC_GENERATOR.md).
 
 ## Dopiero planowane
 
-data_processing/synthetic, data_processing/windows, charts, labeling, datasets,
+data_processing/windows, charts, labeling, datasets,
 modeling, training, inference, evaluation i experiments zawierają przestrzeń
 organizacyjną z README. Nie implementują jeszcze tych etapów.
 Szczegółowe reguły planowanego etykietowania są w

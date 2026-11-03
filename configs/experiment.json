@@ -1,7 +1,10 @@
 {
   "source": "Binance Vision",
   "market": "spot",
-  "symbols": ["BTCUSDT", "ETHUSDT"],
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
   "interval": "4h",
   "history_start_month": "2020-01",
   "history_end_month": "2026-10",
@@ -20,5 +23,84 @@
   "target_synthetic_share": 0.55,
   "chart_width_px_initial": 1024,
   "chart_height_px_initial": 768,
-  "notes": "Podział czasowy zbiorów, szczegóły generatora syntetycznego oraz dobór modelu wymagają osobnego zatwierdzenia. Docelowa liczba przykładów jest robocza."
+  "notes": "Podział czasowy zbiorów, szczegóły generatora syntetycznego oraz dobór modelu wymagają osobnego zatwierdzenia. Docelowa liczba przykładów jest robocza.",
+  "synthetic": {
+    "candles": 120,
+    "internal_steps": 12,
+    "min_regimes": 1,
+    "max_regimes": 3,
+    "seed": 20261103,
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "count": 5,
+    "profiles": {},
+    "output": "data/synthetic",
+    "diagnostic": false,
+    "regimes": {
+      "minimum_lengths": {
+        "uptrend": 24,
+        "downtrend": 24,
+        "consolidation": 24,
+        "breakout": 8
+      },
+      "maximum_lengths": {
+        "uptrend": 120,
+        "downtrend": 120,
+        "consolidation": 120,
+        "breakout": 24
+      },
+      "initial_weights": {
+        "uptrend": 1.0,
+        "downtrend": 1.0,
+        "consolidation": 2.0,
+        "breakout": 0.0
+      },
+      "transitions": {
+        "uptrend": {
+          "downtrend": 1.0,
+          "consolidation": 2.0
+        },
+        "downtrend": {
+          "uptrend": 1.0,
+          "consolidation": 2.0
+        },
+        "consolidation": {
+          "uptrend": 1.0,
+          "downtrend": 1.0,
+          "breakout": 3.0
+        },
+        "breakout": {
+          "uptrend": 1.0,
+          "downtrend": 1.0,
+          "consolidation": 1.0
+        }
+      },
+      "trend_drift_sigma": [
+        0.08,
+        0.25
+      ],
+      "breakout_drift_sigma": [
+        0.4,
+        0.9
+      ],
+      "trend_volatility": [
+        0.8,
+        1.2
+      ],
+      "consolidation_volatility": [
+        0.45,
+        0.8
+      ],
+      "breakout_volatility": [
+        1.2,
+        1.8
+      ],
+      "mean_reversion": [
+        0.05,
+        0.2
+      ]
+    }
+  }
 }

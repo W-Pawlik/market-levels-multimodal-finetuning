@@ -18,11 +18,32 @@ reguły wykrywania ekstremów i ATR(14) zgodne z podrozdziałem 3.2.
 Status techniczny:
 - wykonano: kod pobierania i walidacji danych, testy offline oraz refaktoryzacja
   do pakietu `market_levels` (2026-11-03);
-- autor uruchomił pobranie BTCUSDT i ETHUSDT za styczeń 2020; lokalne archiwa
-  potwierdzono ponownie offline: po 186 świec, bez braków. Nie oznacza to
-  pobrania ani walidacji całego zatwierdzonego zakresu;
-- do wykonania: pobranie i analiza pozostałego zakresu, generator syntetyczny,
-  generator obrazów, podział chronologiczny, etykietowanie i niezależny audyt testu.
+- autor zakończył pobieranie pełnego zakresu 2020-01–2026-10: po 82 archiwa
+  i 14 975 świec BTCUSDT/ETHUSDT. Lokalny odczyt CSV potwierdził liczbę świec
+  oraz jedną lukę 2020-02-19 12:00 UTC w obu szeregach; bez interpolacji;
+- wdrożono generator syntetyczny, kalibrację z jawnym okresem, walidację,
+  raporty i CLI. Nie przeprowadzono końcowej kalibracji;
+- do wykonania: zatwierdzenie chronologicznego podziału, kalibracja wyłącznie
+  treningowa, kontrola statystyczna i wizualna, generator obrazów, etykietowanie
+  i niezależny audyt testu.
+
+Zatwierdzone założenia generatora, 2026-11-03:
+
+1. BTCUSDT i ETHUSDT, 4h, niezależne przykłady po 120 świec.
+2. Losowe logarytmiczne zmiany ceny, 12 kroków wewnętrznych na świecę.
+3. Od 1 do 3 faz: trend wzrostowy, spadkowy, konsolidacja i krótkie wybicie.
+4. Konsolidacja: łagodny powrót do lokalnego środka; bez sztywnych barier.
+5. Open kolejnej świecy równy Close poprzedniej; High/Low z wewnętrznej ścieżki.
+6. Oddzielna kalibracja BTC/ETH tylko na danych treningowych, bez łączenia luk.
+7. Jawny seed, profil, konfiguracja, wersja generatora i środowiska w metadanych.
+8. Kontrola techniczna, statystyczna i późniejsza wizualna. Daty syntetyczne
+   są indeksem symulacji, a nie podstawą podziału historycznych danych.
+
+Siły trendów, mnożniki zmienności, rewersja, długości i wagi faz oraz diagnostyczne
+ceny i sigma są wartościami roboczymi implementacji. Nie zatwierdzono ich jako
+empirycznej kalibracji. Zakresy i statusy: [opis generatora](SYNTHETIC_GENERATOR.md).
+Cel 440 syntetycznych przykładów przy 800 wykresach pozostaje roboczy;
+nie jest stałą generatora i nie został automatycznie wygenerowany.
 
 Kwestie prawne otwarte: upublicznienie pełnych danych, obrazów z danych Binance,
 wytrenowanego adaptera lub całego modelu; obowiązki uczelni w repozytorium prac.

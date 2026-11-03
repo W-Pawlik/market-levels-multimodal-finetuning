@@ -27,5 +27,11 @@ do postaci wykresu świecowego".
 
 NIE NALEŻY interpretować licencji MIT repozytorium kodu jako licencji samych danych.
 
+Generator nie publikuje wyników. Syntetyczne dane kalibrowane na historii Binance
+nie są automatycznie wolne od ograniczeń dotyczących materiałów pochodnych.
+Profil zachowuje źródło, okres i statystyki kalibracji; wymaga to uwzględnienia
+przy późniejszej decyzji o udostępnianiu danych. To zachowanie dotychczasowego
+zastrzeżenia, bez nowej weryfikacji prawnej warunków.
+
 Dodatkowe kwestie do potwierdzenia: warunki publicznego udostępnienia pochodnych danych,
 obrazów treningowych i dostrojonego modelu, zgodność z regulaminem uczelni.

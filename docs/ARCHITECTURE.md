@@ -1,8 +1,9 @@
 # Architektura Market Levels
 
 Docelowo system obsłuży odtwarzalny eksperyment dostrajania modelu multimodalnego
-do poziomów wsparcia i oporu. Działa wyłącznie pozyskiwanie i walidacja
-rzeczywistych OHLC. Jest to jeden pakiet, bez mikroserwisów, bazy danych i MLOps.
+do poziomów wsparcia i oporu. Działają pozyskiwanie i walidacja
+rzeczywistych OHLC oraz generowanie syntetycznych serii z kalibracją.
+Jest to jeden pakiet, bez mikroserwisów, bazy danych i MLOps.
 
 ## Podział istniejącej implementacji
 
@@ -18,6 +19,13 @@ rzeczywistych OHLC. Jest to jeden pakiet, bez mikroserwisów, bazy danych i MLOp
 | `data_processing/storage.py` | zapis CSV i JSON wyodrębniony z `run` |
 | `data_processing/pipelines/download.py` | `run`: koordynacja, brzegi zakresu, składanie raportów i manifestu |
 | `cli/download.py` | `main`: argumenty, dry-run, prezentacja błędów |
+| `data_processing/synthetic/settings.py` | oddzielny loader sekcji synthetic, walidacja i robocze parametry |
+| `data_processing/synthetic/regimes.py` | wykonalne sekwencje 1–3 faz, ważenie przejść, długości i parametry |
+| `data_processing/synthetic/generator.py` | lokalny RNG, seedy przykładów, logarytmiczna ścieżka i świece |
+| `data_processing/synthetic/calibration.py` | jawny okres, statystyki, profile, jawne zatwierdzenie podziału |
+| `data_processing/synthetic/quality.py` | wspólna walidacja + kontrola syntetyczna, hash, statystyki i porównania |
+| `data_processing/pipelines/synthetic.py` | niezależne przykłady, kontrola duplikatów, round-trip, atomowa partia |
+| `cli/generate_synthetic.py` | nowe CLI i nadpisania sekcji synthetic |
 
 Przepływ: CLI → konfiguracja JSON + nadpisania CLI → pipeline → archiwa i SHA-256 → parser ZIP → walidacja okresu
 i szeregu → kontrola brzegów → CSV → raport → manifest. Przy `strict_gaps`
@@ -29,13 +37,23 @@ i nie waliduje danych. Pipeline składa funkcje niższych warstw. Nie dodano
 hierarchii klas, interfejsów ani ogólnego mechanizmu wstrzykiwania zależności.
 
 `Candle.source_archive` pozostaje wymagane. Model nie importuje Binance.
-Wydzielenie metadanych pochodzenia można rozważyć wraz z danymi syntetycznymi;
-obecnie nie ma migracji modelu i danych.
+Dla syntetycznych danych pole ma wartość `synthetic:<wersja>:<symbol>:<seed>`.
+Nie zmieniono kontraktu modelu. Wspólny storage rozszerzono o odczyt CSV;
+dotychczasowych funkcji zapisu i walidacji nie zmieniono.
+
+Przepływ syntetyczny: CLI → osobne ustawienia + jawne profile → wykonalne reżimy
+→ 12 kroków na świecę → wspólna walidacja + kontrola 120 świec i ciągłości ceny
+→ hash duplikatów → CSV w katalogu tymczasowym → odczyt kontrolny → metadane
+i manifest → rename całego katalogu partii. Błąd zatrzymuje całą partię,
+bez cichych ponowień losowania i bez częściowo opublikowanych przykładów.
+Kalibracja jest osobną operacją API i nigdy nie uruchamia się automatycznie.
+Szczegóły: [generator](SYNTHETIC_GENERATOR.md).
 
 ## Pakiet i uruchamianie
 
 Setuptools odkrywa `market_levels*` w `src/`. Instalacja udostępnia
-`market_levels.cli.download` i `market-levels-download`. Python 3.10+,
+`market_levels.cli.download`, `market-levels-download` oraz
+`market-levels-generate-synthetic` (moduł `market_levels.cli.generate_synthetic`). Python 3.10+,
 bez zewnętrznych zależności uruchomieniowych.
 
 Na prośbę autora usunięto warstwę zgodności: `src/download_data.py`,
@@ -54,7 +72,6 @@ ignorowane przez Git. Nie należy edytować ich ręcznie.
 
 | Katalog pakietu | Planowana odpowiedzialność |
 | --- | --- |
-| `data_processing/synthetic/` | reżimy rynku, seed, konfiguracja, OHLC i metadane |
 | `data_processing/windows/` | okna 120 świec, przesunięcia, luki i granice podziałów |
 | `charts/` | Matplotlib/mplfinance, styl, rozdzielczość, PNG i diagnostyka |
 | `labeling/` | model poziomów, deterministyczny algorytm, etykiety i audyt referencji |
@@ -73,8 +90,8 @@ i odległości, maksymalnie trzy wsparcia i trzy opory. Nie implementowano tych 
 
 ## Dane, wyniki i konfiguracja
 
-Zachowano `data/raw`, `processed`, `reports`. Przyszłe artefakty mają katalogi
-`data/synthetic`, `charts`, `labels`, `splits`. Wyniki mają miejsca
+Zachowano `data/raw`, `processed`, `reports`. Generator używa `data/synthetic`,
+a przyszłe artefakty mają katalogi `charts`, `labels`, `splits`. Wyniki mają miejsca
 `results/predictions`, `metrics`, `figures`, `logs`, `checkpoints`, `adapters`.
 `.gitkeep` utrzymuje strukturę; dane i wyniki są ignorowane.
 

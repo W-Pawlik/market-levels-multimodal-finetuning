@@ -37,6 +37,19 @@ Dry-run wczytuje konfigurację i pokazuje plan; nie pobiera ani nie zapisuje dan
 Nie potwierdza rzeczywistej dostępności serwera. Uruchomienie bez ograniczenia dat
 i bez dry-run może pobrać cały zakres z JSON.
 
+Generator syntetyczny (osobny proces, bez pobierania i automatycznej kalibracji):
+
+```powershell
+.\.venv\Scripts\market-levels-generate-synthetic.exe --diagnostic --count 5 --symbols BTCUSDT ETHUSDT --seed 20261103 --dry-run
+.\.venv\Scripts\market-levels-generate-synthetic.exe --diagnostic --count 5 --symbols BTCUSDT ETHUSDT --seed 20261103 --output data/synthetic
+```
+
+`count` oznacza liczbę na instrument. Identyczne uruchomienie odmawia nadpisania;
+do nowej próbki zmień seed, do odtworzenia wybierz nowy output. Nie zapisuj
+syntetyków w processed/. Kalibracja wymaga jawnych granic, a kandydaci profilu
+zatwierdzonego względem treningu. Szczegóły w
+[SYNTHETIC_GENERATOR.md](../docs/SYNTHETIC_GENERATOR.md).
+
 ## W trakcie i po zmianie
 
 - Zmieniaj źródła, nie kopie w build/ ani stary ZIP.

@@ -4,10 +4,10 @@ Projekt służy badaniu dostrajania modelu multimodalnego do znajdowania poziom�
 wsparcia i oporu na wykresach finansowych. Docelowy proces obejmuje dane OHLC,
 wykresy, etykiety, zbiory treningowe, dostrajanie, inferencję i ewaluację.
 
-**Obecnie działa wyłącznie pobieranie i walidacja rzeczywistych danych OHLC.**
-Pozostałe etapy mają przygotowane katalogi, bez implementacji.
-Lokalne archiwa BTCUSDT i ETHUSDT za styczeń 2020 zweryfikowano offline:
-po 186 świec, bez braków. Podczas refaktoryzacji nie pobierano notowań z sieci.
+**Działają pobieranie i walidacja rzeczywistych OHLC oraz generator syntetyczny
+z kalibracją, diagnostyką i osobnym CLI.** Renderowanie, etykiety i modele pozostają
+do implementacji. Lokalnie potwierdzono pełny zakres 2020-01–2026-10: po 14 975
+świec BTCUSDT i ETHUSDT; w obu brak 2020-02-19 12:00 UTC. Nie interpolowano luk.
 
 ## Przygotowanie — Windows PowerShell
 
@@ -135,10 +135,41 @@ przesunięcie treningowe 60, walidacyjne/testowe 120, roboczo 800 wykresów,
 Te parametry nie są używane przez pobieranie; będą odczytywane przez kolejne
 etapy po ich implementacji.
 
-Planowane są: generator syntetyczny, okna cenowe, wykresy Matplotlib/mplfinance,
+Planowane są: okna cenowe, wykresy Matplotlib/mplfinance,
 etykiety, podział chronologiczny, pary obraz–instrukcja–JSON, obsługa modeli,
 trening, osobna inferencja i ewaluacja. Model i hiperparametry wymagają osobnej
 decyzji; struktura nie narzuca rodziny modeli.
+
+## Generator syntetyczny OHLC
+
+Sekcja `synthetic` steruje osobnym CLI; nie zmienia pobierania Binance.
+Domyślnie `diagnostic=false`, a brak zatwierdzonych profili zatrzymuje wykonanie.
+Do kontroli działania jawnie włącz diagnostykę:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\market-levels-generate-synthetic.exe --diagnostic --count 5 --symbols BTCUSDT ETHUSDT --seed 20261103 --dry-run
+.\.venv\Scripts\market-levels-generate-synthetic.exe --diagnostic --count 5 --symbols BTCUSDT ETHUSDT --seed 20261103 --output data/synthetic
+```
+
+`--count` oznacza liczbę **na instrument**: powyższy przykład zapisuje 10
+niezależnych serii po 120 świec. Ponowne identyczne uruchomienie odmawia zapisu.
+Inny `--seed` tworzy nową partię. `--output` nie może wskazywać `data/processed`.
+Równoważnie: `python -m market_levels.cli.generate_synthetic`.
+
+Każda świeca powstaje z 12 kroków logarytmicznego ruchu ceny. Obsługiwane fazy:
+trend wzrostowy/spadkowy, konsolidacja z powrotem do środka i krótkie wybicie.
+Wyniki zawierają CSV, metadane JSON, statystyki i manifest. Data od 2000-01-01 UTC
+jest wyłącznie indeksem symulacji. Nie przypisujemy przykładów do train/validation/test.
+
+Kalibracja wymaga jawnego dozwolonego okresu, osobno dla BTC i ETH; pomija
+przejścia przez luki. Profil pozostaje niezatwierdzony do czasu jawnej decyzji
+dotyczącej podziału treningowego. Nie wykonano końcowej kalibracji ani generowania
+docelowego zbioru. Kontrola wizualna czeka na renderer.
+
+Opis parametrów, API kalibracji, format wyników i ograniczenia:
+[SYNTHETIC_GENERATOR.md](docs/SYNTHETIC_GENERATOR.md).
+Wyniki wykonanej weryfikacji: [raport wdrożenia](docs/SYNTHETIC_IMPLEMENTATION_REPORT.md).
 
 ## Dane i licencja
 
