@@ -4,6 +4,10 @@ Generator służy przygotowaniu niezależnych przykładów dla późniejszego mo
 wykresów i eksperymentu multimodalnego. Nie tworzy obrazów, etykiet ani podziału
 train/validation/test. Używa wyłącznie biblioteki standardowej Pythona.
 
+Poniższa matematyka opisuje zachowaną wersję **v1**, nadal domyślną.
+Jawne `--generator-version v2` wybiera nową wersję z osobnym profilem i wariantami.
+Równania, status parametrów i ograniczenia: [generator v2](SYNTHETIC_GENERATOR_V2.md).
+
 ## Model ceny i świece
 
 Symulacja zachodzi w skali logarytmu ceny `x = log(P)`. Dla każdego z 12 kroków:

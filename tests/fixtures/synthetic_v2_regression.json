@@ -1,0 +1,50 @@
+{
+  "python": "3.13.15",
+  "seed": 55,
+  "examples": {
+    "BTCUSDT": {
+      "base": {
+        "ohlc": "95a7c93b64d56203d0879a59b94bd2284e236f9dca4420cbae5d7de78a2030b4",
+        "metadata": "5da349697c77dd1643a775a7a5dd253eeeab99e5cdfcd92e04df863e27242861"
+      },
+      "bridge": {
+        "ohlc": "5900b1cc090575903c8b9ceaf1a9b0173631e05218e1c00c49ee8069a9b98b47",
+        "metadata": "4ad849b880a5be89f0cab0415bcc16185d4f080c45cb53e4aa5d50ccf40a5660"
+      },
+      "tails": {
+        "ohlc": "c604801ddb207f3ea49466522d447c2aa76ce728466e2947964f7cc4d7a1161e",
+        "metadata": "6c463c89d48fa4f1a0bfce28b63112272514ef40f0bf3e1fd41c2b771fe58439"
+      },
+      "volatility": {
+        "ohlc": "a1fb400ece76f559de5cf67bf6a7bb8307977459afe2dcda54172485b8c2c461",
+        "metadata": "bf34d35d1ed8646d477dbdf31111f52857c3dc3afc687b9360f4298a747a00b4"
+      },
+      "full": {
+        "ohlc": "47d0714faab83caa6295f728dcffb8647bd790ecb9ba69a79973e944f9152589",
+        "metadata": "dac361f23f3a99a3127865160b1002c70987be0983f91c2eac715b9353ecc493"
+      }
+    },
+    "ETHUSDT": {
+      "base": {
+        "ohlc": "fce69f184efe4a3a82a1664afe8ae08c6716fd129949c39c28a50c4eae288c67",
+        "metadata": "cc5c8330060a37fdb7a99e31e31a484433150b799e396a3fc59054ba17669e98"
+      },
+      "bridge": {
+        "ohlc": "af4921014a543110244a27eaa649789b5f52b9f50fb9d11fe413db222299973a",
+        "metadata": "74fe196ebcd3b75e9063cf1b088cd079cf484093895cede51171be12e4fd2852"
+      },
+      "tails": {
+        "ohlc": "245a46871d7429bab4f3560c411dc8e3a92511ad7be72904e8333a1d5a1ce12c",
+        "metadata": "e6f107b1dcd7b322aab81fe89e6fa760f138f30c9fdc74dd684468c736195ef3"
+      },
+      "volatility": {
+        "ohlc": "6f97f2bc57728804a52e793cc8321700bea970d101b220408fbcc93a81705a15",
+        "metadata": "15aac5b806db3cd31c624ddbe6564f68cf01319e196fdee09f1e234015216dbe"
+      },
+      "full": {
+        "ohlc": "55b8d85e0c125dd1cabf87d588ccdbea2f9388ee7b3c066a38cf9ee1771b6fbc",
+        "metadata": "d43fd141fed8d5473532f4426195ebd46230f21fa8cb2f708c8b508bab0b2342"
+      }
+    }
+  }
+}

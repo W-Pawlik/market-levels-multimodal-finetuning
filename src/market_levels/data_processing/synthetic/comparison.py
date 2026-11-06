@@ -10,7 +10,7 @@ from pathlib import Path
 
 from ...core.candles import Candle
 from ..storage import read_candles_csv
-from .calibration import profile_hash, validate_profile
+from .calibration import profile_hash, validate_generator_profile
 from .quality import (canonical_hash, distribution, series_observations,
                       series_statistics, validate_synthetic, validate_values)
 from .settings import KINDS, SYMBOLS, positive_int
@@ -19,6 +19,17 @@ from .training_period import ChronologicalSplit
 POOLED_METRICS = ("log_returns", "absolute_log_returns", "relative_range", "relative_body",
                   "body_fraction", "upper_wick_fraction", "lower_wick_fraction")
 COMPARISON_VERSION = 1
+
+
+def tail_diagnostics(values: list[float]) -> dict:
+    """Kurtoza Pearsona (normalna=3) i częstości abs(r)>2/3 próbnego sigma."""
+    dist = distribution(values)
+    mean = dist["mean"]
+    m2 = math.fsum((v - mean) ** 2 for v in values) / len(values)
+    kurtosis = (math.fsum((v - mean) ** 4 for v in values) / len(values) / (m2 * m2)) if m2 else None
+    return {"pearson_kurtosis": kurtosis, "kurtosis_reason": None if m2 else "zero_variance",
+            "sample_sigma": dist["std"], "exceedance_abs_2sigma": sum(abs(v) > 2 * dist["std"] for v in values) / len(values),
+            "exceedance_abs_3sigma": sum(abs(v) > 3 * dist["std"] for v in values) / len(values)}
 
 
 def lag1_absolute_correlation(return_windows: list[list[float]]) -> dict:
@@ -58,7 +69,8 @@ def aggregate_windows(windows: list[list[Candle]]) -> dict:
             "pooled_observations": {name: distribution(values) for name, values in pooled.items()},
             "window_distributions": {name: distribution([row[name] for row in per_window])
                                      for name in ("return_std", "close_change", "relative_range")},
-            "absolute_return_lag1": lag1_absolute_correlation(returns), "per_window": per_window}
+            "absolute_return_lag1": lag1_absolute_correlation(returns), "per_window": per_window,
+            "return_diagnostics": tail_diagnostics([r for window in returns for r in window])}
 
 
 def statistical_differences(real: dict, synthetic: dict) -> dict:
@@ -74,6 +86,11 @@ def statistical_differences(real: dict, synthetic: dict) -> dict:
             result[section][name] = difference
     a, b = real["absolute_return_lag1"]["value"], synthetic["absolute_return_lag1"]["value"]
     result["absolute_return_lag1"] = b - a if a is not None and b is not None else None
+    if "return_diagnostics" in real and "return_diagnostics" in synthetic:
+        result["return_diagnostics"] = {}
+        for name in ("pearson_kurtosis", "exceedance_abs_2sigma", "exceedance_abs_3sigma"):
+            a, b = real["return_diagnostics"][name], synthetic["return_diagnostics"][name]
+            result["return_diagnostics"][name] = b-a if a is not None and b is not None else None
     return result
 
 
@@ -109,8 +126,11 @@ def load_synthetic_windows(manifest_path: Path, *, symbol: str, count: int,
         if manifest["run_id"] != expected_id:
             raise ValueError("Identyfikator partii nie zgadza się z jej konfiguracją/profilami")
         entries = manifest["examples"]
-        if not isinstance(entries, list) or manifest["accepted_count"] != len(entries):
+        if (not isinstance(entries, list) or type(manifest["accepted_count"]) is not int
+                or manifest["accepted_count"] != len(entries)):
             raise ValueError("Niezgodna liczba przykładów manifestu")
+        if type(manifest["rejected_count"]) is not int or manifest["rejected_count"] < 0:
+            raise ValueError("Niepoprawna liczba odrzuconych przykładów")
         for key in ("id", "seed", "ohlc_sha256", "csv", "metadata"):
             values = [entry[key] for entry in entries]
             if len(set(values)) != len(values):
@@ -121,8 +141,14 @@ def load_synthetic_windows(manifest_path: Path, *, symbol: str, count: int,
         if len(selected) != count:
             raise ValueError(f"{symbol}: wymagano dokładnie {count} przykładów, manifest zawiera {len(selected)}")
         profile = identity["profiles"][symbol]
-        validate_profile(profile, symbol=symbol)
-        if profile["status"] == "diagnostic":
+        generator_version = {"1.0.0": "v1", "2.0.0": "v2"}.get(identity["generator_version"])
+        if generator_version is None:
+            raise ValueError("Nieobsługiwana wersja generatora w manifeście")
+        validate_generator_profile(profile, symbol=symbol, generator_version=generator_version)
+        if (profile.get("calibration", {}).get("method") == "volatility_refinement_v1"
+                and profile["calibration"]["variant"] != identity["configuration"].get("v2_variant")):
+            raise ValueError("Manifest używa profilu refinement dla innego wariantu")
+        if profile["status"] == "diagnostic" or profile.get("estimation_kind") == "diagnostic":
             raise ValueError("Porównanie wymaga empirycznego profilu treningowego, nie parametrów ręcznych")
         split.require_training(*(datetime.fromisoformat(profile["period"][key])
                                  for key in ("allowed_start", "allowed_end")))
@@ -148,6 +174,36 @@ def load_synthetic_windows(manifest_path: Path, *, symbol: str, count: int,
             config.pop("output")
             if config != identity["configuration"]:
                 raise ValueError("Niezgodna konfiguracja przykładu")
+            if generator_version == "v2":
+                from .v2_parameters import mechanisms, effective_parameters, V2Parameters
+                from .stochastic_processes import stream_seed
+                from .generator_v2 import STREAMS
+                if (config["generator_version"] != "v2" or metadata["profile_version"] != 2
+                        or metadata["v2_variant"] != config["v2_variant"]
+                        or metadata["experiment_id"] != config["experiment_id"]
+                        or metadata["mechanisms"] != mechanisms(config["v2_variant"])
+                        or metadata["configured_parameters"] != profile["v2_parameters"]
+                        or metadata["effective_parameters"] != effective_parameters(V2Parameters(**profile["v2_parameters"]),config["v2_variant"])
+                        or metadata["rng_stream_seeds"] != {name: stream_seed(entry["seed"], name) for name in STREAMS}
+                        or profile["regime_configuration"] != {key: config[key] for key in ("regimes", "min_regimes", "max_regimes")}):
+                    raise ValueError("Niespójne mechanizmy lub profil generatora v2")
+                import random
+                from .stochastic_processes import volatility_states, volatility_multiplier
+                parameters = profile["v2_parameters"]
+                enabled = metadata["mechanisms"]["volatility"]
+                sd = parameters["volatility_stationary_std"]
+                states = (volatility_states(random.Random(metadata["rng_stream_seeds"]["volatility"]), 120,
+                                           parameters["volatility_phi"], sd) if enabled else [0.0] * 120)
+                trace = metadata["volatility_trace"]
+                if len(trace) != 120:
+                    raise ValueError("Niepełny przebieg zmienności v2")
+                regime_sigmas = [r["sigma"] for r in metadata["regimes"] for _ in range(r["length"])]
+                if len(regime_sigmas) != 120:
+                    raise ValueError("Niepoprawna długość reżimów w przebiegu v2")
+                for i, state in enumerate(states):
+                    multiplier = volatility_multiplier(state, sd) if enabled else 1.0
+                    if trace[i] != {"index": i, "h": state, "sigma_4h": regime_sigmas[i]*multiplier, "multiplier": multiplier}:
+                        raise ValueError("Niezgodny przebieg zmienności v2")
             if metadata["internal_steps_per_candle"] != 12 or metadata["total_internal_steps"] != 1440:
                 raise ValueError("Niezgodna liczba kroków symulacji")
             source = f"synthetic:{metadata['generator_version']}:{symbol}:{entry['seed']}"
@@ -175,6 +231,11 @@ def load_synthetic_windows(manifest_path: Path, *, symbol: str, count: int,
                             "metadata_sha256": hashlib.sha256(metadata_path.read_bytes()).hexdigest()})
         return windows, {"manifest": str(path), "manifest_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                          "run_id": manifest["run_id"], "status": manifest["status"],
+                         "generator_version": identity["generator_version"],
+                         "variant": identity["configuration"].get("v2_variant", "v1"),
+                         "experiment_id": identity["configuration"].get("experiment_id"),
+                         "master_seed": identity["configuration"]["seed"],
+                         "invalid_examples": manifest["rejected_count"], "duplicate_examples": 0,
                          "profile": profile, "profile_sha256": digest, "profile_status": profile["status"],
                          "examples": details, "regimes": {
                              "occurrences": dict(regime_counts), "candle_counts": dict(regime_candles),

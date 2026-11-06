@@ -5,11 +5,14 @@ import hashlib
 import json
 from pathlib import Path
 import platform
-import tempfile
 
 from ..storage import read_candles_csv, write_candles_csv, write_json
-from ..synthetic.calibration import diagnostic_profile, load_profile, validate_profile
-from ..synthetic.generator import GENERATOR_VERSION, example_seed, generate_example
+from ..staging import publication_workspace, publish_directory
+from ..synthetic.calibration import diagnostic_profile, load_profile, validate_generator_profile
+from ..synthetic.generator import GENERATOR_VERSION, example_seed
+from ..synthetic.dispatch import generate_example
+from ..synthetic.profile_v2 import diagnostic_profile_v2, regime_configuration
+from ..synthetic.v2_parameters import V2_VERSION
 from ..synthetic.quality import canonical_hash, compare_statistics, validate_synthetic
 from ..synthetic.regimes import feasible_sequences
 from ..synthetic.settings import SyntheticSettings
@@ -28,10 +31,16 @@ def prepare_profiles(settings: SyntheticSettings) -> dict[str, dict]:
         if symbol in settings.profiles:
             profile = load_profile(Path(settings.profiles[symbol]), symbol=symbol)
         elif settings.diagnostic:
-            profile = diagnostic_profile(symbol)
+            profile = (diagnostic_profile_v2(symbol, settings) if settings.generator_version == "v2"
+                       else diagnostic_profile(symbol))
         else:
             raise ValueError(f"{symbol}: brak profilu kalibracyjnego; do prób użyj --diagnostic")
-        validate_profile(profile, symbol=symbol)
+        validate_generator_profile(profile, symbol=symbol, generator_version=settings.generator_version)
+        if (profile.get("calibration", {}).get("method") == "volatility_refinement_v1"
+                and profile["calibration"]["variant"] != settings.v2_variant):
+            raise ValueError("Profil refinement nie odpowiada wybranemu wariantowi v2")
+        if settings.generator_version == "v2" and profile["regime_configuration"] != regime_configuration(settings):
+            raise ValueError("Konfiguracja reżimów nie odpowiada profilowi v2")
         if not settings.diagnostic and profile["status"] != "approved":
             raise ValueError(f"{symbol}: niezatwierdzony profil; wymagany --diagnostic")
         profiles[symbol] = profile
@@ -42,7 +51,8 @@ def run(settings: SyntheticSettings) -> Path:
     """Zapisz całą partię lub pozostaw poprzednie wyniki bez zmian."""
     profiles = prepare_profiles(settings)
     identity = {"configuration": settings.document(), "profiles": profiles,
-                "generator_version": GENERATOR_VERSION, "python": platform.python_version(),
+                "generator_version": V2_VERSION if settings.generator_version == "v2" else GENERATOR_VERSION,
+                "python": platform.python_version(),
                 "implementation": platform.python_implementation()}
     # Katalog wyjściowy nie zmienia tożsamości danych ani identyfikatora partii.
     identity["configuration"].pop("output")
@@ -60,8 +70,8 @@ def run(settings: SyntheticSettings) -> Path:
     output.mkdir(parents=True, exist_ok=True)
     seen_seeds = set()
     entries = []
-    with tempfile.TemporaryDirectory(prefix=".synthetic-", dir=output) as temporary:
-        stage = Path(temporary) / "batch"
+    with publication_workspace(output, prefix=".synthetic-") as temporary:
+        stage = temporary / "batch"
         stage.mkdir()
         for symbol in settings.symbols:
             directory = stage / symbol
@@ -102,5 +112,5 @@ def run(settings: SyntheticSettings) -> Path:
         write_json(stage / "manifest.json", manifest)
         # Jedyny moment publikacji przykładów: rename kompletnego katalogu na tym samym dysku.
         final.parent.mkdir(parents=True, exist_ok=True)
-        stage.rename(final)
+        publish_directory(stage, final)
     return final

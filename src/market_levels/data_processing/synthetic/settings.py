@@ -101,6 +101,10 @@ class SyntheticSettings:
     output: Path = Path("data/synthetic")
     diagnostic: bool = False
     regimes: RegimeSettings = field(default_factory=RegimeSettings)
+    generator_version: str = "v1"
+    v2_variant: str = "full"
+    experiment_id: str = "ohlc-v2-diagnostic"
+    v2_parameters: dict = field(default_factory=dict)
 
     def validate(self) -> None:
         if type(self.candles) is not int or self.candles != 120:
@@ -124,10 +128,24 @@ class SyntheticSettings:
         if not str(self.output).strip():
             raise ValueError("output wymaga ścieżki")
         self.regimes.validate()
+        from .v2_parameters import VARIANTS, V2Parameters
+        if self.generator_version not in ("v1", "v2") or self.v2_variant not in VARIANTS:
+            raise ValueError("Niepoprawna wersja generatora lub wariant v2")
+        if self.generator_version == "v1" and self.v2_variant != "full":
+            raise ValueError("Wariant v2 wymaga generator_version=v2")
+        if not isinstance(self.experiment_id, str) or not self.experiment_id.strip():
+            raise ValueError("experiment_id wymaga niepustego tekstu")
+        if not isinstance(self.v2_parameters, dict) or set(self.v2_parameters) - set(V2Parameters.__dataclass_fields__):
+            raise ValueError("Niepoprawne lub nieobsługiwane parametry v2")
+        V2Parameters(**self.v2_parameters).validate()
 
     def document(self) -> dict:
         result = asdict(self)
         result["output"] = str(self.output)
+        if self.generator_version == "v1":
+            # Zachowanie historycznych metadanych i identyfikatora partii v1.
+            for key in ("generator_version", "v2_variant", "experiment_id", "v2_parameters"):
+                result.pop(key)
         return result
 
 
@@ -138,6 +156,14 @@ def load_synthetic_settings(path: Path, **overrides: object) -> SyntheticSetting
         raise ValueError("Konfiguracja wymaga obiektu synthetic")
     options = dict(document["synthetic"])
     options.update({k: v for k, v in overrides.items() if v is not None})
+    if options.get("generator_version", "v1") == "v2":
+        v2 = document.get("synthetic_v2", {})
+        if not isinstance(v2, dict) or set(v2) - {"profiles", "variant", "experiment_id", "parameters"}:
+            raise ValueError("Nieobsługiwane ustawienia synthetic_v2")
+        for target, key, default in (("profiles", "profiles", {}), ("v2_variant", "variant", "full"),
+                                     ("experiment_id", "experiment_id", "ohlc-v2-diagnostic"),
+                                     ("v2_parameters", "parameters", {})):
+            options[target] = overrides[target] if overrides.get(target) is not None else v2.get(key, default)
     allowed = set(SyntheticSettings.__dataclass_fields__)
     if set(options) - allowed:
         raise ValueError(f"Nieobsługiwane ustawienia synthetic: {sorted(set(options) - allowed)}")

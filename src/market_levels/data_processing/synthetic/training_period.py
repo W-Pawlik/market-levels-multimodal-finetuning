@@ -33,6 +33,14 @@ def load_chronological_split(path: Path) -> ChronologicalSplit:
     """Wczytaj i sprawdź granice, bez implementowania podziału zbiorów."""
     try:
         options = json.loads(Path(path).read_text(encoding="utf-8-sig"))["chronological_split"]
+    except (KeyError, TypeError) as exc:
+        raise ValueError(f"Niepoprawna sekcja chronological_split: {exc}") from exc
+    return split_from_document(options)
+
+
+def split_from_document(options: dict) -> ChronologicalSplit:
+    """Sprawdź ten sam podział w konfiguracji lub zapisanej metadanej profilu."""
+    try:
         if set(options) != {"split_id", "status", "bounds", "timestamp_role", "periods"}:
             raise ValueError("Nieobsługiwane lub brakujące pola chronological_split")
         if (options["status"] != "approved" or options["bounds"] != "inclusive"

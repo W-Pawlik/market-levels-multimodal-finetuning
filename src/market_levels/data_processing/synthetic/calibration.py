@@ -7,10 +7,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import tempfile
 
 from ...core.candles import Candle
 from ..storage import read_candles_csv, write_json
+from ..staging import publication_workspace
 from ..validation import validate_candle_timestamp
 from .quality import series_statistics
 from .settings import SYMBOLS, finite_number, positive_int
@@ -165,11 +165,11 @@ def validate_profile(profile: dict, *, symbol: str | None = None) -> None:
 
 def save_profile(path: Path, profile: dict) -> None:
     """Opublikuj kompletny profil atomowo i bez nadpisywania istniejącego."""
-    validate_profile(profile)
+    validate_generator_profile(profile)
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix=".profile-", dir=path.parent) as temporary:
-        staged = Path(temporary) / "profile.json"
+    with publication_workspace(path.parent, prefix=".profile-") as temporary:
+        staged = temporary / "profile.json"
         write_json(staged, profile)
         # Hard link na tym samym systemie plików: kompletny plik albo FileExistsError.
         os.link(staged, path)
@@ -177,5 +177,20 @@ def save_profile(path: Path, profile: dict) -> None:
 
 def load_profile(path: Path, *, symbol: str | None = None) -> dict:
     profile = json.loads(Path(path).read_text(encoding="utf-8-sig"))
-    validate_profile(profile, symbol=symbol)
+    validate_generator_profile(profile, symbol=symbol)
     return profile
+
+
+def validate_generator_profile(profile: dict, *, symbol: str | None = None,
+                               generator_version: str | None = None) -> None:
+    """Rozróżnij schematy bez zmiany historycznego validate_profile v1."""
+    if not isinstance(profile, dict):
+        raise ValueError("Profil musi być obiektem JSON")
+    version = profile.get("version")
+    if generator_version is not None and (generator_version, version) not in (("v1", 1), ("v2", 2)):
+        raise ValueError("Wersja profilu nie odpowiada wybranemu generatorowi")
+    if version == 2:
+        from .profile_v2 import validate_profile_v2
+        validate_profile_v2(profile, symbol=symbol)
+    else:
+        validate_profile(profile, symbol=symbol)

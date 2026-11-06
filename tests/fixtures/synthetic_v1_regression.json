@@ -1,0 +1,13 @@
+{
+  "python": "3.13.15",
+  "examples": {
+    "BTCUSDT": {
+      "ohlc": "bb527416b84fba5fe4cba42fd02db923ec746cc012e80706b7d5970e2372ddc4",
+      "metadata": "a775a0be875f6651e4f7ea334fe6c9f8cc0378b371b2cbb0c96abba14a6c4da5"
+    },
+    "ETHUSDT": {
+      "ohlc": "787705628f646bed862d110a13d00359eeed2a0de9fee7c626d09862479e2911",
+      "metadata": "6b6cf6ae434adb05b0d0ac00ca6bc347a0e0adcbaee10521d994467d17279580"
+    }
+  }
+}

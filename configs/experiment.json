@@ -101,7 +101,8 @@
         0.05,
         0.2
       ]
-    }
+    },
+    "generator_version": "v1"
   },
   "chronological_split": {
     "split_id": "chronological_v1",
@@ -122,5 +123,113 @@
         "end": "2026-10-31T20:00:00+00:00"
       }
     }
+  },
+  "synthetic_v2": {
+    "variant": "full",
+    "experiment_id": "ohlc-v2-diagnostic",
+    "profiles": {},
+    "parameters": {
+      "bridge_gamma": 1.5,
+      "tail_probability": 0.05,
+      "tail_scale": 3.0,
+      "volatility_phi": 0.95,
+      "volatility_stationary_std": 0.35
+    }
+  },
+  "synthetic_v2_calibration": {
+    "simulation_seeds": [
+      73001,
+      73002,
+      73003
+    ],
+    "selection_seed": 73004,
+    "examples_per_seed": 4,
+    "rounds": 2,
+    "bridge_gamma": [
+      1.0,
+      1.4,
+      1.8,
+      2.2
+    ],
+    "tail_probability": [
+      0.02,
+      0.05,
+      0.1
+    ],
+    "tail_scale": [
+      2.0,
+      3.0,
+      4.0
+    ],
+    "volatility_phi": [
+      0.8,
+      0.95,
+      0.99
+    ],
+    "volatility_stationary_std": [
+      0.0,
+      0.3,
+      0.6
+    ]
+  },
+  "volatility_refinement_v1": {
+    "volatility_phi": [
+      0.65,
+      0.75,
+      0.85,
+      0.9,
+      0.94,
+      0.97,
+      0.99
+    ],
+    "volatility_stationary_std": [
+      0.25,
+      0.35,
+      0.45,
+      0.55,
+      0.65
+    ],
+    "simulation_seeds": [
+      73001,
+      73002,
+      73003
+    ],
+    "diagnostic_seeds": [
+      20261105,
+      20261115,
+      20261125,
+      20261205,
+      20261215
+    ],
+    "selection_seed": 73004,
+    "examples_per_seed": 12,
+    "max_candidates": 64,
+    "max_simulated_windows": 2304,
+    "tolerances": {
+      "abs_ac1": 0.05,
+      "window_std_mean": 0.1,
+      "window_std_std": 0.2,
+      "abs_q95": 0.15,
+      "abs_q99": 0.15,
+      "range_mean": 0.1,
+      "body_fraction": 0.03,
+      "upper_wick": 0.03,
+      "lower_wick": 0.03
+    },
+    "weights": {
+      "abs_ac1": 3.0,
+      "window_std_mean": 3.0,
+      "window_std_std": 3.0,
+      "abs_q95": 1.0,
+      "abs_q99": 1.0,
+      "range_mean": 1.0,
+      "body_fraction": 1.0,
+      "upper_wick": 1.0,
+      "lower_wick": 1.0
+    },
+    "guard_penalty": 4.0,
+    "worst_seed_weight": 0.25,
+    "relative_floor": 1e-08,
+    "practical_equivalence_fraction": 0.1
   }
 }

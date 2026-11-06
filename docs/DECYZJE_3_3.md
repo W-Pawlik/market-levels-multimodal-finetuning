@@ -62,5 +62,27 @@ Przygotowano narzędzia do kalibracji i opisowego porównania z treningiem.
 Próbka 60 BTC + 60 ETH ma korzystać z profili empirycznych `unapproved` w trybie
 diagnostycznym. Nie jest docelowym zbiorem ani niezależną walidacją.
 
+Kolejna decyzja autora: wdrożyć v2 przy zachowaniu v1 jako osobnego punktu
+odniesienia. Autor wykonał empiryczną kalibrację v1 i porównania 60+60;
+dostępne lokalnie raporty BTC/ETH potwierdzają za duży udział korpusu,
+niedostateczne ogony i małe zróżnicowanie zmienności między oknami.
+
+Zakres zatwierdzony do implementacji v2: warunkowa ścieżka mostu Browna,
+normalizowana mieszanka dla zwrotu Close 4h i normalizowana log-zmienność AR(1),
+osobne strumienie RNG, warianty base/bridge/tails/volatility/full oraz oddzielne
+profile. Wszystko wyłącznie na treningu. Nie zatwierdzono nowych wartości
+parametrów ani empirycznego sukcesu v2. Pozostają 120 świec, 12 kroków i 1–3 fazy.
+Właściwa ocena ma porównywać identyczne okna z seedem selekcji 20261106,
+najlepiej na co najmniej trzech seedach diagnostycznych. Full nie jest
+automatycznie uznawany za najlepszy wariant. Opis: [v2](SYNTHETIC_GENERATOR_V2.md).
+
+Kolejna iteracja zlecona 2026-11-05: dodatkowy wariant `bridge_volatility`
+i osobne dostrojenie wyłącznie phi/stacjonarnego std dla full i wariantu bez
+mieszanki, osobno dla BTC/ETH. Parametry pozostałych mechanizmów i wcześniejsze
+wyniki są zamrożone. Nowe profile pozostają unapproved; w tej sesji wykonano
+tylko testy i małe próby sztuczne. Duża kalibracja i diagnostyka 60 okien
+będą osobnym wykonaniem autora. Nie jest to decyzja o akceptacji generatora.
+[Raport wdrożenia](RAPORT_REFINEMENT_V2.md).
+
 Kwestie prawne otwarte: upublicznienie pełnych danych, obrazów z danych Binance,
 wytrenowanego adaptera lub całego modelu; obowiązki uczelni w repozytorium prac.

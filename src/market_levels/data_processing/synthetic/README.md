@@ -13,3 +13,8 @@ Dokumentacja: [generator](../../../../docs/SYNTHETIC_GENERATOR.md),
 [architektura](../../../../docs/ARCHITECTURE.md).
 Proces kalibracji CLI i porównania z treningiem:
 [instrukcja](../../../../docs/SYNTHETIC_CALIBRATION_COMPARISON.md).
+
+V1 zachowano w `generator.py`; `dispatch.py` wybiera implementację.
+V2: `generator_v2.py`, `stochastic_processes.py`, `v2_parameters.py`,
+`profile_v2.py`, `calibration_v2.py`. `experiments.py` zestawia warianty/seedowe
+powtórzenia na identycznej referencji. [Matematyka i status](../../../../docs/SYNTHETIC_GENERATOR_V2.md).

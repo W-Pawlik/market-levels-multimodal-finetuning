@@ -18,6 +18,7 @@ Repository = "https://github.com/W-Pawlik/market-levels-multimodal-finetuning"
 market-levels-download = "market_levels.cli.download:main"
 market-levels-generate-synthetic = "market_levels.cli.generate_synthetic:main"
 market-levels-calibrate = "market_levels.cli.calibrate_synthetic:main"
+market-levels-refine-v2-volatility = "market_levels.cli.refine_v2_volatility:main"
 market-levels-compare-synthetic = "market_levels.cli.compare_synthetic:main"
 
 [tool.setuptools.packages.find]

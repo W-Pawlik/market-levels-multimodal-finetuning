@@ -4,6 +4,11 @@ To proces diagnostyczny etapu 3.3, korzystający z istniejącego generatora.
 Nie zmienia jego mechanizmu ani parametrów. Nie buduje końcowego zbioru
 multimodalnego, obrazów ani etykiet. Działa offline, bez nowych zależności.
 
+Ta instrukcja dotyczy domyślnego v1. Kalibrację i porównanie 60+60 v1 autor już
+wykonał. Nowe polecenia opcjonalne `--generator-version v2`, `--v2-variant`
+i tryb porównania `--reports` opisuje [instrukcja v2](SYNTHETIC_V2_POWERSHELL.md).
+Porównanie przyjmuje manifesty obu wersji i rozróżnia profile schematu 1/2.
+
 ## Zatwierdzony podział
 
 Źródło ustawień: `configs/experiment.json`, sekcja `chronological_split`.
@@ -39,7 +44,8 @@ Dry-run także zgłasza kolizję istniejącego pliku, aby sprawdzać planowany z
 
 Podstawowe API kalibracji pozostaje ogólne i nie ładuje konfiguracji. Jeżeli
 wywołujesz je poza CLI, sam odpowiadasz za dozwolony zakres. Nie używaj tego
-do obejścia zatwierdzonego podziału. Właściwą kalibrację rynku pozostawiono autorowi.
+do obejścia zatwierdzonego podziału. Kalibrację rynku v1 wykonał autor po
+otrzymaniu pierwszego wdrożenia narzędzi.
 
 ## Selekcja rzeczywistych okien
 
@@ -134,8 +140,9 @@ faz nadal wymagają oceny; nie zmieniamy ich automatycznie w odpowiedzi na rapor
 ## PowerShell: kompletny przebieg
 
 Uruchamiaj z głównego katalogu projektu. Polecenia operacji danych są offline;
-do instalacji potrzebny jest dostępny setuptools. Nie uruchomiono za autora
-pełnej kalibracji ani partii 60+60. Nie nadpisujemy istniejących profili ani raportów.
+do instalacji potrzebny jest dostępny setuptools. Autor wykonał już właściwą
+kalibrację v1 i partię 60+60. Nie nadpisujemy istniejących profili ani raportów;
+poniższe komendy służą do świadomego odtworzenia procesu w nowych lokalizacjach.
 
 Przygotowanie, testy i odczyt zatwierdzonych granic:
 

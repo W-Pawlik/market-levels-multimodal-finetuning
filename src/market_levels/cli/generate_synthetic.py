@@ -8,6 +8,7 @@ import sys
 
 from ..data_processing.pipelines.synthetic import prepare_profiles, run
 from ..data_processing.synthetic.settings import SYMBOLS, load_synthetic_settings
+from ..data_processing.synthetic.v2_parameters import VARIANTS
 
 
 def main() -> None:
@@ -19,10 +20,18 @@ def main() -> None:
     parser.add_argument("--profile", action="append", metavar="SYMBOL=PATH", help="Powtarzalne, nadpisuje profil instrumentu z JSON")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--diagnostic", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--generator-version", choices=("v1", "v2"))
+    parser.add_argument("--v2-variant", choices=VARIANTS)
+    parser.add_argument("--experiment-id")
     parser.add_argument("--dry-run", action="store_true", help="Walidacja ustawień i profili, bez zapisu")
     args = parser.parse_args()
     try:
-        overrides = {key: getattr(args, key) for key in ("count", "symbols", "seed", "output", "diagnostic")}
+        overrides = {key: getattr(args, key) for key in ("count", "symbols", "seed", "output", "diagnostic",
+                                                       "generator_version", "v2_variant", "experiment_id")}
+        if args.v2_variant is not None and args.generator_version != "v2":
+            raise ValueError("--v2-variant wymaga jawnego --generator-version v2")
+        if args.experiment_id is not None and args.generator_version != "v2":
+            raise ValueError("--experiment-id wymaga jawnego --generator-version v2")
         if args.profile:
             base = load_synthetic_settings(args.config, **overrides)
             profiles = dict(base.profiles)

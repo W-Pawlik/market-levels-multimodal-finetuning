@@ -5,9 +5,9 @@ from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
-import tempfile
 
 from ..storage import read_candles_csv, write_json
+from ..staging import publication_workspace, publish_directory
 from ..synthetic.comparison import (COMPARISON_VERSION, aggregate_windows,
                                     load_synthetic_windows, statistical_differences)
 from ..synthetic.selection import select_real_windows
@@ -48,6 +48,7 @@ def comparison_summary(report: dict) -> str:
     """Zwięzła tabela do terminala i udostępnienia autorowi pracy."""
     lines = [f"# {report['symbol']} — opisowe porównanie z treningiem",
              f"Porównanie: {report['comparison_id']}; podział: {report['split']['split_id']}",
+             f"Generator: {report['synthetic_source'].get('generator_version', '1.0.0')}; wariant: {report['synthetic_source'].get('variant', 'v1')}; seed: {report['synthetic_source'].get('master_seed', 'brak w starszym raporcie')}",
              f"Okna rzeczywiste: {report['real']['window_count']}; syntetyczne: {report['synthetic']['window_count']}",
              "", "| Metryka | Rzeczywiste | Syntetyczne | Różnica S-R |",
              "| --- | ---: | ---: | ---: |"]
@@ -75,7 +76,7 @@ def comparison_summary(report: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def save_comparison(output: Path, report: dict) -> Path:
+def save_comparison(output: Path, report: dict, *, summary_text: str | None = None) -> Path:
     """Opublikuj JSON i Markdown razem, z odmową nadpisania istniejącej partii."""
     output = Path(output)
     resolved = output.resolve()
@@ -86,10 +87,11 @@ def save_comparison(output: Path, report: dict) -> Path:
     if final.exists():
         raise FileExistsError(f"Porównanie już istnieje (odmowa nadpisania): {final}")
     output.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix=".comparison-", dir=output) as temporary:
-        stage = Path(temporary) / "report"
+    with publication_workspace(output, prefix=".comparison-") as temporary:
+        stage = temporary / "report"
         stage.mkdir()
         write_json(stage / f"{report['symbol']}_comparison.json", report)
-        (stage / f"{report['symbol']}_summary.md").write_text(comparison_summary(report), encoding="utf-8")
-        stage.rename(final)
+        (stage / f"{report['symbol']}_summary.md").write_text(
+            comparison_summary(report) if summary_text is None else summary_text, encoding="utf-8")
+        publish_directory(stage, final)
     return final
