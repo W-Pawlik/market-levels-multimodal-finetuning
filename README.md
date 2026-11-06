@@ -1,5 +1,25 @@
 # Market Levels — projekt pracy inżynierskiej
 
+Publikacja partii i raportów ponawia krótkotrwałe blokady Windows bez regeneracji
+danych. [Poprawka, testy i polecenia końcowego eksperymentu](docs/WINDOWS_PUBLICATION_RETRY_FIX.md).
+
+Nowa oddzielna próba stabilności na 20261201/20261211:
+[`run_refinement_fresh_seeds.ps1`](scripts/run_refinement_fresh_seeds.ps1),
+[polecenia PowerShell](docs/FRESH_SEEDS_POWERSHELL.md).
+Pełne 960 serii uruchamia autor osobno; raporty nie łączą się z poprzednimi seedami.
+
+Po kalibracji refinement używaj oficjalnego
+[`scripts/run_refinement_comparison.ps1`](scripts/run_refinement_comparison.ps1):
+CheckOnly, SmokeTest, jawny RunFull oraz wznowienie bez nadpisywania.
+[Instrukcja](docs/INSTRUKCJA_POWERSHELL.md),
+[naprawa brakującego pakietu](docs/RAPORT_NAPRAWY_IMPORTU.md).
+
+Nowość: `bridge_volatility` i osobne dostrojenie dwóch parametrów AR(1),
+z audytem pochodzenia i porównaniem full-original/full-refined/bez mieszanki.
+[Raport refinement](docs/RAPORT_REFINEMENT_V2.md) oraz
+[procedura PowerShell](docs/INSTRUKCJA_REFINEMENT_POWERSHELL.md).
+Nie uruchomiono dużej kalibracji ani nowej oceny rynku; profile pozostają unapproved.
+
 Projekt służy badaniu dostrajania modelu multimodalnego do znajdowania poziomów
 wsparcia i oporu na wykresach finansowych. Docelowy proces obejmuje dane OHLC,
 wykresy, etykiety, zbiory treningowe, dostrajanie, inferencję i ewaluację.
@@ -165,8 +185,8 @@ jest wyłącznie indeksem symulacji. Nie przypisujemy przykładów do train/vali
 Kalibracja wymaga jawnego dozwolonego okresu, osobno dla BTC i ETH; pomija
 przejścia przez luki. Podział `chronological_v1` jest zatwierdzony: trening 2020–2023,
 walidacja 2024, test 2025–2026-10. Parametry i profile generatora wymagają osobnej
-oceny i zatwierdzenia. Nie wykonano końcowej kalibracji ani generowania
-docelowego zbioru. Kontrola wizualna czeka na renderer.
+oceny i zatwierdzenia. Autor wykonał empiryczną kalibrację v1 i diagnostykę 60+60;
+nie wygenerowano docelowego zbioru. Kontrola wizualna czeka na renderer.
 
 Opis parametrów, API kalibracji, format wyników i ograniczenia:
 [SYNTHETIC_GENERATOR.md](docs/SYNTHETIC_GENERATOR.md).
@@ -193,8 +213,55 @@ wchodzą do obliczeń diagnostycznych.
 Pełne polecenia PowerShell: kalibracja BTC i ETH, generowanie 60+60 ze seedem
 20261105, przechwycenie ścieżki automatycznej partii i porównania osobno dla
 instrumentów: [instrukcja procesu](docs/SYNTHETIC_CALIBRATION_COMPARISON.md).
-Właściwe uruchomienie pozostawiono autorowi. Wyniki są opisowym porównaniem
+Autor wykonał kalibrację v1 i porównania. Wyniki są opisowym porównaniem
 z treningiem użytym do kalibracji, nie niezależną walidacją generatora.
+
+## Generator v2 i kontrolowane warianty
+
+Dodano wersję `2.0.0`: model zamknięcia 4h, skalowany most Browna, mieszankę
+normalną o wariancji jednostkowej i stacjonarną log-zmienność AR(1).
+Domyślnie nadal działa v1; jego algorytm, seedy i historyczne metadane zachowano.
+
+```powershell
+.\.venv\Scripts\market-levels-generate-synthetic.exe --generator-version v2 --v2-variant full --diagnostic --count 2 --symbols BTCUSDT ETHUSDT --seed 20261107 --output data/synthetic/v2-manual-smoke --dry-run
+```
+
+Warianty v2: `base`, `bridge`, `tails`, `volatility`, `full`.
+`market-levels-calibrate --generator-version v2` tworzy osobny profil schematu 2
+na treningu, przez ograniczoną łączną kalibrację na kilku seedach. Profile
+pozostają `unapproved`. Sekcje `synthetic_v2` i `synthetic_v2_calibration`
+przechowują robocze ustawienia i siatki; nie zmieniają domyślnej matematyki v1.
+
+Istniejący CLI porównania obsługuje oba schematy i tryb `--reports` do tabeli
+Realne/V1/V2-* oraz oceny zmiany błędów na identycznych oknach rzeczywistych.
+Autor wykonał wcześniej kalibrację i porównanie 60+60 dla v1; lokalne raporty
+potwierdzają problemy, które uzasadniają v2. Nie przeprowadzono jeszcze empirycznej
+oceny poprawy v2 w ramach pierwotnego wdrożenia. Mała próba v2 korzystała
+wyłącznie ze sztucznej referencji. Później autor ukończył porównanie na pięciu
+seedach i wskazał V2-full-refined jako kandydata do dalszej pracy; profile
+pozostają `unapproved`. Nowy audyt i renderer opisano poniżej.
+
+[Matematyka i kalibracja v2](docs/SYNTHETIC_GENERATOR_V2.md),
+[pełna instrukcja PowerShell](docs/SYNTHETIC_V2_POWERSHELL.md),
+[raport wdrożenia i testów](docs/SYNTHETIC_V2_IMPLEMENTATION_REPORT.md).
+
+## Audyt różnorodności i pilotaż wykresów
+
+Etap diagnostyczny analizuje istniejące V2-full-refined z pięciu seedów oraz
+renderuje 24–32 PNG 1024 × 768. Rzeczywiste okna i progi zmienności pochodzą
+wyłącznie z train 2020–2023. Nie generuje nowych OHLC ani nie zatwierdza profili.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[charts]"
+.\scripts\run_chart_audit.ps1
+```
+
+Nowy katalog `results/diagnostics/dc-<id>` zawiera audyt Markdown/JSON i `pilot/`
+z PNG, bocznymi JSON oraz dokładnymi 120 świecami CSV dla każdego obrazu.
+Te same zasady rysowania obowiązują obie grupy; PNG nie zawierają źródła ani S/R.
+[Raport renderera](docs/charts/RAPORT_RENDERERA.md),
+[polecenia i odtwarzalność](docs/charts/INSTRUKCJA_POWERSHELL.md),
+[testy](docs/charts/RAPORT_TESTOW.md).
 
 ## Dane i licencja
 

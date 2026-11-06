@@ -31,6 +31,9 @@ Jest to jeden pakiet, bez mikroserwisów, bazy danych i MLOps.
 | `data_processing/synthetic/comparison.py` | odczyt i weryfikacja partii, agregacja obserwacji/okien, korelacja lag 1 |
 | `data_processing/pipelines/compare_synthetic.py` | koordynacja porównania i atomowy zapis JSON/Markdown |
 | `cli/calibrate_synthetic.py`, `cli/compare_synthetic.py` | dwa nowe entry pointy, bez zmiany interfejsów pobierania/generowania |
+| `charts/diversity.py` | odczyt istniejących refined, reżimy, metryki i progi wyłącznie z treningu |
+| `charts/renderer.py` | 120 poprawnych świec → PNG Agg 1024 × 768, bez metadanych wejściowych i S/R na obrazie |
+| `charts/pilot.py`, `cli/audit_charts.py` | deterministyczny dobór, raporty, kopie okien i atomowa publikacja diagnostyki |
 
 Przepływ: CLI → konfiguracja JSON + nadpisania CLI → pipeline → archiwa i SHA-256 → parser ZIP → walidacja okresu
 i szeregu → kontrola brzegów → CSV → raport → manifest. Przy `strict_gaps`
@@ -70,6 +73,34 @@ zwrotów ani par korelacyjnych między oknami. JSON i Markdown publikowane są
 razem przez rename katalogu. Nie jest to moduł końcowego podziału zbioru.
 Instrukcja: [kalibracja i porównanie](SYNTHETIC_CALIBRATION_COMPARISON.md).
 
+## Wersja v2
+
+`generator.py` jest zachowaną implementacją v1. `dispatch.py` wybiera ją lub
+`generator_v2.py`; domyślnie v1. `SyntheticSettings.document()` zachowuje
+historyczną reprezentację konfiguracji v1, bez dodatkowych kluczy.
+`stochastic_processes.py` zawiera most, mieszankę i AR(1), a `v2_parameters.py`
+ich parametry, ograniczenia i przełączniki wariantów. Planowanie faz jest wspólne.
+
+`profile_v2.py` definiuje schemat 2 i pochodzenie parametrów; część empiryczną
+sprawdza wspólnym walidatorem pól v1. `calibration_v2.py` korzysta z istniejącej
+kalibracji bazowej, wyboru okien i agregacji oraz ograniczonej siatki na kilku
+seedach. Wspólne load/save_profile rozróżnia schematy; stary validate_profile
+nie zmienił kontraktu. Nie zapisujemy profili v2 do plików v1.
+
+`comparison.py` sprawdza manifesty obu wersji i przebieg zmienności v2.
+`experiments.py` zestawia zapisane porównania z identyczną referencją,
+pokazuje rozrzut po seedach i zmianę błędów względem V1. `--reports` jest osobnym
+trybem istniejącego CLI porównania; oba rodzaje raportów wykorzystują ten sam
+atomowy zapis JSON/Markdown. Nie dodano frameworka eksperymentów ani zależności.
+
+Szczegóły: [generator v2](SYNTHETIC_GENERATOR_V2.md).
+
+Publikacje partii, profili i porównań używają `data_processing/staging.py`.
+Kontekst `publication_workspace` ponawia blokady dostępu przy sprzątaniu,
+zachowuje pierwotny błąd operacji, a po udanej publikacji zgłasza wyczerpaną
+blokadę jako ostrzeżenie. Atomowe rename/hard link i formaty są niezmienione.
+Szczegóły: [poprawka Windows](WINDOWS_STAGING_CLEANUP_FIX.md).
+
 ## Pakiet i uruchamianie
 
 Setuptools odkrywa `market_levels*` w `src/`. Instalacja udostępnia
@@ -98,7 +129,7 @@ ignorowane przez Git. Nie należy edytować ich ręcznie.
 | Katalog pakietu | Planowana odpowiedzialność |
 | --- | --- |
 | `data_processing/windows/` | okna 120 świec, przesunięcia, luki i granice podziałów |
-| `charts/` | Matplotlib/mplfinance, styl, rozdzielczość, PNG i diagnostyka |
+| `charts/` (MVP działa) | Matplotlib Agg, styl, rozdzielczość, PNG i diagnostyka; bez etykietowania |
 | `labeling/` | model poziomów, deterministyczny algorytm, etykiety i audyt referencji |
 | `datasets/` | chronologia, nakładanie okien, udziały źródeł, obraz–instrukcja–JSON, schematy i manifesty |
 | `modeling/` | modele multimodalne bez narzuconej rodziny |
@@ -135,6 +166,32 @@ nie sterują jeszcze żadnym wykonaniem. Stałe źródła skupiono w kliencie Bi
 a wspólny odstęp 4h przy modelu świecy.
 
 ## Rozwój
+
+`data_processing/staging.publish_directory` jest wspólną granicą atomowej
+publikacji katalogów syntetyków i raportów. Ponawia tylko konflikty dostępu
+rename, kontrolując kolizje celu; nie powtarza tworzenia zawartości.
+Koordynator rozpoznaje tylko opublikowany układ katalogów, wykluczając staging.
+[Opis poprawki](WINDOWS_PUBLICATION_RETRY_FIX.md).
+
+`run_refinement_fresh_seeds.ps1` korzysta ze wspólnego koordynatora z flagą
+`--fresh-seeds`. Jawny plan ośmiu partii używa istniejących ośmiu profili
+i agreguje tylko nowo utworzone raporty 20261201/20261211. `STABILITY.md`
+prezentuje sześć wskazanych metryk z wyników dotychczasowego agregatora;
+nie zmienia definicji statystyk. [Opis próby](FRESH_SEEDS_EXPERIMENT.md).
+
+Oficjalny `scripts/run_refinement_comparison.ps1` wskazuje interpreter projektu
+i wywołuje `cli/refinement_comparison.py`. Koordynator sprawdza środowisko i dane,
+wywołuje istniejące CLI generatora/porównania oraz walidatory wyników. Nie dodaje
+matematyki OHLC. Przebieg przypina SHA wejść i źródeł; checkpointy po etapach
+umożliwiają bezpieczne wznowienie. Szczegóły: [procedura](INSTRUKCJA_POWERSHELL.md).
+
+`synthetic/refinement.py` implementuje oddzielne `volatility_refinement_v1`.
+Jego CLI `refine_v2_volatility.py` dopasowuje tylko phi i stacjonarne std,
+wywołując niezmienioną matematykę generatora v2. `profile_v2.py` deleguje
+walidację pełnego audytu refinement; zapis zachowuje wspólny kontekst publikacji.
+Jawna mapa mechanizmów zawiera dodatkowo `bridge_volatility`. `experiments.py`
+oddziela wariant mechanizmów od rodziny profilu i nie miesza hashów w grupie.
+Szczegóły celu i przepływu: [RAPORT_REFINEMENT_V2.md](RAPORT_REFINEMENT_V2.md).
 
 Kolejny etap powinien otrzymać rzeczywiste funkcje, testy jednostkowe i lokalny
 test integracyjny w przewidzianym katalogu. Nowy pipeline może składać te funkcje.

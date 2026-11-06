@@ -57,7 +57,46 @@ generatora. Profile pozostają `unapproved`; porównanie jest opisowe z treningi
 Pełna procedura PowerShell, w tym przechwycenie automatycznego run_id:
 [SYNTHETIC_CALIBRATION_COMPARISON.md](../docs/SYNTHETIC_CALIBRATION_COMPARISON.md).
 
+V1 pozostaje domyślny. V2 wymaga `--generator-version v2` i osobnego profilu
+schematu 2; wariant wybiera `--v2-variant`. Kalibracja v2 też jest jawna, zawsze
+treningowa i bez automatycznego approved. Nie używaj końcowych seedów diagnostyki
+do przeszukiwania parametrów. `--reports` tworzy tabelę V1/V2, sprawdzając
+identyczność rzeczywistych okien. Pełna procedura:
+[SYNTHETIC_V2_POWERSHELL.md](../docs/SYNTHETIC_V2_POWERSHELL.md).
+
 ## W trakcie i po zmianie
+
+Publikacja partii i raportów korzysta ze wspólnego publish_directory:
+krótkie ponowienia konfliktów Windows, bez ponownego generowania. Pozostałości
+stagingu są niekompletnym etapem; zabezpiecz je ręcznie poza przebiegiem dopiero
+po sprawdzeniu ścieżek, nie usuwaj poprawnych danych i checkpointów.
+Nie powtarzaj ukończonego SmokeTestu autora. [Raport](../docs/WINDOWS_PUBLICATION_RETRY_FIX.md).
+
+Oddzielna próba 20261201/20261211 ma skrypt
+`scripts/run_refinement_fresh_seeds.ps1` (CheckOnly/SmokeTest/RunFull/ResumeDirectory).
+RunFull generuje cztery grupy na dwóch seedach, 960 nowych serii; jest do
+osobnego uruchomienia przez autora. Nie łącz raportów automatycznie z trzema
+starymi seedami i nie ponawiaj kalibracji. [Polecenia](../docs/FRESH_SEEDS_POWERSHELL.md).
+
+Nowe przebiegi porównania mają krótką nazwę rc-<12 hex>, pełny UUID w run.json
+i kontrolę długości plików Windows przed generowaniem. Do kontroli innej
+lokalizacji użyj `-CheckOnly -OutputDirectory <nowa-krótka-ścieżka>`.
+Szczegóły: [MAX_PATH](../docs/WINDOWS_REFINEMENT_PATH_FIX.md).
+
+Do porównań po wykonanej kalibracji używaj oficjalnego
+`scripts/run_refinement_comparison.ps1 -CheckOnly`, następnie `-SmokeTest`.
+`-RunFull` jest dużym eksperymentem do osobnego świadomego uruchomienia autora.
+`-ResumeDirectory` wznawia ten sam tryb po kontroli tożsamości i plików.
+[Pełna procedura](../docs/INSTRUKCJA_POWERSHELL.md). Nie ponawiaj kalibracji
+gotowych profili i nie używaj roboczego skryptu run_refinement_known_seeds.ps1.
+
+Dostrojenie wyłącznie zmienności v2 ma osobny entry point
+`market-levels-refine-v2-volatility` i sekcję konfiguracji
+`volatility_refinement_v1`. Nie ponawiaj starej kalibracji w jej miejsce.
+Profile źródłowe i wyniki pozostają bez zmian. Cztery kandydatury autora,
+ponowne użycie raportów i rozdzielenie znanych/nowych seedów opisuje
+[INSTRUKCJA_REFINEMENT_POWERSHELL.md](../docs/INSTRUKCJA_REFINEMENT_POWERSHELL.md).
+Duże obliczenia tej iteracji są przeznaczone do osobnego uruchomienia przez autora.
 
 - Zmieniaj źródła, nie kopie w build/ ani stary ZIP.
 - Zachowuj pierwotne sześć przypadków testowych; importy można dostosowywać do świadomie zmienionej architektury.
@@ -70,6 +109,18 @@ Pełna procedura PowerShell, w tym przechwycenie automatycznego run_id:
 - Nie naprawiaj cichym sposobem niepowiązanych problemów. Opisz je oddzielnie.
 
 ## Zamknięcie zadania
+
+Audyt i pilotaż (bez generowania OHLC, nowy katalog diagnostyczny):
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[charts]"
+.\scripts\run_chart_audit.ps1
+.\.venv\Scripts\python.exe scripts/verify_chart_pilot.py results/diagnostics/<run>/pilot --re-render
+```
+
+Wyjście jest chronione przed nadpisaniem; ponowne odtworzenie wymaga nowego
+katalogu. Skrypt nie uruchamia kalibracji ani generacji. Szczegóły i zakres
+odczytu treningu: [instrukcja](../docs/charts/INSTRUKCJA_POWERSHELL.md).
 
 Zaktualizuj CURRENT_STATE.md, README i architekturę tylko tam, gdzie zmienił się
 faktyczny stan lub sposób użycia. Nie zmieniaj historycznych wyników testów tak,
