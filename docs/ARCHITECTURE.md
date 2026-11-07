@@ -124,25 +124,60 @@ Główny katalog projektu `data/` zawiera wyłącznie artefakty danych.
 `src/market_levels.egg-info/` to generowane metadane instalacji edytowalnej,
 ignorowane przez Git. Nie należy edytować ich ręcznie.
 
-## Przyszłe etapy — wyłącznie katalogi z README
+## Stan modułów kolejnych etapów
 
 | Katalog pakietu | Planowana odpowiedzialność |
 | --- | --- |
-| `data_processing/windows/` | okna 120 świec, przesunięcia, luki i granice podziałów |
+| `data_processing/windows/` (działa, 3.5) | okna 120 świec, fragmenty ciągłe, selekcja chronologiczna i walidacja |
 | `charts/` (MVP działa) | Matplotlib Agg, styl, rozdzielczość, PNG i diagnostyka; bez etykietowania |
-| `labeling/` | model poziomów, deterministyczny algorytm, etykiety i audyt referencji |
-| `datasets/` | chronologia, nakładanie okien, udziały źródeł, obraz–instrukcja–JSON, schematy i manifesty |
+| `labeling/` (działa, etap 3.4) | model poziomów, deterministyczny algorytm, etykiety i diagnostyka pilotażu |
+| `datasets/` (działa, 3.5 część 2) | zatwierdzanie kopii profili, preflight, produkcja, neutralny JSONL, pełne odtworzenie i audyty |
 | `modeling/` | modele multimodalne bez narzuconej rodziny |
 | `training/` | dostrajanie, adaptery, checkpointy, logi |
 | `inference/` | obraz i instrukcja → JSON, niezależnie od treningu |
 | `evaluation/` | porównanie modelu bazowego, dostrojonego i algorytmu; precision, recall, F1, błąd ceny, JSON, czas i analiza błędów |
 | `experiments/` | identyfikatory, wersje danych, konfiguracje i wyniki |
 
-Reguły etykietowania pozostają planem: ekstrema z trzema świecami po obu stronach,
+Reguły etykietowania zaimplementowano w `labeling/algorithm.py`: ekstrema z trzema świecami po obu stronach,
 minimum dwie niezależne reakcje oddalone o minimum pięć świec, Wilder ATR(14),
 grupowanie 0,5 ATR i mediana ekstremów. Dalej: klasyfikacja względem ostatniego
 zamknięcia, pomijanie poziomów zbyt bliskich, ranking według reakcji, aktualności
-i odległości, maksymalnie trzy wsparcia i trzy opory. Nie implementowano tych reguł.
+i odległości, maksymalnie trzy wsparcia i trzy opory. Mediana poprzedza filtrowanie
+reakcji. Filtrowanie wybiera najsilniejsze ekstremum jako pierwsze, usuwa sąsiadów
+bliższych niż pięć świec i powtarza; dla H siła to cena−mediana, dla L mediana−cena.
+Stały kontekst Decimal ma 50 cyfr. Zaokrąglenie ROUND_HALF_UP do dwóch miejsc
+dotyczy tylko odpowiedzi VLM; kolizje (również między stronami) rozstrzyga ranking.
+`labeling/pilot.py` oraz `cli/label_pilot.py` czytają wyłącznie 32 istniejące okna,
+sprawdzają SHA i publikują nowy katalog pod results/diagnostics przez wspólny staging.
+Pełne dane diagnostyczne i PNG z poziomami są oddzielone od odpowiedzi VLM.
+Nie wykonano niezależnej eksperckiej oceny. Stan etapu 3.5 opisano poniżej.
+
+Etap 3.5, część 1: `windows.candidates` waliduje pełny CSV, dzieli według
+zatwierdzonej chronologii, restartuje siatkę na każdym ciągłym fragmencie.
+`select_training` dzieli chronologiczną pulę na N warstw o prawie równej
+liczebności i losuje po jednym indeksie lokalnym RNG. Validation/test używają
+chronologicznego prefiksu siatki, bez oceny cen i etykiet.
+`datasets.planning` przypina źródła/profil/seedy i wylicza sumy wyłącznie z
+`dataset_build.targets`. Historyczne pola sumy i udziałów nie sterują tym API.
+`synthetic_settings` integruje obecne ustawienia v2/full z produkcyjnym
+`diagnostic=False`; `require_production_ready` zachowuje dotychczasową blokadę
+niezatwierdzonych profili. Planowanie nie wykonuje generacji ani kalibracji.
+`datasets.packaging` składa obecny renderer i `label_window`, nie ma własnej
+wersji tych algorytmów. Zapewnia oddzielne metadane, JSONL, etykiety, kopie CSV,
+inwentarz, hash manifestu i odtworzenie. CLI `market-levels-build-dataset`
+udostępnia preflight/smoke/verify oraz nowe approve/build z części 2. Publikacja używa wspólnego stagingu
+i zabezpieczeń Windows. [Format](datasets/FORMAT.md), [raport](datasets/RAPORT_3_5_CZ1.md).
+
+Część 2: `datasets.approval` sprawdza pierwotne profile i powiązanie z audytem,
+deleguje wspólne zatwierdzenie do `approve_profile` i waliduje pełny schemat v2.
+Walidator refinement dopuszcza kopię `approved` tylko z prawidłowym approval;
+historyczny audyt pozostaje niezmieniony. `datasets.production` kontroluje
+aktualność przypiętego planu, składa obecny generator/renderer/etykietowanie,
+zapisuje osobne splity i publikuje katalog po pełnym odtworzeniu z dysku.
+`verify_dataset` regeneruje wszystkie syntetyki oraz 800 obrazów/etykiet.
+`audit` jest opisowy, `review` zapisuje oddzielne overlays. Nowy preflight
+wyklucza master seedy także wobec opublikowanych zbiorów produkcyjnych.
+[Raport części 2](datasets/RAPORT_3_5_CZ2.md).
 
 ## Dane, wyniki i konfiguracja
 

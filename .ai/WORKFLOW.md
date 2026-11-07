@@ -110,6 +110,36 @@ Duże obliczenia tej iteracji są przeznaczone do osobnego uruchomienia przez au
 
 ## Zamknięcie zadania
 
+Aktualna produkcja 3.5 część 2: autor jawnie zatwierdził 800 przykładów i nowe
+kopie profili 2026-11-07. `build_dataset approve/preflight/build/verify` rozdziela
+decyzję, plan, produkcję i kontrolę. Gotowy zbiór jest pod
+`data/datasets/ds35-800-20261107-a`; nowe approved pod
+`data/synthetic/approved-ds35-20261107`. Nie ponawiaj budowy z tym samym seedem;
+nowy preflight wykrywa zarezerwowany master seed także w data/datasets.
+Do odtwarzania istniejącego zbioru użyj `verify --output <zbiór>`
+(opcjonalnie `--check-sources`). Nie zmieniaj parametrów w reakcji na audyt.
+Nie rozpoczynaj treningu, wyboru VLM ani rozszerzenia do 1600 bez nowego zlecenia.
+[Aktualna instrukcja](../docs/datasets/INSTRUKCJA_POWERSHELL.md).
+
+Etap 3.5, część 1: `python -m market_levels.cli.build_dataset preflight|smoke|verify`
+z wymaganym `--output`. Wyłącznie nowe katalogi `results/diagnostics`.
+`smoke` korzysta z pilotażu 3.3, nie generuje OHLC i zapisuje `split: null`.
+Nie uruchamiaj produkcji 800 wykresów na podstawie ukończenia tej części.
+Oba profile nadal `unapproved`. Liczebności są w `dataset_build.targets`.
+Po testach `scripts/verify_dataset_stage.py` kontroluje źródła, małą próbę
+i wcześniejsze 32 PNG/etykiety. [Pełna instrukcja](../docs/datasets/INSTRUKCJA_POWERSHELL.md).
+
+Etykietowanie istniejącego pilotażu (3.4; nowy output wyłącznie pod results/diagnostics):
+
+```powershell
+.\.venv\Scripts\python.exe -m market_levels.cli.label_pilot --pilot results/diagnostics/dc-20261106-c/pilot --output results/diagnostics/sr-NOWY
+.\.venv\Scripts\python.exe -m market_levels.cli.label_pilot --pilot results/diagnostics/dc-20261106-c/pilot --output results/diagnostics/sr-NOWY --verify --re-render
+```
+
+Nie uruchamia audytu ani generowania OHLC. Wyniki istniejące nie są nadpisywane.
+Obrazy z liniami nie mogą być wejściem VLM. Pełna procedura i przenośna kontrola:
+[etykietowanie PowerShell](../docs/labeling/INSTRUKCJA_POWERSHELL.md).
+
 Audyt i pilotaż (bez generowania OHLC, nowy katalog diagnostyczny):
 
 ```powershell

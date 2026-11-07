@@ -1,4 +1,7 @@
 # data_processing/windows
 
-Plan: Okna 120 świec, przesunięcia, kontrola luk i granic podziałów.
-Brak implementacji na obecnym etapie. Szczegóły: [architektura](../../../../docs/ARCHITECTURE.md).
+Działa: okna 120 świec, siatka od początku każdego ciągłego fragmentu,
+przesunięcia z konfiguracji, kontrola luk, granic, duplikatów i nakładania.
+Train: deterministyczne warstwy chronologiczne i lokalny RNG;
+validation/test: wyłącznie kolejność czasowa.
+Szczegóły: [architektura](../../../../docs/ARCHITECTURE.md).

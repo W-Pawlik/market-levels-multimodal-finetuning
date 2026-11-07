@@ -257,8 +257,9 @@ ekstrema i zmieniać rozkład knotów. Nie skorygowano tego niezależnym losowan
 knotów. Dodatkowe statystyki empiryczne są diagnostyką, a nie dowodem dopasowania
 wszystkich aspektów generatora.
 
-Kontrola wizualna jest **niewykonana**: wymaga przyszłego renderera wykresów.
-Przed docelową generacją trzeba skalibrować osobno
-BTC/ETH na treningu, sprawdzić rozkłady i parametry projektowe, obejrzeć próbki,
-zatwierdzić profile i liczebność. Dane kalibrowane na Binance nie stają się
+Powyższy opis dotyczy historycznego wdrożenia v1. Obecnie renderer i
+etykietowanie działają, wykonano pilotaż i audyty V2-full-refined.
+Decyzją autora z 2026-11-07 zatwierdzono nowe kopie dwóch profili v2/full
+i skład pierwszego zbioru 800 przykładów; nie ponawiano kalibracji.
+[Bieżący raport](datasets/RAPORT_3_5_CZ2.md). Dane kalibrowane na Binance nie stają się
 automatycznie wolne od ograniczeń publikacji; zobacz [licencję danych](LICENCJA_DANYCH.md).

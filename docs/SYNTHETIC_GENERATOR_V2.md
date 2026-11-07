@@ -1,7 +1,10 @@
 # Generator OHLC v2 i kontrolowana ocena wariantów
 
-V2 poprawia narzędzia modelowania kształtu świec, ogonów i zmienności. Nie jest
-jeszcze zatwierdzonym generatorem docelowego zbioru. Domyślne CLI nadal wybiera v1.
+V2 udostępnia narzędzia modelowania kształtu świec, ogonów i zmienności.
+Decyzją autora z 2026-11-07 dwa profile V2-full-refined zatwierdzono w nowych
+plikach do pierwszego zbioru 800 przykładów. Oryginały i historyczne audyty
+pozostają niezmienione. Domyślne ogólne CLI nadal wybiera v1; budowa zbioru
+jawnie wybiera v2/full z `diagnostic=False`.
 Obowiązują BTCUSDT/ETHUSDT, 4h, 120 świec, 12 kroków i 1–3 dotychczasowe fazy.
 Podział `chronological_v1` i wszystkie wcześniejsze ustalenia eksperymentu pozostają.
 
@@ -234,10 +237,24 @@ Właściwa ocena powinna mieć co najmniej trzy niezależne seedy i stały profi
 Kalibracja full nie oznacza, że parametry są osobno optymalne dla każdej ablacji.
 
 To nadal opisowe porównanie z treningiem użytym do kalibracji. Nie jest
-niezależną walidacją ani dowodem poprawy przyszłego modelu AI. Kontrola wizualna
-oczekuje na renderer. Normalna ścieżka mostu, symetryczne ogony i stacjonarne
+niezależną walidacją ani dowodem poprawy przyszłego modelu AI. Renderer i
+etykietowanie działają; wykonano pilotaż 32 wykresów i próby etapu 3.5.
+Normalna ścieżka mostu, symetryczne ogony i stacjonarne
 Gaussowskie h są uproszczeniami; 12 punktów po Open nie odtwarza mikrostruktury
 ani ekstremów ciągłego procesu. Poprawę realizmu trzeba zmierzyć osobno.
 
 Uruchomienie: [PowerShell v2](SYNTHETIC_V2_POWERSHELL.md).
 Wykonane testy i mała próba: [raport v2](SYNTHETIC_V2_IMPLEMENTATION_REPORT.md).
+
+## Zatwierdzenie full-refined do etapu 3.5
+
+Nowe profile: `data/synthetic/approved-ds35-20261107/`.
+Zachowano wszystkie pola poza `status` i nowym `approval`, w tym pełny
+historyczny audyt `volatility_refinement_v1` o statusie `unapproved`.
+Approval wskazuje autora pracy, datę decyzji, zakres, dokładne granice treningu
+i hashe oryginałów. Walidator refinement obsługuje zatwierdzone kopie wyłącznie
+z prawidłowym approval; produkcja nadal odrzuca `unapproved`.
+Nie zmieniono parametrów ani siatki kalibracji. Formalne zatwierdzenie
+nie usuwa ograniczonego zróżnicowania zmienności, uproszczeń mikrostruktury,
+symetrii ogonów ani braku wspólnego modelu zależności BTC/ETH.
+[Raport zatwierdzenia i produkcji](datasets/RAPORT_3_5_CZ2.md).

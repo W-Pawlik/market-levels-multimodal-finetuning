@@ -12,7 +12,7 @@ from pathlib import Path
 
 from ...core.candles import CANDLE_DELTA
 from ..storage import read_candles_csv
-from .calibration import profile_hash
+from .calibration import profile_hash, validate_profile
 from .calibration_v2 import calibration_features
 from .comparison import aggregate_windows
 from .generator import example_seed
@@ -250,7 +250,15 @@ def validate_refinement_audit(profile: dict, *, allow_evaluation: bool = False) 
     if source.get("calibration", {}).get("method") == METHOD:
         raise ValueError("Niedozwolone zagnieżdżenie refinement")
     validate_profile_v2(source, symbol=profile["symbol"])
-    if (profile["status"] != "unapproved" or audit["status"] != "unapproved"
+    if profile["status"] == "approved":
+        # Approval is new metadata; the immutable calibration audit remains unapproved.
+        validate_profile(dict(profile, version=1), symbol=profile["symbol"])
+        split = split_from_document(profile["source"]["chronological_split"])
+        approval = profile["approval"]
+        if (approval["split_id"] != split.split_id or
+                tuple(datetime.fromisoformat(approval[k]) for k in ("training_start", "training_end")) != split.periods["train"]):
+            raise ValueError("Zatwierdzenie refinement wymaga dokładnego podziału treningowego")
+    if (profile["status"] not in ("unapproved", "approved") or audit["status"] != "unapproved"
             or source["estimation_kind"] != "training" or audit["variant"] not in REFINEMENT_VARIANTS
             or audit["source_profile_sha256"] != profile_hash(source)
             or audit["profile_family"] != "refined" or audit["changed_parameters"] != list(VOLATILITY_KEYS)):

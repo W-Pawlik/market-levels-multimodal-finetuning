@@ -7,3 +7,7 @@ i deterministyczny pilotaż poza finalnymi zbiorami danych.
 
 Instalacja: `pip install -e ".[charts]"`.
 Instrukcja: [PowerShell](../../../docs/charts/INSTRUKCJA_POWERSHELL.md).
+
+Ten sam renderer jest używany w produkcyjnym etapie 3.5; styl pozostał
+niezmieniony. Obrazy wejściowe modelu nie zawierają poziomów S/R.
+Oddzielne overlays przeglądowe tworzy moduł `datasets/review.py`.

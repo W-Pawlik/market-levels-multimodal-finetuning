@@ -24,6 +24,8 @@ market-levels-calibrate = "market_levels.cli.calibrate_synthetic:main"
 market-levels-refine-v2-volatility = "market_levels.cli.refine_v2_volatility:main"
 market-levels-compare-synthetic = "market_levels.cli.compare_synthetic:main"
 market-levels-audit-charts = "market_levels.cli.audit_charts:main"
+market-levels-label-pilot = "market_levels.cli.label_pilot:main"
+market-levels-build-dataset = "market_levels.cli.build_dataset:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

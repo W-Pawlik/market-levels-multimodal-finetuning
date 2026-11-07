@@ -1,12 +1,19 @@
 # Market Levels — projekt pracy inżynierskiej
 
+Aktualny etap: 3.5, część 2 — zatwierdzone kopie V2-full-refined i produkcyjny
+proces zbioru 800 przykładów. Działają okna, renderer, etykietowanie,
+planowanie, budowa oraz pełne odtworzenie. Trening VLM nie został rozpoczęty.
+[Raport części 2](docs/datasets/RAPORT_3_5_CZ2.md),
+[aktualne polecenia PowerShell](docs/datasets/INSTRUKCJA_POWERSHELL.md).
+Poniższe opisy wcześniejszych eksperymentów nie są poleceniem ich ponawiania.
+
 Publikacja partii i raportów ponawia krótkotrwałe blokady Windows bez regeneracji
 danych. [Poprawka, testy i polecenia końcowego eksperymentu](docs/WINDOWS_PUBLICATION_RETRY_FIX.md).
 
 Nowa oddzielna próba stabilności na 20261201/20261211:
 [`run_refinement_fresh_seeds.ps1`](scripts/run_refinement_fresh_seeds.ps1),
 [polecenia PowerShell](docs/FRESH_SEEDS_POWERSHELL.md).
-Pełne 960 serii uruchamia autor osobno; raporty nie łączą się z poprzednimi seedami.
+Autor ukończył historyczne porównania; raporty nie łączą się z poprzednimi seedami.
 
 Po kalibracji refinement używaj oficjalnego
 [`scripts/run_refinement_comparison.ps1`](scripts/run_refinement_comparison.ps1):
@@ -18,21 +25,24 @@ Nowość: `bridge_volatility` i osobne dostrojenie dwóch parametrów AR(1),
 z audytem pochodzenia i porównaniem full-original/full-refined/bez mieszanki.
 [Raport refinement](docs/RAPORT_REFINEMENT_V2.md) oraz
 [procedura PowerShell](docs/INSTRUKCJA_REFINEMENT_POWERSHELL.md).
-Nie uruchomiono dużej kalibracji ani nowej oceny rynku; profile pozostają unapproved.
+Historyczne profile refinement pozostają `unapproved`. Nowe kopie dwóch profili
+full zatwierdzono decyzją autora z 2026-11-07, bez ponownej kalibracji.
 
 Projekt służy badaniu dostrajania modelu multimodalnego do znajdowania poziomów
 wsparcia i oporu na wykresach finansowych. Docelowy proces obejmuje dane OHLC,
 wykresy, etykiety, zbiory treningowe, dostrajanie, inferencję i ewaluację.
 
-**Działają pobieranie i walidacja rzeczywistych OHLC oraz generator syntetyczny
-z kalibracją, diagnostyką i osobnym CLI.** Renderowanie, etykiety i modele pozostają
-do implementacji. Lokalnie potwierdzono pełny zakres 2020-01–2026-10: po 14 975
+**Działają pobieranie i walidacja OHLC, generator V2-full-refined z profilami
+zatwierdzonymi do pierwszego zbioru, renderer świecowy oraz przetestowany algorytm
+etykietowania wsparć i oporów.** Przygotowano i zweryfikowano pełny zbiór 800
+przykładów. Wybór, dostrajanie i ewaluacja modelu VLM pozostają do wykonania.
+Lokalnie potwierdzono pełny zakres 2020-01–2026-10: po 14 975
 świec BTCUSDT i ETHUSDT; w obu brak 2020-02-19 12:00 UTC. Nie interpolowano luk.
 
 ## Przygotowanie — Windows PowerShell
 
-Python 3.10+ (zalecany 3.11+). Aktualny proces używa tylko biblioteki standardowej,
-bez klucza API. Jednorazowo przygotuj środowisko i zainstaluj lokalny pakiet:
+Python 3.10+ (zalecany 3.11+). Pobieranie i walidacja OHLC używają tylko biblioteki
+standardowej, bez klucza API. Jednorazowo przygotuj środowisko i zainstaluj lokalny pakiet:
 
 ```powershell
 py -3 -m venv .venv
@@ -63,8 +73,10 @@ To samo CLI można uruchamiać jako moduł Pythona:
 .\.venv\Scripts\python.exe -m market_levels.cli.download --start 2020-01 --end 2020-01 --dry-run
 ```
 
-Pakietowanie wymaga setuptools; nie dodaje zależności uruchomieniowych.
-Przyszłych bibliotek ML i wykresów nie trzeba obecnie instalować.
+Pakietowanie wymaga setuptools; podstawowa instalacja nie dodaje zależności
+uruchomieniowych. Renderer korzysta z Matplotlib dostępnego przez dodatek
+`[charts]`: `pip install -e ".[charts]"`. Biblioteki do treningu VLM nie zostały
+jeszcze wybrane.
 Ścieżki danych są liczone względem bieżącego katalogu.
 Stare moduły `src.download_data` i `src.validate_data` zostały usunięte.
 `src` jest katalogiem źródeł, a importowany pakiet nazywa się `market_levels`.
@@ -150,13 +162,12 @@ Obecny plik zachowuje cały zatwierdzony zakres. Plan można obejrzeć bez pobie
 Vision spot, BTCUSDT/ETHUSDT i `4h`. Inna wartość powoduje błąd zamiast cichego
 zignorowania ustawienia. Zatwierdzony zakres to 2020-01–2026-10.
 Parametry przyszłego eksperymentu: 120 świec na wykres,
-przesunięcie treningowe 60, walidacyjne/testowe 120, roboczo 800 wykresów,
+przesunięcie treningowe 60, walidacyjne/testowe 120, zatwierdzone 800 wykresów,
 45% danych rzeczywistych i 55% syntetycznych, początkowo 1024 × 768 px.
-Te parametry nie są używane przez pobieranie; będą odczytywane przez kolejne
-etapy po ich implementacji.
+Te parametry nie są używane przez pobieranie; są aktywne w budowie zbioru.
 
-Planowane są: okna cenowe, wykresy Matplotlib/mplfinance,
-etykiety, przygotowanie zbiorów zgodnie z podziałem, pary obraz–instrukcja–JSON, obsługa modeli,
+Działają okna cenowe, wykresy Matplotlib, etykiety i przygotowanie zbiorów
+obraz–instrukcja–JSON. Planowane są obsługa modeli,
 trening, osobna inferencja i ewaluacja. Model i hiperparametry wymagają osobnej
 decyzji; struktura nie narzuca rodziny modeli.
 
@@ -180,13 +191,14 @@ Równoważnie: `python -m market_levels.cli.generate_synthetic`.
 Każda świeca powstaje z 12 kroków logarytmicznego ruchu ceny. Obsługiwane fazy:
 trend wzrostowy/spadkowy, konsolidacja z powrotem do środka i krótkie wybicie.
 Wyniki zawierają CSV, metadane JSON, statystyki i manifest. Data od 2000-01-01 UTC
-jest wyłącznie indeksem symulacji. Nie przypisujemy przykładów do train/validation/test.
+jest wyłącznie indeksem symulacji. Sam generator nie przypisuje splitów;
+proces budowy zbioru umieszcza syntetyki wyłącznie w train.
 
 Kalibracja wymaga jawnego dozwolonego okresu, osobno dla BTC i ETH; pomija
 przejścia przez luki. Podział `chronological_v1` jest zatwierdzony: trening 2020–2023,
-walidacja 2024, test 2025–2026-10. Parametry i profile generatora wymagają osobnej
-oceny i zatwierdzenia. Autor wykonał empiryczną kalibrację v1 i diagnostykę 60+60;
-nie wygenerowano docelowego zbioru. Kontrola wizualna czeka na renderer.
+walidacja 2024, test 2025–2026-10. Autor wykonał kalibrację v1 i diagnostykę
+60+60, a następnie audyty V2-full-refined i pilotaż renderera/etykietowania.
+Dwa profile V2-full-refined zatwierdzono w nowych plikach do zbioru 800 przykładów.
 
 Opis parametrów, API kalibracji, format wyników i ograniczenia:
 [SYNTHETIC_GENERATOR.md](docs/SYNTHETIC_GENERATOR.md).
@@ -238,8 +250,8 @@ Autor wykonał wcześniej kalibrację i porównanie 60+60 dla v1; lokalne raport
 potwierdzają problemy, które uzasadniają v2. Nie przeprowadzono jeszcze empirycznej
 oceny poprawy v2 w ramach pierwotnego wdrożenia. Mała próba v2 korzystała
 wyłącznie ze sztucznej referencji. Później autor ukończył porównanie na pięciu
-seedach i wskazał V2-full-refined jako kandydata do dalszej pracy; profile
-pozostają `unapproved`. Nowy audyt i renderer opisano poniżej.
+seedach i wskazał V2-full-refined do dalszej pracy. Historyczne profile
+pozostają `unapproved`; zatwierdzone kopie opisano w raporcie części 2.
 
 [Matematyka i kalibracja v2](docs/SYNTHETIC_GENERATOR_V2.md),
 [pełna instrukcja PowerShell](docs/SYNTHETIC_V2_POWERSHELL.md),
@@ -285,3 +297,32 @@ Katalog [.ai/](.ai/README.md) przechowuje trwałe zasady, aktualny stan projektu
 i sposób weryfikacji zmian. Czytaj go przed pracą nad kodem.
 
 Repozytorium: [GitHub](https://github.com/W-Pawlik/market-levels-multimodal-finetuning).
+## Etap 3.4 — etykietowanie poziomów
+
+Działa deterministyczny algorytm S/R i osobne CLI `market-levels-label-pilot`.
+Przygotowano 32 etykiety i oddzielne obrazy diagnostyczne z pilotażu 3.3.
+[Raport](docs/labeling/RAPORT_3_4.md) i [instrukcja PowerShell](docs/labeling/INSTRUKCJA_POWERSHELL.md).
+Obrazy z liniami służą wyłącznie diagnostyce. Ręczna ocena autora pozostaje otwarta.
+
+## Etap 3.5, część 1 — historyczny plan i mała próba danych
+
+`python -m market_levels.cli.build_dataset` udostępnia `preflight`, `smoke`,
+`verify`. Plan: 698 train, 36 validation, 66 test; syntetyki wyłącznie w train.
+Lokalne dane pozwalają wybrać po 129/18/33 rzeczywiste okna BTC i ETH.
+Próba obejmuje 8 diagnostycznych przykładów JSONL z `split: null`.
+W części 1 profile pozostały `unapproved`; nie budowano wówczas finalnych 800 obrazów.
+[Raport](docs/datasets/RAPORT_3_5_CZ1.md),
+[PowerShell](docs/datasets/INSTRUKCJA_POWERSHELL.md),
+[format](docs/datasets/FORMAT.md).
+
+## Etap 3.5, część 2 — zatwierdzenie i produkcja
+
+Nowe polecenia CLI: `approve`, `build`; `verify` rozpoznaje zbiór produkcyjny
+i odtwarza wszystkie obrazy, etykiety oraz syntetyczne OHLC.
+Liczebności określa wyłącznie `dataset_build.targets`: train 698 (258 realnych
+i 440 syntetycznych), validation 36 realnych, test 66 realnych. Udział syntetyków
+w train to 63,04%, w całym zbiorze 55%. `splits/train.jsonl`, `validation.jsonl`
+i `test.jsonl` są oddzielne. Metadane pozostają poza wejściem modelu.
+Nowe profile są w `data/synthetic/approved-ds35-20261107`;
+oryginalne pliki i audyty zachowano. Przeglądowe PNG z poziomami są wyłącznie
+w oddzielnej diagnostyce. [Raport](docs/datasets/RAPORT_3_5_CZ2.md).

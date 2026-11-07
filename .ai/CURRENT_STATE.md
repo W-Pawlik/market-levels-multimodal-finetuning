@@ -1,7 +1,18 @@
 # Aktualny stan projektu
 
-Aktualizacja: 2026-11-06. To opis stanu, nie zakaz realizacji kolejnych zleceń.
+Aktualizacja: 2026-11-07. To opis stanu, nie zakaz realizacji kolejnych zleceń.
 Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają.
+
+Najnowsze wykonanie: etap 3.5, część 2. Dwa nowe profile full-refined approved,
+bez zmiany parametrów i oryginałów; lokalny kompletny zbiór
+`data/datasets/ds35-800-20261107-a`, dokładnie 800 przykładów (698/36/66),
+360 realnych i 440 syntetycznych, validation/test tylko realne.
+Pełne odtworzenie 800 PNG/etykiet i 440 syntetyków przeszło przed i po publikacji.
+233 testy OK, 0 pominiętych i błędów; 9029 historycznych plików bez zmian.
+16 próbek z oddzielnymi overlays w `results/diagnostics/ds35-review-20261107-a`.
+Produkcję i zatwierdzenie autor jawnie zlecił 2026-11-07; stare ograniczenie
+części 1 do małej próby dotyczyło tamtej iteracji. Nie rozpoczęto treningu.
+[Aktualny raport](../docs/datasets/RAPORT_3_5_CZ2.md).
 
 ## Działa
 
@@ -15,7 +26,8 @@ Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają
 - CLI market-levels-generate-synthetic i sekcja synthetic; domyślnie brak profili
   blokuje wykonanie. Tryb roboczy wymaga --diagnostic. Zatwierdzanie profilu
   wymaga jawnych granic treningu i decyzji autora. Podział chronological_v1 jest
-  zatwierdzony w konfiguracji; parametry i profile nie zostały zatwierdzone.
+  zatwierdzony w konfiguracji; historyczne profile pozostają niezatwierdzone,
+  a nowe kopie dwóch full-refined zatwierdzono do pierwszego zbioru 800.
 - CLI market-levels-calibrate i market-levels-compare-synthetic: kontrola okresu
   treningu, niezatwierdzone profile, rozłączne okna diagnostyczne bez luk,
   sprawdzanie manifestów oraz raport JSON/Markdown. Szczegóły i polecenia:
@@ -25,7 +37,7 @@ Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają
   Domyślnie pozostaje v1. Ograniczona kalibracja pełnego modelu na kilku seedach,
   bez automatycznego zatwierdzenia. Tryb --reports zestawia warianty z identyczną
   referencją. [Opis v2](../docs/SYNTHETIC_GENERATOR_V2.md).
-- Testy jednostkowe i integracyjne offline: ostatni pełny zestaw 151 testów OK
+- Testy jednostkowe i integracyjne offline: historyczny zestaw 151 testów OK
   (106 po poprawce sprzątania Windows, 10 refinement, 5 przenośności audytu, 9 skryptu porównań, 6 MAX_PATH, 5 świeżych seedów i 10 publikacji;
   w tym rzeczywista blokada Windows).
   [Bieżący raport](../docs/SYNTHETIC_V2_IMPLEMENTATION_REPORT.md);
@@ -50,8 +62,8 @@ Odczyt lokalnych CSV potwierdził po 14 975 świec i jedną lukę w obu instrume
 w processed/ pozostały bez zmian podczas wdrożenia generatora.
 
 Parametry przyszłego eksperymentu to 120 świec/wykres, przesunięcia 60 dla treningu
-i 120 dla walidacji/testu, roboczo 800 wykresów, 45% rzeczywistych i 55%
-syntetycznych, początkowo 1024 × 768 px. Nie są obecnie używane przez pobieranie.
+i 120 dla walidacji/testu, zatwierdzone 800 wykresów, 45% rzeczywistych i 55%
+syntetycznych, 1024 × 768 px. Nie są używane przez pobieranie, lecz przez budowę zbioru.
 Model oraz hiperparametry treningu nie zostały zatwierdzone.
 Podział chronologiczny jest zatwierdzony: trening 2020–2023, walidacja 2024,
 test 2025–2026-10. Dokładne granice otwarcia świec UTC włącznie są w konfiguracji.
@@ -128,10 +140,9 @@ Wznowienie nie przyjmuje manifestów/raportów z pozostałości stagingu.
 
 ## Dopiero planowane
 
-data_processing/windows, labeling, datasets,
 modeling, training, inference, evaluation i experiments zawierają przestrzeń
 organizacyjną z README. Nie implementują jeszcze tych etapów.
-Szczegółowe reguły planowanego etykietowania są w
+Szczegółowe reguły etykietowania są w
 [ARCHITECTURE.md](../docs/ARCHITECTURE.md); ustalenia autora w
 [DECYZJE_3_3.md](../docs/DECYZJE_3_3.md).
 
@@ -152,6 +163,36 @@ Szczegółowe reguły planowanego etykietowania są w
 Końcowe wykonanie: `results/diagnostics/dc-20261106-c/`, 32 PNG i pełny audyt.
 169 testów OK natywnie na Windows (18 nowych); komplet 32 obrazów odtworzono
 z identycznymi SHA. Szczegóły: [testy](../docs/charts/RAPORT_TESTOW.md).
+
+## Etykietowanie poziomów (3.4)
+
+Etap 3.4 (2026-11-06): działa `labeling/` oraz CLI `market-levels-label-pilot`.
+Etykietowano wszystkie 32 istniejące okna w `results/diagnostics/sr-20261106-a/`;
+57 wsparć i 71 oporów, 739 ekstremów → 708 reakcji. Brak wsparć w 9 oknach,
+brak oporów w 6, brak obu list w 0; bez kolizji zaokrągleń. SHA-256 źródeł
+bez zmian, 32 oryginalne i 32 nowe PNG odtworzono z identycznymi hashami.
+Algorytm wybiera najbardziej skrajne ekstremum najpierw; nie maksymalizuje
+liczby reakcji. Nie wykorzystuje metadanych generatora. Osobne PNG z liniami
+są tylko diagnostyczne. Profile pozostają unapproved, nie wykonano 3.5;
+zamknięcie 3.4 wymaga decyzji autora po ręcznej ocenie.
+Pełne testy: 199 OK, 0 niezaliczonych (169 istniejących + 30 nowych).
+[Raport](../docs/labeling/RAPORT_3_4.md), [PowerShell](../docs/labeling/INSTRUKCJA_POWERSHELL.md).
+
+## Etap 3.5 — część 1
+
+Etap 3.5, część 1 (2026-11-07): działają `data_processing/windows`,
+`datasets` i CLI `build_dataset` preflight/smoke/verify. Pełne CSV dają po
+143/18/33 kandydatów i wybrano w planie po 129/18/33. Selekcja train:
+chronologiczne warstwy, jeden indeks na warstwę, seed 20261107. Liczebności
+sterowane wyłącznie przez `dataset_build.targets`; historyczne pola sumy
+i udziałów opisują założenie. Profile full-refined sprawdzono, bez zmian:
+oba `unapproved`, produkcja nadal zablokowana. Master seed planu 2027013501
+bez kolizji z 54 lokalnymi manifestami. Zapisano tylko 8 diagnostycznych
+przykładów ze starego pilotażu, `split: null`, bez nowych OHLC.
+221 testów OK, 0 błędów; wcześniejsze 32 PNG i wyniki 3.4 zweryfikowane
+z odtworzeniem. Nie zbudowano finalnych 800 obrazów; wymagane decyzja autora
+o profilach i osobne polecenie produkcji. [Raport](../docs/datasets/RAPORT_3_5_CZ1.md),
+[PowerShell](../docs/datasets/INSTRUKCJA_POWERSHELL.md).
 
 ## Znane ograniczenia
 

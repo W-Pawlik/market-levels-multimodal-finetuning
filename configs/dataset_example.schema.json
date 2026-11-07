@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Market Levels model-neutral example v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "split", "image", "instruction", "answer"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "split": {"enum": ["train", "validation", "test", null]},
+    "image": {"type": "string", "pattern": "^images/[A-Za-z0-9_-]+\\.png$"},
+    "instruction": {"const": "Przeanalizuj przedstawiony wykres świecowy. Wskaż maksymalnie trzy poziomy wsparcia i trzy poziomy oporu. Zwróć wyłącznie obiekt JSON z polami supports i resistances, zawierającymi listy wartości cenowych."},
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supports", "resistances"],
+      "properties": {
+        "supports": {"type": "array", "maxItems": 3, "items": {"type": "number", "exclusiveMinimum": 0, "multipleOf": 0.01}},
+        "resistances": {"type": "array", "maxItems": 3, "items": {"type": "number", "exclusiveMinimum": 0, "multipleOf": 0.01}}
+      }
+    }
+  }
+}
