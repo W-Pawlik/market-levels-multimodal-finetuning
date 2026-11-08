@@ -5,6 +5,11 @@ proces zbioru 800 przykładów. Działają okna, renderer, etykietowanie,
 planowanie, budowa oraz pełne odtworzenie. Trening VLM nie został rozpoczęty.
 [Raport części 2](docs/datasets/RAPORT_3_5_CZ2.md),
 [aktualne polecenia PowerShell](docs/datasets/INSTRUKCJA_POWERSHELL.md).
+Etap 3.6, część 1 dodaje ewaluator zapisanych odpowiedzi `sr-eval-v1`;
+wykonano wyłącznie ręczne fixture, bez inferencji ani treningu VLM.
+[Protokół](docs/evaluation/PROTOKOL_3_6.md),
+[raport i testy](docs/evaluation/RAPORT_3_6_CZ1.md),
+[PowerShell ewaluacji](docs/evaluation/INSTRUKCJA_POWERSHELL.md).
 Poniższe opisy wcześniejszych eksperymentów nie są poleceniem ich ponawiania.
 
 Publikacja partii i raportów ponawia krótkotrwałe blokady Windows bez regeneracji

@@ -135,7 +135,7 @@ ignorowane przez Git. Nie należy edytować ich ręcznie.
 | `modeling/` | modele multimodalne bez narzuconej rodziny |
 | `training/` | dostrajanie, adaptery, checkpointy, logi |
 | `inference/` | obraz i instrukcja → JSON, niezależnie od treningu |
-| `evaluation/` | porównanie modelu bazowego, dostrojonego i algorytmu; precision, recall, F1, błąd ceny, JSON, czas i analiza błędów |
+| `evaluation/` (działa, 3.6 część 1) | ścisły JSON, ATR z etykietowania, optymalne pary, micro-P/R/F1, MAE, kompletność ID i sparowane raporty; bez inferencji |
 | `experiments/` | identyfikatory, wersje danych, konfiguracje i wyniki |
 
 Reguły etykietowania zaimplementowano w `labeling/algorithm.py`: ekstrema z trzema świecami po obu stronach,
@@ -201,6 +201,16 @@ nie sterują jeszcze żadnym wykonaniem. Stałe źródła skupiono w kliencie Bi
 a wspólny odstęp 4h przy modelu świecy.
 
 ## Rozwój
+
+Etap 3.6: `evaluation/protocol.py` zamraża `sr-eval-v1`; `scoring.py` używa
+istniejącego ATR i wyczerpującego dopasowania maksymalnie 3×3; `metrics.py`
+agreguje liczniki oraz błędy bez float. `inputs.py` weryfikuje przypięcie do
+jednego splitu, surowe predykcje i osobny manifest modelu. `pipeline.py`
+publikuje atomowo kompletne wyniki, odtwarza je oraz porównuje sparowane
+raporty tego samego modelu. CLI `evaluate` nie wybiera ani nie uruchamia VLM.
+Domyślnie validation, jawny test, brak train. Nie porównujemy algorytmu
+etykietującego z jego własnymi referencjami jako niezależnego konkurenta.
+[Protokół](evaluation/PROTOKOL_3_6.md).
 
 `data_processing/staging.publish_directory` jest wspólną granicą atomowej
 publikacji katalogów syntetyków i raportów. Ponawia tylko konflikty dostępu

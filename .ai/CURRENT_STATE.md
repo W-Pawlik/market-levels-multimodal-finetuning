@@ -14,6 +14,17 @@ Produkcję i zatwierdzenie autor jawnie zlecił 2026-11-07; stare ograniczenie
 części 1 do małej próby dotyczyło tamtej iteracji. Nie rozpoczęto treningu.
 [Aktualny raport](../docs/datasets/RAPORT_3_5_CZ2.md).
 
+Etap 3.6 część 1: działa `evaluation/` i CLI `market-levels-evaluate`
+(evaluate/compare/verify), protokół sr-eval-v1. Główne micro-F1 przy 0.5 ATR,
+pomocnicze 0.25 i 1.0 ATR; dopasowanie max TP/min błąd/remisy indeksów.
+Domyślnie validation; test wyłącznie jawnie, train odrzucany. Surowy JSON
+nie jest naprawiany, ID muszą być kompletne. Demo ev36-20261107-a to wyłącznie
+ręczne fixture A/B, nie rzeczywisty VLM. Read-only adapter sprawdzono na
+36 produkcyjnych referencjach validation, bez predykcji. 277 testów OK,
+0 pominiętych/błędów; 3245 chronionych plików bez zmian. Nie wykonywano
+inferencji, wyboru modelu ani treningu. [Protokół](../docs/evaluation/PROTOKOL_3_6.md),
+[raport](../docs/evaluation/RAPORT_3_6_CZ1.md).
+
 ## Działa
 
 - Pozyskiwanie rzeczywistych archiwów Binance Vision spot 4h, SHA-256 i CHECKSUM.
@@ -140,7 +151,7 @@ Wznowienie nie przyjmuje manifestów/raportów z pozostałości stagingu.
 
 ## Dopiero planowane
 
-modeling, training, inference, evaluation i experiments zawierają przestrzeń
+modeling, training, inference i experiments zawierają przestrzeń
 organizacyjną z README. Nie implementują jeszcze tych etapów.
 Szczegółowe reguły etykietowania są w
 [ARCHITECTURE.md](../docs/ARCHITECTURE.md); ustalenia autora w

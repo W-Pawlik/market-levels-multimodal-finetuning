@@ -110,6 +110,15 @@ Duże obliczenia tej iteracji są przeznaczone do osobnego uruchomienia przez au
 
 ## Zamknięcie zadania
 
+Ewaluator 3.6: `python -m market_levels.cli.evaluate evaluate|compare|verify`.
+Główna metryka i konwencje są zamrożone w sr-eval-v1. W części 1 uruchomiono
+wyłącznie ręczne fixture; nie twórz fikcyjnych predykcji dla produkcyjnego testu.
+CLI domyślnie validation, jawny `--split test`; nie przyjmuje train.
+Brakujące/nieznane/powtórzone ID blokują kompletny raport, odpowiedzi modelu
+nie są naprawiane. Wyniki zapisuj do nowego results/evaluation lub diagnostics.
+Nie uruchamiaj inferencji lub treningu na podstawie samego wdrożenia ewaluatora.
+[Procedura](../docs/evaluation/INSTRUKCJA_POWERSHELL.md).
+
 Aktualna produkcja 3.5 część 2: autor jawnie zatwierdził 800 przykładów i nowe
 kopie profili 2026-11-07. `build_dataset approve/preflight/build/verify` rozdziela
 decyzję, plan, produkcję i kontrolę. Gotowy zbiór jest pod
