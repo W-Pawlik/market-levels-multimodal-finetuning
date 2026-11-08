@@ -1,0 +1,13 @@
+{
+  "id": "fixture_test_guard",
+  "symbol": "ETHUSDT",
+  "source": "manual_fixture",
+  "split": "test",
+  "image": null,
+  "ohlc": "ohlc/fixture_test_guard.csv",
+  "label": "labels/fixture_test_guard.json",
+  "metadata": "metadata/fixture_test_guard.json",
+  "ohlc_sha256": "f10953d49954236e1de9d605732591cf9793a48bb31a9c2f6ca49f7fc1d2e8af",
+  "csv_sha256": "45821520ee0f4778dc18b277a76ce9e766ad91e7636080088a33ea364abb0f37",
+  "label_sha256": "dce62216652aecaee195c404487ac09f0cc9b29bb616521cbd76fca1ed5f24d4"
+}

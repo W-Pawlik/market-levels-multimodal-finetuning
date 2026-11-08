@@ -1,0 +1,13 @@
+{
+  "id": "fixture_train_guard",
+  "symbol": "BTCUSDT",
+  "source": "manual_fixture",
+  "split": "train",
+  "image": null,
+  "ohlc": "ohlc/fixture_train_guard.csv",
+  "label": "labels/fixture_train_guard.json",
+  "metadata": "metadata/fixture_train_guard.json",
+  "ohlc_sha256": "f10953d49954236e1de9d605732591cf9793a48bb31a9c2f6ca49f7fc1d2e8af",
+  "csv_sha256": "a0066641de04f4b62d7ee04ccc822ff0b59a9209da39b71bb7b1a2ba5a6bf207",
+  "label_sha256": "dce62216652aecaee195c404487ac09f0cc9b29bb616521cbd76fca1ed5f24d4"
+}

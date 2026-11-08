@@ -1,0 +1,2 @@
+# Preserve exact bytes of evaluation fixtures and their recorded SHA-256 hashes.
+tests/fixtures/evaluation_v1/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

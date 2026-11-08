@@ -1,0 +1,15 @@
+{
+  "run_id": "manual-a",
+  "model_id": "manual-fixtures-no-vlm",
+  "checkpoint_id": "hand-authored-a",
+  "variant": "technical_fixture",
+  "protocol_version": "sr-eval-v1",
+  "instruction_version": "pl-sr-v1",
+  "inference": {
+    "source": "hand_authored",
+    "model_inference_performed": false
+  },
+  "prediction_kind": "technical_fixture",
+  "dataset_manifest_sha256": "b68aff1d79ddd9730ea207a0bb722f5f61ca9191fdba38fe225d2db2911cb759",
+  "split": "validation"
+}

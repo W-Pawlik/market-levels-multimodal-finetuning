@@ -1,0 +1,13 @@
+{
+  "id": "fixture_zero_atr",
+  "symbol": "ETHUSDT",
+  "source": "manual_fixture",
+  "split": "validation",
+  "image": null,
+  "ohlc": "ohlc/fixture_zero_atr.csv",
+  "label": "labels/fixture_zero_atr.json",
+  "metadata": "metadata/fixture_zero_atr.json",
+  "ohlc_sha256": "4cf10a14daf9b90969dfd4fd9e8ca3b4e41e3f47fec4493becfa5c57b233086f",
+  "csv_sha256": "67feb34b8aa782cee21b2950db49bef4abf5ea93a32022699cc87fdec61b6358",
+  "label_sha256": "dce62216652aecaee195c404487ac09f0cc9b29bb616521cbd76fca1ed5f24d4"
+}

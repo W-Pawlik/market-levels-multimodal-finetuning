@@ -1,0 +1,12 @@
+{"id": "fixture_exact", "response": "{\"supports\": [100], \"resistances\": [110]}"}
+{"id": "fixture_boundary", "response": "{\"supports\": [100], \"resistances\": []}"}
+{"id": "fixture_outside", "response": "{\"supports\": [100], \"resistances\": []}"}
+{"id": "fixture_missing", "response": "{\"supports\": [100, 102], \"resistances\": []}"}
+{"id": "fixture_extra", "response": "{\"supports\": [100], \"resistances\": []}"}
+{"id": "fixture_duplicates", "response": "{\"supports\": [100], \"resistances\": []}"}
+{"id": "fixture_wrong_side", "response": "{\"supports\": [100], \"resistances\": []}"}
+{"id": "fixture_empty", "response": "{\"supports\": [], \"resistances\": []}"}
+{"id": "fixture_invalid", "response": "{\"supports\": [100], \"resistances\": []}"}
+{"id": "fixture_greedy", "response": "{\"supports\": [100, 102], \"resistances\": []}"}
+{"id": "fixture_invalid_empty", "response": "{\"supports\": [], \"resistances\": []}"}
+{"id": "fixture_zero_atr", "response": "{\"supports\": [100], \"resistances\": []}"}

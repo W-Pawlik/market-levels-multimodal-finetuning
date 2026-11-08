@@ -1,0 +1,13 @@
+{
+  "id": "fixture_empty",
+  "symbol": "ETHUSDT",
+  "source": "manual_fixture",
+  "split": "validation",
+  "image": null,
+  "ohlc": "ohlc/fixture_empty.csv",
+  "label": "labels/fixture_empty.json",
+  "metadata": "metadata/fixture_empty.json",
+  "ohlc_sha256": "f10953d49954236e1de9d605732591cf9793a48bb31a9c2f6ca49f7fc1d2e8af",
+  "csv_sha256": "27a3704ada52675e9c4f92bf60e3b34447d82a41dd74f93b552a8e9d1cea921e",
+  "label_sha256": "660dd5e8ef1bc00ea826581cd72d91bc787d0b74147cd2818bbd4c29c545514f"
+}

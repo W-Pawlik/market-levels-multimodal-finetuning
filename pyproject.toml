@@ -26,6 +26,7 @@ market-levels-compare-synthetic = "market_levels.cli.compare_synthetic:main"
 market-levels-audit-charts = "market_levels.cli.audit_charts:main"
 market-levels-label-pilot = "market_levels.cli.label_pilot:main"
 market-levels-build-dataset = "market_levels.cli.build_dataset:main"
+market-levels-evaluate = "market_levels.cli.evaluate:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

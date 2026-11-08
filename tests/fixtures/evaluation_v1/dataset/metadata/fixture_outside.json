@@ -1,0 +1,13 @@
+{
+  "id": "fixture_outside",
+  "symbol": "BTCUSDT",
+  "source": "manual_fixture",
+  "split": "validation",
+  "image": null,
+  "ohlc": "ohlc/fixture_outside.csv",
+  "label": "labels/fixture_outside.json",
+  "metadata": "metadata/fixture_outside.json",
+  "ohlc_sha256": "f10953d49954236e1de9d605732591cf9793a48bb31a9c2f6ca49f7fc1d2e8af",
+  "csv_sha256": "27a3704ada52675e9c4f92bf60e3b34447d82a41dd74f93b552a8e9d1cea921e",
+  "label_sha256": "dce62216652aecaee195c404487ac09f0cc9b29bb616521cbd76fca1ed5f24d4"
+}

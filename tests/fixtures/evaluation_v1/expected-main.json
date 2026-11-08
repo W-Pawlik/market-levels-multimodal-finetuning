@@ -1,0 +1,27 @@
+{
+  "kind": "hand_calculated",
+  "k": "0.5",
+  "examples": 12,
+  "tp": 9,
+  "fp": 4,
+  "fn": 4,
+  "micro_f1_fraction": "9/13",
+  "mean_example_f1_fraction": "7/12",
+  "valid_json": 10,
+  "invalid_json": 2,
+  "duplicate_prices": 1,
+  "normalized_pairs": 8,
+  "zero_atr_pairs": 1,
+  "auxiliary": {
+    "0.25": {
+      "tp": 6,
+      "fp": 7,
+      "fn": 7
+    },
+    "1.0": {
+      "tp": 10,
+      "fp": 3,
+      "fn": 3
+    }
+  }
+}

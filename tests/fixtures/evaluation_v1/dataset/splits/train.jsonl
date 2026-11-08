@@ -1,0 +1,1 @@
+{"id": "fixture_train_guard", "split": "train", "image": null, "instruction": "Przeanalizuj przedstawiony wykres \u015bwiecowy. Wska\u017c maksymalnie trzy poziomy wsparcia i trzy poziomy oporu. Zwr\u00f3\u0107 wy\u0142\u0105cznie obiekt JSON z polami supports i resistances, zawieraj\u0105cymi listy warto\u015bci cenowych.", "answer": {"supports": [100], "resistances": []}}
