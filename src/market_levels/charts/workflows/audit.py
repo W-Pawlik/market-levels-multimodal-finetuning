@@ -47,7 +47,7 @@ def run_audit(*, synthetic_root: Path, real_csv: dict[str, Path], config: Path,
         require_short_path(output/name)
         require_short_path(output.parent/(".charts-"+"x"*8)/"batch"/name)
     ledger = SourceLedger()
-    split = load_chronological_split(ledger.track(config))
+    split = load_chronological_split(ledger.track(config), ledger=ledger)
     start, end = split.periods["train"]
     if start.year != 2020 or end.year != 2023:
         raise ValueError("Ten pilotaż wymaga treningu 2020–2023")

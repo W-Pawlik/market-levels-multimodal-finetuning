@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import zipfile
+from market_levels.shared.configuration import read_configuration
 
 
 def main():
@@ -28,7 +29,7 @@ def main():
         paths.extend(p for p in directory.rglob('*') if p.is_file()
                      and '__pycache__' not in p.parts and p.suffix not in ('.pyc', '.pyo'))
     paths.extend(root/name for name in ('AGENTS.md', 'README.md', 'LICENSE', 'pyproject.toml', '.gitignore'))
-    config = json.loads((root/'configs/experiment.json').read_text(encoding='utf-8'))
+    config = read_configuration(root/'configs/experiment.json')
     paths.extend(root/name for name in config['dataset_build']['profiles'].values())
     payloads = {p.relative_to(root).as_posix(): p.read_bytes() for p in sorted(set(paths))}
     inventory = {name: hashlib.sha256(payload).hexdigest() for name, payload in payloads.items()}

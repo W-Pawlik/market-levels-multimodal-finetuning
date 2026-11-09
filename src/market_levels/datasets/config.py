@@ -1,10 +1,11 @@
 """datasets / config."""
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from ..data_processing.synthetic.config.generation import load_synthetic_settings
+from ..shared.configuration import read_configuration
+from ..shared.integrity import SourceLedger
 
 
 SYMBOLS = ("BTCUSDT", "ETHUSDT")
@@ -16,8 +17,8 @@ SPLITS = ("train", "validation", "test")
 SELECTION_METHOD = "chronological_equal_count_strata_seeded_v1"
 
 
-def load_plan_config(config: Path) -> dict:
-    doc = json.loads(config.read_text(encoding="utf-8-sig"))
+def load_plan_config(config: Path, *, ledger: SourceLedger | None = None) -> dict:
+    doc = read_configuration(config, ledger=ledger)
     options = doc["dataset_build"]
     if set(options) != {"targets", "selection_seed", "synthetic_master_seed", "profiles", "synthetic_history_root"}:
         raise ValueError("Nieobsługiwane/brakujące ustawienia dataset_build")

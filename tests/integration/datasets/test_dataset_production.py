@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.core.ohlc.model import Candle, UTC, CANDLE_DELTA
 from market_levels.data_processing.io.candles import write_candles_csv
 from market_levels.shared.json_io import write_json
@@ -73,7 +74,7 @@ class DatasetProductionTests(unittest.TestCase):
         self.addCleanup(self.temp_case.cleanup)
         self.case = Path(self.temp_case.name)
         self.config = self.case/'experiment.json'
-        self.doc = json.loads(CONFIG.read_text(encoding='utf-8'))
+        self.doc = read_configuration(CONFIG)
         for split, groups in self.doc['dataset_build']['targets'].items():
             for source, counts in groups.items():
                 counts.update({s: (1 if source == 'real' or split == 'train' else 0) for s in SYMBOLS})
@@ -102,6 +103,40 @@ class DatasetProductionTests(unittest.TestCase):
     def build(self):
         self.publish()
         return build_dataset(self.config, self.preflight, self.output, progress=silent)
+
+    def composed_config(self):
+        fragment = self.case/'build.json'
+        write_json(fragment, {'dataset_build': self.doc['dataset_build']})
+        root = dict(self.doc, dataset_build={'$file': 'build.json', '$section': 'dataset_build'})
+        write_json(self.config, root)
+        return fragment
+
+    def test_composed_config_pins_fragment_and_publishes_portable_snapshot(self):
+        fragment = self.composed_config()
+        plan = self.publish()
+        self.assertIn(str(fragment.resolve()), plan['source_integrity']['sha256'])
+        build_dataset(self.config, self.preflight, self.output, progress=silent)
+        self.assertEqual(json.loads((self.output/'config.json').read_text(encoding='utf-8')), self.doc)
+        fragment.unlink()
+        self.assertEqual(verify_dataset(self.output, progress=silent)['count'], 8)
+
+    def test_changed_config_fragment_invalidates_preflight_before_generation(self):
+        fragment = self.composed_config()
+        self.publish()
+        fragment.write_bytes(fragment.read_bytes()+b'\n')
+        with self.assertRaisesRegex(ValueError, 'Źródło planu zmieniło się'):
+            build_dataset(self.config, self.preflight, self.output, progress=silent)
+        self.assertFalse(self.output.exists())
+
+    def test_historical_dataset_source_config_can_be_split_without_changing_values(self):
+        self.build()
+        self.composed_config()
+        self.assertTrue(verify_dataset(self.output, check_sources=True, progress=silent)['verified'])
+        changed = deepcopy(self.doc['dataset_build'])
+        changed['selection_seed'] += 1
+        write_json(self.case/'build.json', {'dataset_build': changed})
+        with self.assertRaisesRegex(ValueError, 'Źródło planu zmieniło się'):
+            verify_dataset(self.output, check_sources=True, progress=silent)
 
     def test_approval_preserves_every_field_and_historical_audit(self):
         for symbol in SYMBOLS:

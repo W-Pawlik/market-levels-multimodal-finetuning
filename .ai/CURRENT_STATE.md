@@ -1,7 +1,19 @@
 # Aktualny stan projektu
 
-Aktualizacja: 2026-11-08. To opis stanu, nie zakaz realizacji kolejnych zleceń.
+Aktualizacja: 2026-11-09. To opis stanu, nie zakaz realizacji kolejnych zleceń.
 Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają.
+
+Refaktoryzację src wraz z końcową kontrolą zapisano i wypchnięto jako 4483906.
+Konfiguracja ma teraz punkt wejścia experiment.json (51 linii) i pięć fragmentów
+w configs/data, synthetic i datasets. Shared.configuration składa te same wartości,
+zachowuje pełne JSON-y i samodzielne snapshoty; integralność uwzględnia fragmenty.
+Algorytmy, ustawienia badawcze i renderer pozostają bez zmian.
+Kontrola podziału: 300 testów OK bez pominięć; zachowano 286 wcześniejszych
+testów i 971 asercji. Złożony JSON ma identyczne 6183 bajty jak przed podziałem;
+30 porównań generowania/renderowania zgodnych. Istniejące 800 przykładów
+zweryfikowano z kontrolą źródeł, 440 odtworzonymi syntetykami i 800 identycznymi PNG.
+[Zasady konfiguracji](../configs/README.md),
+[raport podziału](../docs/refactoring/RAPORT_REFAKTORYZACJI_CONFIGS.md).
 
 Zakończono reorganizację src: core/shared oraz powtarzalne domain, workflows,
 io, reporting i config. Runner refinement jest w experiments/refinement;

@@ -9,6 +9,7 @@ from pathlib import Path
 import unittest
 import tempfile
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.core.ohlc.model import Candle, CANDLE_DELTA, UTC
 from market_levels.data_processing.synthetic.domain.diagnostics import aggregate_windows, lag1_absolute_correlation
 from market_levels.core.numeric.statistics import distribution
@@ -75,7 +76,7 @@ class WindowSelectionTests(unittest.TestCase):
             self.assertGreater(windows[-1][0].timestamp.year, 2020)
 
     def test_invalid_split_configuration_is_rejected(self):
-        original = json.loads(CONFIG.read_text(encoding="utf-8"))
+        original = read_configuration(CONFIG)
         mutations = [lambda s: s.update(status="unapproved"),
                      lambda s: s.update(timestamp_role="close"),
                      lambda s: s["periods"]["validation"].update(start="2023-12-31T20:00:00+00:00"),

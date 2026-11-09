@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.core.ohlc.model import Candle, CANDLE_DELTA, UTC
 from market_levels.data_processing.io.chronology import load_chronological_split
 from market_levels.data_processing.windows.domain.models import Window
@@ -115,7 +116,7 @@ class PlanConfigTests(unittest.TestCase):
 
     def test_bad_targets_and_unknown_options_fail(self):
         for key in ('unknown', 'synthetic_test', 'negative', 'empty'):
-            doc = json.loads(CONFIG.read_text(encoding='utf-8'))
+            doc = read_configuration(CONFIG)
             if key == 'unknown':
                 doc['dataset_build']['unknown'] = 1
             elif key == 'synthetic_test':
@@ -133,7 +134,7 @@ class PlanConfigTests(unittest.TestCase):
                     load_plan_config(path)
 
     def test_counts_change_in_one_place(self):
-        doc = json.loads(CONFIG.read_text(encoding='utf-8'))
+        doc = read_configuration(CONFIG)
         doc['dataset_build']['targets']['train']['real']['BTCUSDT'] = 130
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'config.json'

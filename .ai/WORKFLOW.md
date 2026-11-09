@@ -66,6 +66,12 @@ identyczność rzeczywistych okien. Pełna procedura:
 
 ## W trakcie i po zmianie
 
+Konfigurację czytaj przez shared.configuration.read_configuration, także przy
+tworzeniu zmodyfikowanego pełnego JSON-a do testów. Bezpośredni json.loads wejścia
+nie rozwija $file/$section. Pełne historyczne config.json nadal są obsługiwane.
+Zmiana fragmentu unieważnia związany z nim preflight/checkpoint; nie aktualizuj
+historycznych hashy. [Mapa konfiguracji](../configs/README.md).
+
 Po reorganizacji src testy są pogrupowane według obszarów, a konstruktorów
 fixture szukaj w tests/support. Podstawowe unittest discover nadal zbiera cały
 zestaw. Granice importów sprawdza test_boundaries.py, a wzorzec sprzed zmian

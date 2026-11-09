@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.core.ohlc.model import UTC
 from market_levels.data_processing.io.candles import write_candles_csv
 from market_levels.data_processing.synthetic.workflows.calibration import calibrate_csv
@@ -183,7 +184,7 @@ class RefinementPipelineTests(unittest.TestCase):
             build_variant_summary(paths[:5]+[other]+paths[6:],symbol='BTCUSDT')
 
     def test_cli_small_calibration_output_guard_and_dry_run(self):
-        config = json.loads(CONFIG.read_text(encoding='utf-8-sig'))
+        config = read_configuration(CONFIG)
         config['volatility_refinement_v1'] = asdict(self.search)
         path = self.root/'config.json';path.write_text(json.dumps(config),encoding='utf-8')
         output = self.root/'cli-profile.json'

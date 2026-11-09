@@ -7,6 +7,7 @@ import uuid
 from pathlib import Path
 
 from ...shared.integrity import SourceLedger, sha256_file as sha256
+from ...shared.configuration import configuration_snapshot, track_configuration
 from ...charts.io.rendering import render_window
 from ...charts.config import RENDERER_VERSION
 from ...shared.publication import publication_workspace, publish_directory
@@ -45,7 +46,7 @@ def build_dataset(config: Path, preflight: Path, output: Path, *, progress=print
     if json.loads(json.dumps(fresh)) != plan or not plan['real_feasible'] or not plan['synthetic']['production_ready']:
         raise ValueError('Plan jest nieaktualny lub niegotowy do produkcji')
     ledger = SourceLedger()
-    ledger.track(config)
+    track_configuration(config, ledger)
     ledger.track(preflight/'manifest.json')
     sources = {s: read_candles_csv(ledger.track(Path(r['path'])), source=r['path']) for s, r in plan['real_sources'].items()}
     historical_hashes = set()
@@ -58,7 +59,7 @@ def build_dataset(config: Path, preflight: Path, output: Path, *, progress=print
         stage = tmp/'batch'
         for folder in ('images', 'ohlc', 'labels', 'metadata', 'splits', 'profiles'):
             (stage/folder).mkdir(parents=True)
-        (stage/'config.json').write_bytes(config.read_bytes())
+        (stage/'config.json').write_bytes(configuration_snapshot(config))
         write_json(stage/'plan.json', plan)
         profiles, settings = {}, {}
         for symbol in SYMBOLS:

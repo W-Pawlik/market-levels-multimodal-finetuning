@@ -25,252 +25,27 @@
   "chart_height_px_initial": 768,
   "notes": "Podzia? chronological_v1 i zbi?r 800 przyk?ad?w zatwierdzone. Dwa nowe profile V2-full-refined zatwierdzono decyzj? autora pracy z 2026-11-07; historyczne profile pozostaj? bez zmian. Model i hiperparametry wymagaj? osobnej decyzji.",
   "synthetic": {
-    "candles": 120,
-    "internal_steps": 12,
-    "min_regimes": 1,
-    "max_regimes": 3,
-    "seed": 20261103,
-    "symbols": [
-      "BTCUSDT",
-      "ETHUSDT"
-    ],
-    "count": 5,
-    "profiles": {},
-    "output": "data/synthetic",
-    "diagnostic": false,
-    "regimes": {
-      "minimum_lengths": {
-        "uptrend": 24,
-        "downtrend": 24,
-        "consolidation": 24,
-        "breakout": 8
-      },
-      "maximum_lengths": {
-        "uptrend": 120,
-        "downtrend": 120,
-        "consolidation": 120,
-        "breakout": 24
-      },
-      "initial_weights": {
-        "uptrend": 1.0,
-        "downtrend": 1.0,
-        "consolidation": 2.0,
-        "breakout": 0.0
-      },
-      "transitions": {
-        "uptrend": {
-          "downtrend": 1.0,
-          "consolidation": 2.0
-        },
-        "downtrend": {
-          "uptrend": 1.0,
-          "consolidation": 2.0
-        },
-        "consolidation": {
-          "uptrend": 1.0,
-          "downtrend": 1.0,
-          "breakout": 3.0
-        },
-        "breakout": {
-          "uptrend": 1.0,
-          "downtrend": 1.0,
-          "consolidation": 1.0
-        }
-      },
-      "trend_drift_sigma": [
-        0.08,
-        0.25
-      ],
-      "breakout_drift_sigma": [
-        0.4,
-        0.9
-      ],
-      "trend_volatility": [
-        0.8,
-        1.2
-      ],
-      "consolidation_volatility": [
-        0.45,
-        0.8
-      ],
-      "breakout_volatility": [
-        1.2,
-        1.8
-      ],
-      "mean_reversion": [
-        0.05,
-        0.2
-      ]
-    },
-    "generator_version": "v1"
+    "$file": "synthetic/generation.json",
+    "$section": "synthetic"
   },
   "chronological_split": {
-    "split_id": "chronological_v1",
-    "status": "approved",
-    "bounds": "inclusive",
-    "timestamp_role": "candle_open_utc",
-    "periods": {
-      "train": {
-        "start": "2020-01-01T00:00:00+00:00",
-        "end": "2023-12-31T20:00:00+00:00"
-      },
-      "validation": {
-        "start": "2024-01-01T00:00:00+00:00",
-        "end": "2024-12-31T20:00:00+00:00"
-      },
-      "test": {
-        "start": "2025-01-01T00:00:00+00:00",
-        "end": "2026-10-31T20:00:00+00:00"
-      }
-    }
+    "$file": "data/chronological_split.json",
+    "$section": "chronological_split"
   },
   "synthetic_v2": {
-    "variant": "full",
-    "experiment_id": "ohlc-v2-diagnostic",
-    "profiles": {},
-    "parameters": {
-      "bridge_gamma": 1.5,
-      "tail_probability": 0.05,
-      "tail_scale": 3.0,
-      "volatility_phi": 0.95,
-      "volatility_stationary_std": 0.35
-    }
+    "$file": "synthetic/generation.json",
+    "$section": "synthetic_v2"
   },
   "synthetic_v2_calibration": {
-    "simulation_seeds": [
-      73001,
-      73002,
-      73003
-    ],
-    "selection_seed": 73004,
-    "examples_per_seed": 4,
-    "rounds": 2,
-    "bridge_gamma": [
-      1.0,
-      1.4,
-      1.8,
-      2.2
-    ],
-    "tail_probability": [
-      0.02,
-      0.05,
-      0.1
-    ],
-    "tail_scale": [
-      2.0,
-      3.0,
-      4.0
-    ],
-    "volatility_phi": [
-      0.8,
-      0.95,
-      0.99
-    ],
-    "volatility_stationary_std": [
-      0.0,
-      0.3,
-      0.6
-    ]
+    "$file": "synthetic/calibration.json",
+    "$section": "synthetic_v2_calibration"
   },
   "volatility_refinement_v1": {
-    "volatility_phi": [
-      0.65,
-      0.75,
-      0.85,
-      0.9,
-      0.94,
-      0.97,
-      0.99
-    ],
-    "volatility_stationary_std": [
-      0.25,
-      0.35,
-      0.45,
-      0.55,
-      0.65
-    ],
-    "simulation_seeds": [
-      73001,
-      73002,
-      73003
-    ],
-    "diagnostic_seeds": [
-      20261105,
-      20261115,
-      20261125,
-      20261205,
-      20261215
-    ],
-    "selection_seed": 73004,
-    "examples_per_seed": 12,
-    "max_candidates": 64,
-    "max_simulated_windows": 2304,
-    "tolerances": {
-      "abs_ac1": 0.05,
-      "window_std_mean": 0.1,
-      "window_std_std": 0.2,
-      "abs_q95": 0.15,
-      "abs_q99": 0.15,
-      "range_mean": 0.1,
-      "body_fraction": 0.03,
-      "upper_wick": 0.03,
-      "lower_wick": 0.03
-    },
-    "weights": {
-      "abs_ac1": 3.0,
-      "window_std_mean": 3.0,
-      "window_std_std": 3.0,
-      "abs_q95": 1.0,
-      "abs_q99": 1.0,
-      "range_mean": 1.0,
-      "body_fraction": 1.0,
-      "upper_wick": 1.0,
-      "lower_wick": 1.0
-    },
-    "guard_penalty": 4.0,
-    "worst_seed_weight": 0.25,
-    "relative_floor": 1e-08,
-    "practical_equivalence_fraction": 0.1
+    "$file": "synthetic/refinement.json",
+    "$section": "volatility_refinement_v1"
   },
   "dataset_build": {
-    "targets": {
-      "train": {
-        "real": {
-          "BTCUSDT": 129,
-          "ETHUSDT": 129
-        },
-        "synthetic": {
-          "BTCUSDT": 220,
-          "ETHUSDT": 220
-        }
-      },
-      "validation": {
-        "real": {
-          "BTCUSDT": 18,
-          "ETHUSDT": 18
-        },
-        "synthetic": {
-          "BTCUSDT": 0,
-          "ETHUSDT": 0
-        }
-      },
-      "test": {
-        "real": {
-          "BTCUSDT": 33,
-          "ETHUSDT": 33
-        },
-        "synthetic": {
-          "BTCUSDT": 0,
-          "ETHUSDT": 0
-        }
-      }
-    },
-    "selection_seed": 20261107,
-    "synthetic_master_seed": 2027013501,
-    "profiles": {
-      "BTCUSDT": "data/synthetic/approved-ds35-20261107/BTCUSDT_full_refined_approved.json",
-      "ETHUSDT": "data/synthetic/approved-ds35-20261107/ETHUSDT_full_refined_approved.json"
-    },
-    "synthetic_history_root": "data/synthetic"
+    "$file": "datasets/build.json",
+    "$section": "dataset_build"
   }
 }

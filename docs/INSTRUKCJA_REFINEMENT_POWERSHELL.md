@@ -20,7 +20,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Instalacja nieudana' }
 if ($LASTEXITCODE -ne 0) { throw 'Testy nieudane' }
 
 $configPath = 'configs/experiment.json'
-$experiment = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$experimentJson = & ./.venv/Scripts/python.exe -B -c 'import json, sys; from pathlib import Path; from market_levels.shared.configuration import read_configuration; print(json.dumps(read_configuration(Path(sys.argv[1]))))' $configPath
+if ($LASTEXITCODE -ne 0) { throw 'Nie można wczytać konfiguracji' }
+$experiment = $experimentJson | ConvertFrom-Json
 $trainStart = $experiment.chronological_split.periods.train.start
 $trainEnd = $experiment.chronological_split.periods.train.end
 $symbols = @('BTCUSDT', 'ETHUSDT')

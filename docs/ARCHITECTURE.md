@@ -154,7 +154,12 @@ zależność modułów algorytmicznych od warstwy CLI.
 Setuptools odkrywa market_levels* w src. Entry pointy z pyproject.toml
 oraz python -m market_levels.cli.* są zachowane. Zależności nie zmieniły się:
 biblioteka standardowa i opcjonalne [charts]. Konfiguracja pozostaje
-w configs/experiment.json; CLI ma pierwszeństwo, a ścieżki są względem CWD.
+w configs/experiment.json i jawnie wskazanych fragmentach. Shared.configuration
+składa pola główne przez $file/$section, bez dziedziczenia lub scalania ustawień.
+Pełne JSON-y nadal działają. CLI ma pierwszeństwo; ścieżki danych pozostają
+względem CWD, a wyłącznie $file względem pliku wejściowego.
+Nowe snapshoty zbiorów są samodzielne, a SourceLedger i preflight runnera
+przypinają wszystkie pliki konfiguracji. [Mapa sekcji](../configs/README.md).
 Nie przywrócono usuniętych src.download_data, src.validate_data ani src/__init__.py.
 
 data/ i results/ przechowują artefakty. Build, egg-info, cache i handoff nie są

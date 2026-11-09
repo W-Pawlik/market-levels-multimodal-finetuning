@@ -10,6 +10,7 @@ Domain zawiera obliczenia i modele, workflows koordynuje wykonanie, io obsługuj
 | --- | --- |
 | [integrity.py](integrity.py) | `sha256_file`, `SourceLedger` |
 | [json_io.py](json_io.py) | `write_json`, `read_json` |
+| [configuration.py](configuration.py) | `read_configuration`, `configuration_sources`, `track_configuration`, `configuration_snapshot` |
 | [manifests.py](manifests.py) | `seal`, `verify_files` |
 | [paths.py](paths.py) | `require_short_path`, `child` |
 | [publication.py](publication.py) | `publish_directory`, `publication_workspace` |

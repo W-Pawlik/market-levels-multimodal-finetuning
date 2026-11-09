@@ -16,6 +16,7 @@ from ...data_processing.io.chronology import load_chronological_split
 from ..config import SYMBOLS
 from .planning import build_plan
 from ...shared.manifests import seal
+from ...shared.configuration import track_configuration
 
 
 def approve_refined(profile: dict, split: ChronologicalSplit, *, decision_date: str,
@@ -50,6 +51,7 @@ def approve_configured_profiles(config: Path, real_csv: dict[str, Path], output:
     ledger = SourceLedger()
     ledger.track(config)
     ledger.track(audit)
+    track_configuration(config, ledger)
     plan = build_plan(config, real_csv)
     if not plan["real_feasible"]:
         raise ValueError("Preflight przed zatwierdzeniem nie potwierdził danych")

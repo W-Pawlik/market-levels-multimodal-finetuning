@@ -1,12 +1,12 @@
 """data_processing / synthetic / config / refinement."""
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from ....core.numeric.validation import finite_number, positive_int
 from ..domain.parameters import V2Parameters
+from ....shared.configuration import read_configuration
 
 
 METHOD = "volatility_refinement_v1"
@@ -86,7 +86,7 @@ class RefinementSettings:
 
 
 def load_refinement_settings(path: Path) -> RefinementSettings:
-    options = json.loads(Path(path).read_text(encoding="utf-8-sig")).get("volatility_refinement_v1", {})
+    options = read_configuration(path).get("volatility_refinement_v1", {})
     if not isinstance(options, dict) or set(options) - set(RefinementSettings.__dataclass_fields__):
         raise ValueError("Nieobsługiwane ustawienia volatility_refinement_v1")
     settings = RefinementSettings(**options)

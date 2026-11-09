@@ -1,13 +1,13 @@
 """data_processing / synthetic / config / generation."""
 from __future__ import annotations
 
-import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from ..domain.parameters import SYMBOLS
 from ....core.numeric.validation import positive_int
 from .regimes import RegimeSettings
+from ....shared.configuration import read_configuration
 
 
 @dataclass(frozen=True)
@@ -73,7 +73,7 @@ class SyntheticSettings:
 
 def load_synthetic_settings(path: Path, **overrides: object) -> SyntheticSettings:
     """Wczytaj wyłącznie sekcję synthetic; CLI ma pierwszeństwo."""
-    document = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    document = read_configuration(path)
     if not isinstance(document, dict) or not isinstance(document.get("synthetic"), dict):
         raise ValueError("Konfiguracja wymaga obiektu synthetic")
     options = dict(document["synthetic"])

@@ -9,13 +9,14 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.cli import download
 from market_levels.configuration import ConfigurationError, load_download_settings
 
 from support.paths import PROJECT
 
 
-CONFIG = json.loads((PROJECT / "configs/experiment.json").read_text(encoding="utf-8"))
+CONFIG = read_configuration(PROJECT / "configs/experiment.json")
 
 
 class ConfigurationTests(unittest.TestCase):

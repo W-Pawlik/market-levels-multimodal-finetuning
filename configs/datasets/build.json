@@ -1,0 +1,43 @@
+{
+  "dataset_build": {
+    "targets": {
+      "train": {
+        "real": {
+          "BTCUSDT": 129,
+          "ETHUSDT": 129
+        },
+        "synthetic": {
+          "BTCUSDT": 220,
+          "ETHUSDT": 220
+        }
+      },
+      "validation": {
+        "real": {
+          "BTCUSDT": 18,
+          "ETHUSDT": 18
+        },
+        "synthetic": {
+          "BTCUSDT": 0,
+          "ETHUSDT": 0
+        }
+      },
+      "test": {
+        "real": {
+          "BTCUSDT": 33,
+          "ETHUSDT": 33
+        },
+        "synthetic": {
+          "BTCUSDT": 0,
+          "ETHUSDT": 0
+        }
+      }
+    },
+    "selection_seed": 20261107,
+    "synthetic_master_seed": 2027013501,
+    "profiles": {
+      "BTCUSDT": "data/synthetic/approved-ds35-20261107/BTCUSDT_full_refined_approved.json",
+      "ETHUSDT": "data/synthetic/approved-ds35-20261107/ETHUSDT_full_refined_approved.json"
+    },
+    "synthetic_history_root": "data/synthetic"
+  }
+}

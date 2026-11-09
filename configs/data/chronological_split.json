@@ -1,0 +1,22 @@
+{
+  "chronological_split": {
+    "split_id": "chronological_v1",
+    "status": "approved",
+    "bounds": "inclusive",
+    "timestamp_role": "candle_open_utc",
+    "periods": {
+      "train": {
+        "start": "2020-01-01T00:00:00+00:00",
+        "end": "2023-12-31T20:00:00+00:00"
+      },
+      "validation": {
+        "start": "2024-01-01T00:00:00+00:00",
+        "end": "2024-12-31T20:00:00+00:00"
+      },
+      "test": {
+        "start": "2025-01-01T00:00:00+00:00",
+        "end": "2026-10-31T20:00:00+00:00"
+      }
+    }
+  }
+}

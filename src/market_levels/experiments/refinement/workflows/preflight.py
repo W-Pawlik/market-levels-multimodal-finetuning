@@ -13,6 +13,7 @@ from ..io import cli, resolve, checked_report
 from ..config import SYMBOLS, VARIANTS, SEEDS, FRESH_SEEDS, FRESH_EXPERIMENT, SELECTION_SEED
 from ....shared.json_io import read_json
 from ....shared.integrity import sha256_file as sha
+from ....shared.configuration import configuration_sources
 
 
 def check_environment(project: Path) -> dict:
@@ -137,7 +138,8 @@ def preflight(project: Path, inputs: Path | None = None, *, fresh: bool = False)
         raise ValueError(f'Brak raportów historycznych: {sorted(expected - set(old))}; wymagano 12')
     for symbol in SYMBOLS:
         build_variant_summary([Path(p) for key, p in old.items() if key.startswith(symbol+'|')], symbol=symbol)
-    digests[str(config)] = sha(config)
+    for source in configuration_sources(config):
+        digests[str(source)] = sha(source)
     # Zmiana kodu lub wersji Pythona wymaga nowego przebiegu, nie cichego wznowienia.
     for path in (project / 'src/market_levels').rglob('*.py'):
         digests[str(path)] = sha(path)

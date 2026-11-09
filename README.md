@@ -114,7 +114,7 @@ przy 404 albo braku lokalnego pliku offline. Błędna suma nie uruchamia fallbac
 ## Struktura
 
 ```text
-configs/experiment.json          zatwierdzone ustalenia
+configs/experiment.json          wejście konfiguracji i odwołania do sekcji
 src/market_levels/
     configuration.py            konfiguracja pobierania
     cli/                        stabilne polecenia i argumenty
@@ -156,6 +156,12 @@ pierwszeństwo przed JSON. Plik jest wymagany również przy `--dry-run`;
 błędna konfiguracja przerywa działanie przed pobieraniem i zapisem.
 Ścieżka konfiguracji oraz `download.output` są względne wobec katalogu uruchomienia.
 Spoza projektu podaj `--config` z odpowiednią ścieżką.
+
+Ustawienia generatora, kalibracji, refinementu, chronologii i budowy zbioru są
+w pięciu fragmentach wskazanych z `experiment.json`. Odwołania `$file` są
+względne wobec tego pliku; ścieżki danych i wyjścia nadal wobec CWD.
+Dotychczasowe pełne JSON-y i zapisane konfiguracje wyników nadal działają.
+[Mapa plików i zasady konfiguracji](configs/README.md).
 
 ```json
 "download": {

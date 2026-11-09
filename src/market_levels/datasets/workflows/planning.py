@@ -122,7 +122,7 @@ def inspect_synthetic(config: Path, ledger: SourceLedger) -> dict:
 def build_plan(config: Path, real_csv: dict[str, Path]) -> dict:
     ledger = SourceLedger()
     ledger.track(config)
-    doc = load_plan_config(config)
+    doc = load_plan_config(config, ledger=ledger)
     split = load_chronological_split(config)
     options = doc["dataset_build"]
     strides = {s: doc[s+"_stride_candles"] for s in SPLITS}

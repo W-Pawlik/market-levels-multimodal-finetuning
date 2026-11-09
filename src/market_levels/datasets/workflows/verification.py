@@ -16,6 +16,7 @@ from ...labeling.domain.algorithm import label_window
 from ...labeling.domain.models import VERSION
 from ...shared.paths import child
 from ...shared.integrity import sha256_file as sha256
+from ...shared.configuration import configuration_snapshot
 from ..config import SYMBOLS, synthetic_settings, SPLITS, load_plan_config
 from ...data_processing.synthetic.domain.profiles.v1 import profile_hash
 from ...data_processing.synthetic.domain.generation.dispatch import generate_example
@@ -118,9 +119,19 @@ def _settings(config: Path, profile_root: Path, symbol: str):
                    profiles={symbol: str(profile_root/f'{symbol}.json')})
 
 
-def _check_sources(plan: dict) -> None:
+def _check_sources(plan: dict, *, saved_config: Path | None = None) -> None:
+    snapshot = saved_config.read_bytes() if saved_config is not None else None
+    config_digest = hashlib.sha256(snapshot).hexdigest() if snapshot is not None else None
     for name, digest in plan['source_integrity']['sha256'].items():
         if sha256(Path(name)) != digest:
+            # Only an old complete config may be represented by split files now.
+            # Match its pinned bytes exactly; every other source stays byte-strict.
+            if digest == config_digest:
+                try:
+                    if configuration_snapshot(Path(name)) == snapshot:
+                        continue
+                except (OSError, UnicodeError, ValueError):
+                    pass
             raise ValueError(f'Źródło planu zmieniło się: {name}')
 
 
@@ -156,7 +167,7 @@ def verify_dataset(output: Path, *, check_sources: bool = False, allow_renderer_
     counts, renderer_differences = Counter(), []
     original_sources = {}
     if check_sources:
-        _check_sources(plan)
+        _check_sources(plan, saved_config=config)
         original_sources = {s: read_candles_csv(Path(r['path']), source=r['path']) for s, r in plan['real_sources'].items()}
     with tempfile.TemporaryDirectory(prefix='ds-full-') as tmp:
         for i, entry in enumerate(manifest['entries']):

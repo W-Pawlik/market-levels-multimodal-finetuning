@@ -1,12 +1,12 @@
 """Wczytywanie ustawień działającego etapu z konfiguracji eksperymentu."""
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from pathlib import Path
 
 from .core.time.calendar import iter_months
 from .data_processing.real.binance_vision.client import INTERVAL, SYMBOLS
+from .shared.configuration import read_configuration
 
 
 class ConfigurationError(ValueError):
@@ -34,7 +34,7 @@ def load_download_settings(path: Path) -> DownloadSettings:
     """
     path = Path(path)
     try:
-        document = json.loads(path.read_text(encoding="utf-8-sig"))
+        document = read_configuration(path)
     except (OSError, UnicodeError, ValueError) as exc:
         raise ConfigurationError(f"Nie można wczytać konfiguracji {path}: {exc}") from exc
     try:

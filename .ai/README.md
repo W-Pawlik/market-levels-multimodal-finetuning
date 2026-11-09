@@ -21,6 +21,8 @@ Samo istnienie katalogu nie gwarantuje odczytania go przez każde narzędzie.
 
 - Aktualne polecenie autora określa zakres pracy i może świadomie zmienić wcześniejsze decyzje.
 - [configs/experiment.json](../configs/experiment.json) jest źródłem bieżących parametrów; nie twórz ich drugiej aktywnej kopii w instrukcjach.
+  To wejście jednej konfiguracji z jawnymi odwołaniami do fragmentów;
+  [mapa sekcji i zasady odczytu](../configs/README.md).
 - [DECYZJE_3_3.md](../docs/DECYZJE_3_3.md) zawiera zatwierdzone decyzje badawcze.
 - [ARCHITECTURE.md](../docs/ARCHITECTURE.md) opisuje moduły i podział odpowiedzialności.
 - [PLAN_REFAKTORYZACJI_SRC.md](../docs/PLAN_REFAKTORYZACJI_SRC.md) zawiera analizę

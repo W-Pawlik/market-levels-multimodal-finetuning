@@ -1,12 +1,12 @@
 """data_processing / synthetic / config / calibration."""
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from ....core.numeric.validation import positive_int
 from ..domain.parameters import V2Parameters
+from ....shared.configuration import read_configuration
 
 
 @dataclass(frozen=True)
@@ -40,7 +40,7 @@ class CalibrationV2Settings:
 
 
 def load_calibration_v2_settings(path: Path) -> CalibrationV2Settings:
-    options = json.loads(Path(path).read_text(encoding="utf-8-sig")).get("synthetic_v2_calibration", {})
+    options = read_configuration(path).get("synthetic_v2_calibration", {})
     if not isinstance(options, dict) or set(options) - set(CalibrationV2Settings.__dataclass_fields__):
         raise ValueError("Nieobsługiwane ustawienia synthetic_v2_calibration")
     result = CalibrationV2Settings(**options)

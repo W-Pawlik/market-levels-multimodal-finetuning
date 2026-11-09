@@ -30,6 +30,7 @@ from market_levels.data_processing.synthetic.domain.diagnostics import aggregate
 from market_levels.data_processing.synthetic.io.batches import load_synthetic_windows
 from market_levels.data_processing.windows.domain.selection import select_real_windows
 from market_levels.data_processing.synthetic.domain.generation.seeds import example_seed
+from market_levels.shared.configuration import read_configuration
 from support.calibration import small_search
 from support.comparison import real_fixture, CONFIG
 
@@ -53,6 +54,23 @@ class RunnerTests(unittest.TestCase):
             options = deepcopy(self.options);options[field][key] = value
             path = self.root/'bad-inputs.json';path.write_text(json.dumps(options),encoding='utf-8')
             with self.assertRaises((ValueError,OSError)):runner_preflight.preflight(self.project,path)
+
+    def test_preflight_pins_fragment_changes_for_resume_identity(self):
+        document = read_configuration(CONFIG)
+        fragment = self.root/'split-fragment.json'
+        fragment.write_text(json.dumps(document['chronological_split']), encoding='utf-8')
+        document['chronological_split'] = {'$file': fragment.name}
+        config = self.root/'composed-config.json'
+        config.write_text(json.dumps(document), encoding='utf-8')
+        options = dict(self.options, config=str(config))
+        inputs = self.root/'composed-inputs.json'
+        inputs.write_text(json.dumps(options), encoding='utf-8')
+        first = runner_preflight.preflight(self.project, inputs)
+        self.assertIn(str(fragment.resolve()), first['digests'])
+        fragment.write_bytes(fragment.read_bytes()+b'\n')
+        second = runner_preflight.preflight(self.project, inputs)
+        self.assertEqual(first['digests'][str(config.resolve())], second['digests'][str(config.resolve())])
+        self.assertNotEqual(first['digests'][str(fragment.resolve())], second['digests'][str(fragment.resolve())])
 
     def test_missing_module_and_foreign_install_are_rejected(self):
         original = runner_preflight.importlib.import_module

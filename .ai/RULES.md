@@ -38,6 +38,12 @@ Domyślnie CLI wczytuje configs/experiment.json; --config wskazuje inny plik.
 Jawne argumenty CLI mają pierwszeństwo przed JSON. Ścieżki konfiguracji i wyjścia
 są względne wobec katalogu uruchomienia.
 
+experiment.json może wskazywać fragmenty przez $file/$section. Tylko $file jest
+względny wobec pliku wejściowego; ścieżki danych, profili i wyjścia nadal względem CWD.
+Korzystaj z shared.configuration, zachowuj obsługę pełnych JSON-ów i zapisuj
+samodzielny snapshot przy nowej produkcji. Kontrola źródeł obejmuje wszystkie
+fragmenty. Nie przepisuj historycznych config.json, manifestów ani checkpointów.
+
 Nie zastępuj konfiguracji stałymi w CLI. Nowe faktycznie konfigurowalne parametry
 podłącz do odpowiedniego etapu i sprawdź ich działanie. Nie opisuj parametrów
 przyszłego etapu jako aktywnych przed implementacją. Nieobsługiwane ustawienia

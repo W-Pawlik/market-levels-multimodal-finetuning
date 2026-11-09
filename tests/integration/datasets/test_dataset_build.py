@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.charts.io.rendering import render_window
 from market_levels.core.ohlc.model import Candle, CANDLE_DELTA, UTC
 from market_levels.data_processing.io.candles import write_candles_csv
@@ -160,7 +161,7 @@ class DatasetPlanningTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.config = self.root/'config.json'
-        self.doc = json.loads(CONFIG.read_text(encoding='utf-8'))
+        self.doc = read_configuration(CONFIG)
 
     def save_config(self):
         write_json(self.config, self.doc)

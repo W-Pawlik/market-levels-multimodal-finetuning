@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 
+from market_levels.shared.configuration import read_configuration
 from market_levels.core.ohlc.model import UTC
 from market_levels.data_processing.io.candles import write_candles_csv
 from market_levels.data_processing.synthetic.workflows.generation import run
@@ -185,7 +186,7 @@ class V2PipelineTests(unittest.TestCase):
             with self.assertRaises(ValueError):search.validate()
 
     def test_calibration_cli_v2_without_overwriting_v1(self):
-        config=json.loads(CONFIG.read_text(encoding='utf-8'))
+        config=read_configuration(CONFIG)
         config['synthetic_v2_calibration']=deepcopy(small_search().__dict__)
         configpath=self.root/'config.json';configpath.write_text(json.dumps(config),encoding='utf-8')
         path=self.root/'profile.json'
