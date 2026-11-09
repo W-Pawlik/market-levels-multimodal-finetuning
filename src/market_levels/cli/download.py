@@ -5,8 +5,8 @@ import argparse
 from pathlib import Path
 
 from ..configuration import load_download_settings
-from ..core.periods import iter_months
-from ..data_processing.pipelines.download import run
+from ..core.time.calendar import iter_months
+from ..data_processing.real.workflows.download import run
 from ..data_processing.real.binance_vision.client import DownloadError, SYMBOLS, _remote_url
 
 

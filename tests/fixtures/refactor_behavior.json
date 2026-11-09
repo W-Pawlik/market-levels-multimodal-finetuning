@@ -1,0 +1,753 @@
+{
+  "python": "3.13.15",
+  "matplotlib": "3.11.2",
+  "examples": {
+    "BTCUSDT-123-v1-full": {
+      "candles": "371ea6baa4b23291ba6347aa8dfed26a752af1719e20f721ced5a04a042c0d5c",
+      "metadata": "4b4bd10b33f2c78df79ad2fe6fd211d66156725244d62e11a1013a2287ae5aff",
+      "labels": "{\"supports\": [], \"resistances\": [29862.30, 29340.43, 30219.94]}\n",
+      "diagnostics": "6e03e0c73ce922a98c85bc70413c1b60c6be611ebc1e672bbb3718eae9dd02f6",
+      "metrics": {
+        "price_change": -0.15564082815163027,
+        "directionality": 0.24508731542854412,
+        "relative_range": 0.21532551198988018,
+        "log_return_std": 0.008265121972596986,
+        "body_fraction": 0.5313280294079633,
+        "upper_wick_fraction": 0.2278842170522679,
+        "lower_wick_fraction": 0.24078775353976878,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          22,
+          25,
+          97,
+          100,
+          102
+        ],
+        "reversal_proxy": false
+      },
+      "png": "1aa8568e0f875f6e8e7143be3b1639ac5b9bf8e3c0e57d3ad255519d45458333",
+      "overlay": "7adb5984aecbb80f58ac192692ee02a87d569dfadc46069c99af6f5652aa5b9e",
+      "csv": "41c85618d560251e2e1574dac8203e4a21b28830b788bf5acd0c395f4b3a4671"
+    },
+    "BTCUSDT-123-v2-base": {
+      "candles": "5e96d5d87b1c127a1240de39fe002095e92c8a79c6068eb5f1adcd7d3db825e5",
+      "metadata": "df7b912c95459333106e6af44fb70df2ddb19450cc11988c5337b92f1e05cd7f",
+      "labels": "{\"supports\": [47507.83, 48658.03, 53418.90], \"resistances\": [69576.74]}\n",
+      "diagnostics": "c45d3232e02e8f208f2e4137d7ec6857bb9e681361e569dfab55314c12b8397e",
+      "metrics": {
+        "price_change": 0.4496079365895054,
+        "directionality": 0.2978355222854553,
+        "relative_range": 0.5595898650944099,
+        "log_return_std": 0.013555181962105726,
+        "body_fraction": 0.5662568731079581,
+        "upper_wick_fraction": 0.24905386107546415,
+        "lower_wick_fraction": 0.18468926581657777,
+        "flat_candles": 0,
+        "observed_motion": "upward",
+        "breakout_proxy_positions": [
+          37,
+          38,
+          69,
+          71,
+          98,
+          118
+        ],
+        "reversal_proxy": false
+      },
+      "png": "1d129ba866e6eec7b4b3d72e80e1294bde96098c1121761bfc780d801087fd64",
+      "overlay": "28f66ad8b948d09b16d77801b1b1fc20a06c4cc2a8eaeed892f3dbc5b000d32e",
+      "csv": "8b82843e4dd4e0e3f80649ee7bf55f0a16c10682b5a7462cfa3b06bd92d5902c"
+    },
+    "BTCUSDT-123-v2-bridge": {
+      "candles": "5b175ace48d100fc8f3512a253bf14bad4cd7b6dfa7cb5ab771e334087087c08",
+      "metadata": "dbf6b0852e1da0f3629d9320494bc70bbde1b0598c380c399787bfaf1fa0e331",
+      "labels": "{\"supports\": [47461.25, 48734.41, 61728.37], \"resistances\": []}\n",
+      "diagnostics": "ec5ccb6e0776f0813b62cf4650504de8592c64d78ce96a826c2385c1249dfb3e",
+      "metrics": {
+        "price_change": 0.4496079365895054,
+        "directionality": 0.2978355222854553,
+        "relative_range": 0.5725861609279286,
+        "log_return_std": 0.013555181962105726,
+        "body_fraction": 0.45574000044952745,
+        "upper_wick_fraction": 0.30989980017017654,
+        "lower_wick_fraction": 0.234360199380296,
+        "flat_candles": 0,
+        "observed_motion": "upward",
+        "breakout_proxy_positions": [
+          37,
+          38,
+          69,
+          71,
+          98,
+          118
+        ],
+        "reversal_proxy": false
+      },
+      "png": "f2b0f69d6c79d9f2cd12bf967953d3fadcc20a89cbf1c3ca2c1b45e78b8fbd9b",
+      "overlay": "8766b2427cffb492cdb84cb8911fea526f878324165c5cfa7c76116be08341cf",
+      "csv": "785f935e6b2fc7a1e8cf7b86bd658e9c08117eb7e8e39325b1ddd8d53ff4ccfe"
+    },
+    "BTCUSDT-123-v2-tails": {
+      "candles": "90cd28b21a32556d93a7ea05c5f34114c7e98ad57704ef3f2eea2afb79747c92",
+      "metadata": "65d51f60b8539ae0e39f8ff3405866b312d0cd97645ede067ab354f532fc9d47",
+      "labels": "{\"supports\": [47508.55, 48680.64, 61595.20], \"resistances\": []}\n",
+      "diagnostics": "00e8e2b3d727169968fab777cca09a44852b73a6a9d6e9fad020ec047a639b38",
+      "metrics": {
+        "price_change": 0.43993640611532925,
+        "directionality": 0.31681144037901965,
+        "relative_range": 0.5325128659715117,
+        "log_return_std": 0.013650862410099489,
+        "body_fraction": 0.5240044296476042,
+        "upper_wick_fraction": 0.2726102939256698,
+        "lower_wick_fraction": 0.203385276426726,
+        "flat_candles": 0,
+        "observed_motion": "upward",
+        "breakout_proxy_positions": [
+          37,
+          38,
+          71,
+          72,
+          98
+        ],
+        "reversal_proxy": false
+      },
+      "png": "4a1b8f3240eb3cca357fb887c79d66aae73e017b020f640836cf0c51b2b7c4c1",
+      "overlay": "0364e09e4c3101ef9256d728cc861c46fd2da061a1fa7fbe3fb51c6c09a9db0e",
+      "csv": "58b300e58dd38129f79edfb66261283d355f0e3d54d6d72fba95d16316282c5b"
+    },
+    "BTCUSDT-123-v2-volatility": {
+      "candles": "023dc2d3e1d19c41b811e1ca30fdd10331bef5b54dce23e1d9ef599a8b796372",
+      "metadata": "60d84db8910157595fe7ed14a0e9a748b24cdb52b9b3dad6f69068f45e41489f",
+      "labels": "{\"supports\": [48993.54, 47216.86], \"resistances\": [72863.06]}\n",
+      "diagnostics": "3e51dbc460ea367284dfedf0553fd25e7eaf6478650ea385383c0cb4483cf72c",
+      "metrics": {
+        "price_change": 0.3662671690553492,
+        "directionality": 0.17361477608265463,
+        "relative_range": 0.55464347406772,
+        "log_return_std": 0.020070931818997304,
+        "body_fraction": 0.5644129447646707,
+        "upper_wick_fraction": 0.25166088015324095,
+        "lower_wick_fraction": 0.18392617508208836,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          37,
+          38,
+          71,
+          107,
+          118
+        ],
+        "reversal_proxy": false
+      },
+      "png": "a93c43415058620cdf4421e7b3ad0500ffd206482314d7a05edc21f26f35ac0e",
+      "overlay": "b45538ad63678da95c5819b1a967fed833a78388d42715b62ba9d192064bdb1e",
+      "csv": "cb9ccefe79b674efc741f4a71200c73f423f003f4817f74303aac5f1c1292905"
+    },
+    "BTCUSDT-123-v2-full": {
+      "candles": "9be81c7b6c2463d6668ce056de7cdd23029fa65d350ae1c46af30c3d6cafef31",
+      "metadata": "1e08bd79b638d9f11dfd95946218375bd7d655179e4c3c03eeb21b0f8d38ca53",
+      "labels": "{\"supports\": [49240.42, 57672.20, 53322.04], \"resistances\": [72353.58]}\n",
+      "diagnostics": "4b875b2d7f23cdc5f0d31cafce93d314235da834b5a7fa0acb69cf26898e27b3",
+      "metrics": {
+        "price_change": 0.3674812246466801,
+        "directionality": 0.19542600280235242,
+        "relative_range": 0.5451215188792363,
+        "log_return_std": 0.018288510025715507,
+        "body_fraction": 0.41521777387777464,
+        "upper_wick_fraction": 0.3347237273036893,
+        "lower_wick_fraction": 0.25005849881853603,
+        "flat_candles": 0,
+        "observed_motion": "upward",
+        "breakout_proxy_positions": [
+          37,
+          38,
+          71,
+          72
+        ],
+        "reversal_proxy": false
+      },
+      "png": "fdf751ef3c03c192d9d00672dfaa7258fca7e457c97fc210e8e71e0c3d8dfa62",
+      "overlay": "f09f59b01fc0219cb226753edb8b4bbc44a69b60a68e32371620f9c17335eb26",
+      "csv": "8c8048099afba7a1117657e36b27ae829c886123e8794f36dbeab194a927a233"
+    },
+    "BTCUSDT-123-v2-bridge_volatility": {
+      "candles": "3d7aedbc148286227a8ca92ac4c0ee4399891c4e662a13538dd6f2d6149bd7d2",
+      "metadata": "f803b463ef23fb2641cc4642894b370392a7c190ee76361e9d6a0cf2f5c1c959",
+      "labels": "{\"supports\": [49218.05, 58380.65, 54400.37], \"resistances\": [73659.64]}\n",
+      "diagnostics": "a92bbdbec42035fe4651f31983937b9be5375bd8d909e71f16ef93f36dfce6d1",
+      "metrics": {
+        "price_change": 0.3662671690553492,
+        "directionality": 0.17361477608265463,
+        "relative_range": 0.5742714265713592,
+        "log_return_std": 0.020070931818997304,
+        "body_fraction": 0.4543700073019482,
+        "upper_wick_fraction": 0.31237404640212574,
+        "lower_wick_fraction": 0.23325594629592603,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          37,
+          38,
+          71,
+          118
+        ],
+        "reversal_proxy": false
+      },
+      "png": "55400d20f690d5499ea5e6f7dc452d4cb630cd3ae3b08e678f3d532ac9e4f415",
+      "overlay": "1d976b046420bf943a06938141dc0805b13b8fe3eb44b4b9c95973d177332581",
+      "csv": "c479ad9c75686ab5912a0766f3c0603e5c425ebb5454f0d9670caf80fc28f3fe"
+    },
+    "BTCUSDT-20261103-v1-full": {
+      "candles": "bb527416b84fba5fe4cba42fd02db923ec746cc012e80706b7d5970e2372ddc4",
+      "metadata": "1cdaa2550d3db563b02c63ebb34cce75aef430b70c3fb5fbd3fa37daad982706",
+      "labels": "{\"supports\": [34735.83, 35127.85, 35352.97], \"resistances\": [35839.59, 35936.20, 36111.43]}\n",
+      "diagnostics": "e2c06a644519702ac4f117ac86bc570b537722e606f9ba4120a95886c184d520",
+      "metrics": {
+        "price_change": 0.007178862219576088,
+        "directionality": 0.015312196622237565,
+        "relative_range": 0.049342431104460446,
+        "log_return_std": 0.004979237123566287,
+        "body_fraction": 0.5364490936521062,
+        "upper_wick_fraction": 0.22295195737290607,
+        "lower_wick_fraction": 0.24059894897498768,
+        "flat_candles": 0,
+        "observed_motion": "low_directionality",
+        "breakout_proxy_positions": [
+          68,
+          94,
+          110
+        ],
+        "reversal_proxy": false
+      },
+      "png": "3060375dc595c2dff46d49381b1bad0d45bf725dbdb409ca08930c9cfaf7a221",
+      "overlay": "41639a891c0a45358b1e23e01425b8f5fa9da30db92d873f37117ea39500a32b",
+      "csv": "ae564d60c76c7ae4810c0f6f496058a0cf83e5527e85faca8927d8a70c6e6478"
+    },
+    "BTCUSDT-20261103-v2-base": {
+      "candles": "0d2e8622826266611a81cefbf3cc000a0129e174f82b47fdfd7fcb8f476d17d2",
+      "metadata": "7a1674a09f09363c1598e1dfc1c63c82275be19266b69d8fc2daf80f4654b378",
+      "labels": "{\"supports\": [], \"resistances\": [25159.28, 32451.77]}\n",
+      "diagnostics": "cb54fd7ed59c12a85085afe63b679e7f725d0880c375209cbab9c447028aa425",
+      "metrics": {
+        "price_change": -0.4592982857490603,
+        "directionality": 0.48559920332444806,
+        "relative_range": 0.47703356825521825,
+        "log_return_std": 0.011629592587725474,
+        "body_fraction": 0.564842539580892,
+        "upper_wick_fraction": 0.2202438612493444,
+        "lower_wick_fraction": 0.21491359916976352,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          41,
+          82,
+          87
+        ],
+        "reversal_proxy": false
+      },
+      "png": "c83f6d03671ee6269a20bee613f6cdcafa145394845879210312de757caa5967",
+      "overlay": "a5978856c5cd53f73571b9e10668d9aaea1d926cd4b20182e663dbd4bff5bc40",
+      "csv": "470fc30f7c6234a897a58c264893a5c78ad1d5c15a0d6d592790c2d241348ee1"
+    },
+    "BTCUSDT-20261103-v2-bridge": {
+      "candles": "b2f5fb450e02bc16ad0ac4b97a76a5b0b15e8bc16140f6de55bf784d88add1d7",
+      "metadata": "f331c6a1b10a70535c6d962c038539365719675e4455e5713f36403e9b4780f7",
+      "labels": "{\"supports\": [], \"resistances\": [26816.91, 25053.10, 32580.42]}\n",
+      "diagnostics": "0426efa2a6ba0a2bfddd7f1282f534e542667f89b6c01911a45fffdc8e9e68a0",
+      "metrics": {
+        "price_change": -0.4592982857490603,
+        "directionality": 0.48559920332444806,
+        "relative_range": 0.4809019344540572,
+        "log_return_std": 0.011629592587725474,
+        "body_fraction": 0.45420990549299606,
+        "upper_wick_fraction": 0.2826633000553495,
+        "lower_wick_fraction": 0.2631267944516544,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          41,
+          82,
+          87
+        ],
+        "reversal_proxy": false
+      },
+      "png": "20053537a9cddd8b233a6a9bb40fe8d6e71f3f86f8860bded58c4254479b218b",
+      "overlay": "4115e47874354a11a856f471860c4b2ed43e2d3bf81ef1729c5cbba9907854e3",
+      "csv": "d7bba1cf41b007e83c27c8d8a754b23b734dabc85ab21a6ae7adfe5e3f262e72"
+    },
+    "BTCUSDT-20261103-v2-tails": {
+      "candles": "0e8ff77eeb7ee40d1a79044018f90d86785f7b45ef78c6354a135101cf0d85b4",
+      "metadata": "ebf86c5296eba844d429cf793333c85d0b165aea073d8e4f3493418fc949a9ef",
+      "labels": "{\"supports\": [], \"resistances\": [24104.70, 31415.16]}\n",
+      "diagnostics": "492c85f109daa9f49d663e237cc9494a1c9c612c3734cf8df7cd7c4f2890bdc3",
+      "metrics": {
+        "price_change": -0.49248527504556094,
+        "directionality": 0.5696552058959136,
+        "relative_range": 0.5070025204232379,
+        "log_return_std": 0.011252954225962728,
+        "body_fraction": 0.5343505048216175,
+        "upper_wick_fraction": 0.23761355151911906,
+        "lower_wick_fraction": 0.2280359436592634,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          41,
+          79,
+          82,
+          83,
+          107,
+          116
+        ],
+        "reversal_proxy": false
+      },
+      "png": "44775589c287b37c0846d33669c00afebe41c676ebb893362ef7dbe4dca9b619",
+      "overlay": "13119e74c2bdc0536069ee7bc2268be12e206b6f20fc9988a37cc691990b7f51",
+      "csv": "4565629207207a129ed6890b8180bb4173d79728688723d3f07388705d88c9f1"
+    },
+    "BTCUSDT-20261103-v2-volatility": {
+      "candles": "bf3249c913039f90f814cdf2a5015890f4ca2608c563356a5e77deecbe775a5d",
+      "metadata": "74f2c2be4fa19867761f5d4c690f1638dd1ac5bd608d46fa1346b7ec887f6d0d",
+      "labels": "{\"supports\": [], \"resistances\": [34008.55, 25540.75]}\n",
+      "diagnostics": "05c330193d9a1d30e8a87dbde76a5d55ff76dbed74bf23b0362638aab53529d7",
+      "metrics": {
+        "price_change": -0.44562057122251075,
+        "directionality": 0.45351566777830116,
+        "relative_range": 0.4571005534143631,
+        "log_return_std": 0.012825444598657743,
+        "body_fraction": 0.5713081513859386,
+        "upper_wick_fraction": 0.21454864402361679,
+        "lower_wick_fraction": 0.21414320459044464,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          27,
+          39,
+          41,
+          53,
+          107
+        ],
+        "reversal_proxy": false
+      },
+      "png": "d3480575e8ca1a879a16d38e42abfd507acae74fbf8bb4f1ca7e2b06ea6cc98e",
+      "overlay": "4f0352dd3a57850dcb79f03d248125aa0746a617c880a0fb8a00e42c5597c06b",
+      "csv": "47f877d15feb9a958c99437a513a76d8097691d685f9cd7be95c5cda8cb0e6f9"
+    },
+    "BTCUSDT-20261103-v2-full": {
+      "candles": "2078a249ff85e2da3b97957993f18408a6798eebc38f183880b949b3aae53e17",
+      "metadata": "a5ced5912cb13dbd4b0be2c29d2d75bbe7cdfc1ed41dedebfb0913a32db8b603",
+      "labels": "{\"supports\": [], \"resistances\": [24575.34, 33171.33]}\n",
+      "diagnostics": "851c51de26e9a5fa69ed51e6b9026c36ababb14bd6414c292707b7d7bb12a148",
+      "metrics": {
+        "price_change": -0.47071291952038896,
+        "directionality": 0.5312271285794019,
+        "relative_range": 0.4823548782520084,
+        "log_return_std": 0.011686567913046075,
+        "body_fraction": 0.42756726503792186,
+        "upper_wick_fraction": 0.2949373164958912,
+        "lower_wick_fraction": 0.27749541846618686,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          39,
+          41,
+          107,
+          116
+        ],
+        "reversal_proxy": false
+      },
+      "png": "7728e26a7333b91685dd0677a4eb125aa287e261a61a68088b576c293e5ea909",
+      "overlay": "bc0616695c3487ecab407cfd7046cda2624b5c6386ec133690e06eaff6b1efbd",
+      "csv": "bf1bd42d0066a71315ec8a5951df68b82c54bc5b602d803d7c55ce6f6d8589bd"
+    },
+    "BTCUSDT-20261103-v2-bridge_volatility": {
+      "candles": "480b912e3c5cf769d0b6994a3b5f6f794d928dbc6536651c4335cdf1257aa159",
+      "metadata": "ad28bfc1196a4ab8e85f7b01e3dd7aa94f1be6fa4e64fb917b7e898d01374e81",
+      "labels": "{\"supports\": [], \"resistances\": [27269.00, 25423.01, 33929.48]}\n",
+      "diagnostics": "6b88e271cb4aff53cb40b608a6653d0b9c163c1a4966b77c522e334f73b97e30",
+      "metrics": {
+        "price_change": -0.44562057122251075,
+        "directionality": 0.45351566777830116,
+        "relative_range": 0.45838217893130734,
+        "log_return_std": 0.012825444598657743,
+        "body_fraction": 0.4591519366898412,
+        "upper_wick_fraction": 0.2776428734931595,
+        "lower_wick_fraction": 0.26320518981699925,
+        "flat_candles": 0,
+        "observed_motion": "downward",
+        "breakout_proxy_positions": [
+          39,
+          41,
+          107
+        ],
+        "reversal_proxy": false
+      },
+      "png": "80441b59100aa314c228e5b5d50fb1fd1382b3e759147e91fdefce0f3f05b9e4",
+      "overlay": "532e6f853474267990d00961d87777e2a5741ae5371066606e4e399ee39374bd",
+      "csv": "179574c8f2553fa8828a3ee05d294c3a92170c8ec5ad9eb1ce116e6968afc0e6"
+    },
+    "ETHUSDT-123-v1-full": {
+      "candles": "8660b4391cf99e1fcbd441e6328673a7118b079a1e02d76f92faf79d92ba7214",
+      "metadata": "38761b96fa8327b9d915356cf79b105666019297bc01bf8f6ef4723f0b66551e",
+      "labels": "{\"supports\": [4894.16, 4656.66, 4583.16], \"resistances\": []}\n",
+      "diagnostics": "3e948ff3e2757ab5186e71a14be8e8beca90a74c0a2b124e80104a7f9b0a2771",
+      "metrics": {
+        "price_change": 0.29347735943571185,
+        "directionality": 0.15214161612163302,
+        "relative_range": 0.326383434389194,
+        "log_return_std": 0.0180612115829795,
+        "body_fraction": 0.5618577459855193,
+        "upper_wick_fraction": 0.2178337523630932,
+        "lower_wick_fraction": 0.2203085016513875,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          33,
+          73,
+          88,
+          117,
+          119
+        ],
+        "reversal_proxy": false
+      },
+      "png": "ea68ceba80c394b5bfa38057d16f1db2fa7eb4ffc0cde70813372d8fd42b20d5",
+      "overlay": "69f21ce94fddb98bdc29ce121ed64b524622afe7a3df0fc36ac454775ccea687",
+      "csv": "b7262922c0bde93fbc12a282fac1b289bae126d92e3a341affe74c80ffed6ed6"
+    },
+    "ETHUSDT-123-v2-base": {
+      "candles": "29521aa8f096b0ca6475e766d11ca7a5eea1b4c6c8881fa855587f72b8d59762",
+      "metadata": "4e591dd734b8a9e78863376cb78279cfa0e0ff98887630e6306649233e28713f",
+      "labels": "{\"supports\": [2686.11, 3115.06, 2588.56], \"resistances\": []}\n",
+      "diagnostics": "2e9396d8a3f28d626c7b62f92425c750456e21293128799408fcaa0b94c09322",
+      "metrics": {
+        "price_change": 0.2030742431134187,
+        "directionality": 0.1639567062917576,
+        "relative_range": 0.2507522811533276,
+        "log_return_std": 0.013419916386110292,
+        "body_fraction": 0.5455780931148152,
+        "upper_wick_fraction": 0.25535054764805715,
+        "lower_wick_fraction": 0.19907135923712765,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          55,
+          80,
+          88
+        ],
+        "reversal_proxy": false
+      },
+      "png": "5e397434b99a8c339a196550b6d3f4457d2fbfebb9dd67704c34dd3d3beeb18e",
+      "overlay": "44cbbf11cb522eeaa36d41ff26e2a9f416f81e19e4bae74ae092517bf10ec63b",
+      "csv": "04c9a4ab4ea5801fea052c3760edb9be48e256ff57185598ed2e1681a756761d"
+    },
+    "ETHUSDT-123-v2-bridge": {
+      "candles": "91d269127aca8d1d957db02e2232803931a61309174b02957aa9ec3baca31dbf",
+      "metadata": "4bb56505bec61f9c1e36da1bc06a7c341fded57e7393ac7d583392a9f23f8fb5",
+      "labels": "{\"supports\": [2662.34, 2772.53, 2582.17], \"resistances\": []}\n",
+      "diagnostics": "c1271146b323abccc35d75d673b17e20d76964d53ea32a816e70e0663b19d5f5",
+      "metrics": {
+        "price_change": 0.2030742431134187,
+        "directionality": 0.1639567062917576,
+        "relative_range": 0.26815108175130997,
+        "log_return_std": 0.013419916386110292,
+        "body_fraction": 0.43470926670308235,
+        "upper_wick_fraction": 0.3110375876160713,
+        "lower_wick_fraction": 0.25425314568084634,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          55,
+          80,
+          88
+        ],
+        "reversal_proxy": false
+      },
+      "png": "9eb292c9e0448598ff5d3a42689cac84c425d42619aab5555b59d287a3e88e65",
+      "overlay": "461d2694f4488c8480bbe8256fe75dfb72d959c8032b1711731d9288003f0920",
+      "csv": "b719cffee277562b70cf0711a7c6f6f56e7ca16a3af0db3131d7c62432e625d2"
+    },
+    "ETHUSDT-123-v2-tails": {
+      "candles": "d03047265964b1fc9dc667275e7cc4fb2a697b9b7fdc6ea106ea5a85f7dec50c",
+      "metadata": "1caeb8ea1a5ff099ed40d64a5473cfdb4c7a76b979c83d6c91737c03b0298825",
+      "labels": "{\"supports\": [2685.49, 2648.55, 2594.83], \"resistances\": []}\n",
+      "diagnostics": "07fa3f4b3b10eafbe4b58c5505a67de8c4d4989364c01460bde1230ac4f88d9b",
+      "metrics": {
+        "price_change": 0.19005461793060374,
+        "directionality": 0.17251138403099112,
+        "relative_range": 0.23473853161065922,
+        "log_return_std": 0.011912488666461314,
+        "body_fraction": 0.5079840423938904,
+        "upper_wick_fraction": 0.27984797526172706,
+        "lower_wick_fraction": 0.2121679823443825,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          55,
+          80,
+          88
+        ],
+        "reversal_proxy": false
+      },
+      "png": "9f44faf7178cb3d953cab0301a30c6696a0c984a6fcbc2cd9bdfdf6b7fe90f39",
+      "overlay": "0f30875a7caeaa906866d3a6b43f194563875300cb8aee6592b26d65e2892481",
+      "csv": "c41533255f49338d68024f518488807b58745135b3c94b6e0941c7b427f6ac06"
+    },
+    "ETHUSDT-123-v2-volatility": {
+      "candles": "27d92833b4ad549480cff5935dacae885890ffca79c43fc2356ebd1ff16db71f",
+      "metadata": "2c38184f54f25feab5641cb1a93c304d6b6103feb42563eae4ee67e6333d9074",
+      "labels": "{\"supports\": [2711.58, 3038.49, 2783.64], \"resistances\": []}\n",
+      "diagnostics": "3a84ae831ffb17b2bf830de709750f0fa4b50a67c5f63bd64394e402402c5fa7",
+      "metrics": {
+        "price_change": 0.24305876757986344,
+        "directionality": 0.1727699833141413,
+        "relative_range": 0.3056317078300353,
+        "log_return_std": 0.015248176765368437,
+        "body_fraction": 0.5449712911137746,
+        "upper_wick_fraction": 0.25522831064219276,
+        "lower_wick_fraction": 0.19980039824403265,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          55,
+          88
+        ],
+        "reversal_proxy": false
+      },
+      "png": "23fd09a97bcae76600aca7e8388289cad444da6402e684694eea35f1964f5ecb",
+      "overlay": "bf5f249608505218c15d393f5557460518d08d8197ce52bc46d7a33447932307",
+      "csv": "d6c3e1a65f2cc70e26d1441a45b24a42f1d9d19bc3e0f51c42518f33a7f0c3c7"
+    },
+    "ETHUSDT-123-v2-full": {
+      "candles": "b818d216bcb42451bae30fd78090959cb8b8568900e6387a183017130ee384ae",
+      "metadata": "4ee13156c2ef362197aecefa2d88a2c5aa10d7482fb52cf7c41648371b468547",
+      "labels": "{\"supports\": [2650.96, 2700.34, 2574.67], \"resistances\": []}\n",
+      "diagnostics": "0747b918a47a82903ad5e793f510f52078ddac3aaae5a1411e87c4c43c205f72",
+      "metrics": {
+        "price_change": 0.22069634463597265,
+        "directionality": 0.17784707104839229,
+        "relative_range": 0.2967180769792752,
+        "log_return_std": 0.013460519419750601,
+        "body_fraction": 0.398905203850403,
+        "upper_wick_fraction": 0.3325369907548222,
+        "lower_wick_fraction": 0.2685578053947748,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          55,
+          88
+        ],
+        "reversal_proxy": false
+      },
+      "png": "db6ef2db62da7b90af383dfff0ad38537c4450d23ef4a507892abfc418642d0c",
+      "overlay": "faf1f7321ab15a5ab8f82e8cb5a351f20d24d8f2c588cd60dcf89831c210b031",
+      "csv": "6944c25bbfdfedaabef460a371dcd83ccd9392d5da66e7cc819b0988554d520f"
+    },
+    "ETHUSDT-123-v2-bridge_volatility": {
+      "candles": "1910a64ee5974441e8128f1e7b73c0692f18b97355bceffc5ca59e0fb2b7cc65",
+      "metadata": "8fce975e55d84fd04dfa36ffddf94ea9954fb93312e300fbc10e27c063d3013c",
+      "labels": "{\"supports\": [2692.91, 2565.90, 2803.03], \"resistances\": []}\n",
+      "diagnostics": "728643117ed1825d7064a07bf06ea1b749a09beb5a7530b70042d84abe7f1a96",
+      "metrics": {
+        "price_change": 0.24305876757986344,
+        "directionality": 0.1727699833141413,
+        "relative_range": 0.32357747717905305,
+        "log_return_std": 0.015248176765368437,
+        "body_fraction": 0.43402909797272754,
+        "upper_wick_fraction": 0.31131989568009716,
+        "lower_wick_fraction": 0.2546510063471753,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          55,
+          88
+        ],
+        "reversal_proxy": false
+      },
+      "png": "a87443a54345114ee8dd3dac1fdf7572d5da6a88779bd6c5e6c6bb057938d95f",
+      "overlay": "04b9e2d7ddcb012e1feae1fddd6a4d617a435946a4adb42c1e6dd1ca61d024b6",
+      "csv": "11dc0d95c15c5025cda08f6d6dff3c1e6c8d7f75cb37fa20cce36e82947b9d01"
+    },
+    "ETHUSDT-20261103-v1-full": {
+      "candles": "787705628f646bed862d110a13d00359eeed2a0de9fee7c626d09862479e2911",
+      "metadata": "2d64176eb632cc9f5d24ee7aaf43e5207e21f69a09870316776a356dce6a31c1",
+      "labels": "{\"supports\": [], \"resistances\": [3757.90, 3520.61, 3632.27]}\n",
+      "diagnostics": "c01307fb2b34bec05d9a7eaa8dae639b0ddd91eec41a85fe23adf1a209717b98",
+      "metrics": {
+        "price_change": -0.07320289318008788,
+        "directionality": 0.043087507520909556,
+        "relative_range": 0.168513782630646,
+        "log_return_std": 0.017447501802825716,
+        "body_fraction": 0.6105299348440839,
+        "upper_wick_fraction": 0.17659425092181433,
+        "lower_wick_fraction": 0.2128758142341018,
+        "flat_candles": 0,
+        "observed_motion": "low_directionality",
+        "breakout_proxy_positions": [
+          106,
+          111
+        ],
+        "reversal_proxy": false
+      },
+      "png": "c3cc172146c9bbe2e0659432c7445a5f026fc1eee40dc83fc3c9a64492281202",
+      "overlay": "1301798b9450f2257feb59dfa101534bb54dfcce84527f5b6a2bc18b50b7c018",
+      "csv": "b0e68f4114877e61259eca372f67b16248eff4b6ff884ee21a1489a655501d45"
+    },
+    "ETHUSDT-20261103-v2-base": {
+      "candles": "a20d4a1645cacb3f35c349dbff6e5be33a15be2c75991bf17aeb4373449ed002",
+      "metadata": "5474c96a698021771607c192785b96d6fc4e6a40554ac700a63bf5f7da9878cd",
+      "labels": "{\"supports\": [1269.43, 1333.12, 1320.49], \"resistances\": [1499.59]}\n",
+      "diagnostics": "a47632574ce2d080f51538d2a06fe2392b2d87f6471e5a63a04a99b5e50fb0f7",
+      "metrics": {
+        "price_change": 0.1551210435463961,
+        "directionality": 0.10498209702732775,
+        "relative_range": 0.29814597113043584,
+        "log_return_std": 0.01364265442620065,
+        "body_fraction": 0.5872948774855076,
+        "upper_wick_fraction": 0.22985168188503702,
+        "lower_wick_fraction": 0.18285344062945544,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          36,
+          50
+        ],
+        "reversal_proxy": false
+      },
+      "png": "529eb762bc411afe733998146b8923aa5d6ac03f699f97106058fcc1c64656ba",
+      "overlay": "a55e7cca9fb356446d89a5681968f1c4b7053928dd1cdd91d4a4487c21515d97",
+      "csv": "644fc32aad55a1a8b6bbcfd57740d6ffd3e5d80efac0eb870e92305dfa7febca"
+    },
+    "ETHUSDT-20261103-v2-bridge": {
+      "candles": "423dac9407fab56167cb74b3d02ae69e001706d98b2547dbed9a0a1e3ba0e126",
+      "metadata": "4a0e3e93bab81bdcd5c67a739a9b7bc30e23351b483989487e6252874ee32a82",
+      "labels": "{\"supports\": [1268.00, 1335.94, 1323.01], \"resistances\": [1462.29, 1510.96]}\n",
+      "diagnostics": "d1bbef3f526e6b70593650f415a609ec0e469e903e683229613388700e0fbeba",
+      "metrics": {
+        "price_change": 0.1551210435463961,
+        "directionality": 0.10498209702732775,
+        "relative_range": 0.3094569247056363,
+        "log_return_std": 0.01364265442620065,
+        "body_fraction": 0.47310763898545277,
+        "upper_wick_fraction": 0.2978173472010318,
+        "lower_wick_fraction": 0.22907501381351544,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          36,
+          50
+        ],
+        "reversal_proxy": false
+      },
+      "png": "2e1cc8422c5597574ebbab6e0f26a9297626acfc5967dfb9c55d2d5b4b2c941d",
+      "overlay": "323f1ec1fd7a998050ab4e090af1084ac5a81e5cb7de6f20bf39f35c77048318",
+      "csv": "1a731c8670bac42203baf9f6bb195d6935fe371e2c5b8d59306345b2f15df1f0"
+    },
+    "ETHUSDT-20261103-v2-tails": {
+      "candles": "a1fd814c675af685aca72ce7ce966c67074259c0901964c05accd1fad33b8322",
+      "metadata": "ffc8ec3f52a944485645b66c773026d1d700b5175679302a9372baec57e5ace1",
+      "labels": "{\"supports\": [1304.45, 1255.66, 1336.91], \"resistances\": [1484.81, 1438.45]}\n",
+      "diagnostics": "d7bbe54de52fe8def7c86acd81336f97d78178e6f770e224f7ec93a40959048e",
+      "metrics": {
+        "price_change": 0.1416427880408122,
+        "directionality": 0.10479187287992273,
+        "relative_range": 0.2794239369090732,
+        "log_return_std": 0.012856455666416218,
+        "body_fraction": 0.5603435649818668,
+        "upper_wick_fraction": 0.24801465290682356,
+        "lower_wick_fraction": 0.1916417821113096,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          36,
+          50,
+          76
+        ],
+        "reversal_proxy": false
+      },
+      "png": "219dd7883b44fe969360ce11527a10bba3802c0bf5229e5607be7feb3f6be29d",
+      "overlay": "76548a75beeae8be70238a403c358aa34c78d342a5be01c4e05d3214a2716503",
+      "csv": "ed62904bffc4d3e215f1dabb4de870b5f2b6eb680bf5f8294eea005f1f0efb67"
+    },
+    "ETHUSDT-20261103-v2-volatility": {
+      "candles": "9c1923de64ff6099f3a3670ac6ac815af002ca853df57c28ef0e1c482327e1d5",
+      "metadata": "79e8561ed18263496fed40db9916428d34bc9b137ac7664022485a0f75c178a6",
+      "labels": "{\"supports\": [1332.62, 1267.54, 1225.91], \"resistances\": [1491.81, 1516.90]}\n",
+      "diagnostics": "93e152ed655064ff7822ca2d17a52da2981601cf8b72bdf21e2b72a52eb49de8",
+      "metrics": {
+        "price_change": 0.16011562299306714,
+        "directionality": 0.13626291875274568,
+        "relative_range": 0.2743207725310414,
+        "log_return_std": 0.011460483367236634,
+        "body_fraction": 0.5956707571021933,
+        "upper_wick_fraction": 0.22644124792980036,
+        "lower_wick_fraction": 0.17788799496800636,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          36,
+          49,
+          50,
+          108
+        ],
+        "reversal_proxy": false
+      },
+      "png": "adaa9aa4e014753130f8ed0ecfd985a6ab6ce10e8f4d9179db87381207e3c3c3",
+      "overlay": "a27e9b483fd26f5c10ea000239690c7529a1035a9ccba14e6775e236d627c25a",
+      "csv": "23387363b5ffab35bb3e9fed4769821ba4564fb870c051505123ee5b863516cb"
+    },
+    "ETHUSDT-20261103-v2-full": {
+      "candles": "7ab57ee4b46e841c3396bea9e8e3f4d25a27256ca25061aee4945ac1fc9f76e8",
+      "metadata": "5663d59177833e4ca09251a96ad8dbb9309b18ac6f531d82b3bd50ff3308dbcb",
+      "labels": "{\"supports\": [1309.84, 1252.69], \"resistances\": [1483.99, 1532.07]}\n",
+      "diagnostics": "fdea6b05eef327b4d8da6d98831347b1aeefd2001907ec0856e47483d4656600",
+      "metrics": {
+        "price_change": 0.14860273454488993,
+        "directionality": 0.13695113421680075,
+        "relative_range": 0.27622306077227915,
+        "log_return_std": 0.010790424416394027,
+        "body_fraction": 0.4591684573811706,
+        "upper_wick_fraction": 0.30638958063977006,
+        "lower_wick_fraction": 0.2344419619790593,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          36,
+          50,
+          102,
+          108
+        ],
+        "reversal_proxy": false
+      },
+      "png": "e229808bea19602fce893b39bb17c4219e44174a78dcf540fbf8629e5dcf9704",
+      "overlay": "039e67c5d88fa48d46f57d0e93a0bad1a2fb0483f73900d563b939112100c380",
+      "csv": "a4c3c6effa2e3fd1783d7237d368b8857182d6b13e7456e6a7f85833e047e8a8"
+    },
+    "ETHUSDT-20261103-v2-bridge_volatility": {
+      "candles": "7500092195c9379d3e4780036ddf462bd364420739aae89f2e5c42d876137589",
+      "metadata": "bbe8a63d5876407bef2fbe80b2ed0178eca0e2d2ddab6415e91297936b08160f",
+      "labels": "{\"supports\": [1269.51, 1365.72, 1327.03], \"resistances\": [1498.37, 1459.03, 1561.73]}\n",
+      "diagnostics": "307f5aeb12f7d34044fcfd24419a60f4cec0b9cbf76a491a4fbe58f115d604a0",
+      "metrics": {
+        "price_change": 0.16011562299306714,
+        "directionality": 0.13626291875274568,
+        "relative_range": 0.2826355451732062,
+        "log_return_std": 0.011460483367236634,
+        "body_fraction": 0.4801934903525866,
+        "upper_wick_fraction": 0.2933837795825208,
+        "lower_wick_fraction": 0.22642273006489255,
+        "flat_candles": 0,
+        "observed_motion": "intermediate",
+        "breakout_proxy_positions": [
+          36,
+          49,
+          50,
+          108
+        ],
+        "reversal_proxy": false
+      },
+      "png": "2f05c9bcdd57d4d43f8b1cc73a682c3d2f280c78b2725b3e403913b6d5a2daa2",
+      "overlay": "fc8932b69d756918c18907e2cbbc0ef5bb54ddcfa644672ab8a94f406d1c2de0",
+      "csv": "31e0b7e07fdacc8f379e8dbe2c884b2ceecdf403597bd86e9c7a7aea371cac22"
+    }
+  }
+}

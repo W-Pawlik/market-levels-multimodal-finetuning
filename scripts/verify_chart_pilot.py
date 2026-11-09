@@ -7,9 +7,10 @@ import json
 from pathlib import Path
 import tempfile
 
-from market_levels.charts.renderer import render_window, validate_window
-from market_levels.data_processing.storage import read_candles_csv
-from market_levels.data_processing.synthetic.quality import canonical_hash
+from market_levels.charts.io.rendering import render_window
+from market_levels.charts.domain.validation import validate_window
+from market_levels.data_processing.io.candles import read_candles_csv
+from market_levels.core.ohlc.identity import canonical_hash
 
 
 def child(root: Path, name: str) -> Path:

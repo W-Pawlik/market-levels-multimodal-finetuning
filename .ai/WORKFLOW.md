@@ -66,6 +66,16 @@ identyczność rzeczywistych okien. Pełna procedura:
 
 ## W trakcie i po zmianie
 
+Po reorganizacji src testy są pogrupowane według obszarów, a konstruktorów
+fixture szukaj w tests/support. Podstawowe unittest discover nadal zbiera cały
+zestaw. Granice importów sprawdza test_boundaries.py, a wzorzec sprzed zmian
+test_behavior.py i test_rendering.py. Referencje wiążą się z wersjami środowiska;
+pominięcia trzeba jawnie raportować. Nie aktualizuj automatycznie oczekiwań
+w tests/fixtures/refactor_behavior.json w reakcji na regresję.
+Wspólna publikacja jest w shared/publication.py, integralność w shared/integrity.py,
+a weryfikacja zbioru w datasets/workflows/verification.py. Polecenia CLI są te same.
+[Raport refaktoryzacji](../docs/refactoring/RAPORT_REFAKTORYZACJI_SRC.md).
+
 Publikacja partii i raportów korzysta ze wspólnego publish_directory:
 krótkie ponowienia konfliktów Windows, bez ponownego generowania. Pozostałości
 stagingu są niekompletnym etapem; zabezpiecz je ręcznie poza przebiegiem dopiero

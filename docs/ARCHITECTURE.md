@@ -1,245 +1,163 @@
 # Architektura Market Levels
 
-Docelowo system obsłuży odtwarzalny eksperyment dostrajania modelu multimodalnego
-do poziomów wsparcia i oporu. Działają pozyskiwanie i walidacja
-rzeczywistych OHLC oraz generowanie syntetycznych serii z kalibracją.
-Jest to jeden pakiet, bez mikroserwisów, bazy danych i MLOps.
+Stan po reorganizacji z 2026-11-08. Jest to jeden pakiet badawczy market_levels
+w układzie src. Działają dane, generatory, wykresy, etykietowanie, zbiory
+oraz ewaluacja zapisanych odpowiedzi. Modeling, trening i inferencja są planowane.
 
-## Podział istniejącej implementacji
+[Raport refaktoryzacji](refactoring/RAPORT_REFAKTORYZACJI_SRC.md),
+[pierwotny plan](PLAN_REFAKTORYZACJI_SRC.md),
+[mapa przeniesionych symboli](refactoring/SYMBOL_MAP.json).
 
-| Moduł w `src/market_levels/` | Odpowiedzialność i przeniesione elementy |
-| --- | --- |
-| `configuration.py` | wczytanie JSON, sprawdzenie obsługiwanego źródła i ustawień pobierania |
-| `core/candles.py` | `Candle`, `DataValidationError`, UTC i odstęp 4h; niezależność od Binance |
-| `core/periods.py` | `iter_months`, `_last_closed_month`, `_days_in_month` |
-| `data_processing/real/binance_vision/client.py` | `_remote_url`, `_get`, retry, `.part`, `DownloadError`, parametry źródła |
-| `data_processing/real/binance_vision/archives.py` | `_expected_sha256`, `_sha256_file`, `acquire_archive`, `acquire_month`, fallback |
-| `data_processing/real/binance_vision/parsing.py` | `decode_binance_timestamp`, `parse_candle`, `read_spot_klines_zip`, `verify_archive_period` |
-| `data_processing/validation.py` | `_positive_decimal`, granica 4h, relacje OHLC i `check_series` |
-| `data_processing/storage.py` | zapis CSV i JSON wyodrębniony z `run` |
-| `data_processing/pipelines/download.py` | `run`: koordynacja, brzegi zakresu, składanie raportów i manifestu |
-| `cli/download.py` | `main`: argumenty, dry-run, prezentacja błędów |
-| `data_processing/synthetic/settings.py` | oddzielny loader sekcji synthetic, walidacja i robocze parametry |
-| `data_processing/synthetic/regimes.py` | wykonalne sekwencje 1–3 faz, ważenie przejść, długości i parametry |
-| `data_processing/synthetic/generator.py` | lokalny RNG, seedy przykładów, logarytmiczna ścieżka i świece |
-| `data_processing/synthetic/calibration.py` | jawny okres, statystyki, profile, jawne zatwierdzenie podziału |
-| `data_processing/synthetic/quality.py` | wspólna walidacja + kontrola syntetyczna, hash, statystyki i porównania |
-| `data_processing/pipelines/synthetic.py` | niezależne przykłady, kontrola duplikatów, round-trip, atomowa partia |
-| `cli/generate_synthetic.py` | nowe CLI i nadpisania sekcji synthetic |
-| `data_processing/synthetic/training_period.py` | zatwierdzony podział z JSON i kontrola przynależności okresu do treningu |
-| `data_processing/synthetic/selection.py` | nienakładające się rzeczywiste okna wyłącznie do diagnostyki |
-| `data_processing/synthetic/comparison.py` | odczyt i weryfikacja partii, agregacja obserwacji/okien, korelacja lag 1 |
-| `data_processing/pipelines/compare_synthetic.py` | koordynacja porównania i atomowy zapis JSON/Markdown |
-| `cli/calibrate_synthetic.py`, `cli/compare_synthetic.py` | dwa nowe entry pointy, bez zmiany interfejsów pobierania/generowania |
-| `charts/diversity.py` | odczyt istniejących refined, reżimy, metryki i progi wyłącznie z treningu |
-| `charts/renderer.py` | 120 poprawnych świec → PNG Agg 1024 × 768, bez metadanych wejściowych i S/R na obrazie |
-| `charts/pilot.py`, `cli/audit_charts.py` | deterministyczny dobór, raporty, kopie okien i atomowa publikacja diagnostyki |
+## Jak odnaleźć kod
 
-Przepływ: CLI → konfiguracja JSON + nadpisania CLI → pipeline → archiwa i SHA-256 → parser ZIP → walidacja okresu
-i szeregu → kontrola brzegów → CSV → raport → manifest. Przy `strict_gaps`
-przerwanie następuje po CSV i raporcie, przed manifestem, jak w oryginale.
+| Obszar | Odpowiedzialność | Mapa plików |
+| --- | --- | --- |
+| core/ | Model OHLC, walidacja, czas, statystyki i ATR. | [README](../src/market_levels/core/README.md) |
+| shared/ | Integralność, ścieżki, manifesty, JSON i publikacja. | [README](../src/market_levels/shared/README.md) |
+| data_processing/real/ | Binance: HTTP, archiwa, parser i pobieranie. | [README](../src/market_levels/data_processing/README.md) |
+| data_processing/windows/ | Okna, odrębne selekcje i treningowy czytnik CSV. | [README](../src/market_levels/data_processing/windows/README.md) |
+| data_processing/synthetic/ | Generowanie v1/v2, profile, kalibracja i porównania. | [README](../src/market_levels/data_processing/synthetic/README.md) |
+| charts/ | Metryki, dobór pilotażu, renderer i odczyt pilotażu. | [README](../src/market_levels/charts/README.md) |
+| labeling/ | Algorytm S/R, modele wyniku, nakładki i pilotaż. | [README](../src/market_levels/labeling/README.md) |
+| datasets/ | Approval, plan, produkcja, próba, audyt i odtworzenie. | [README](../src/market_levels/datasets/README.md) |
+| evaluation/ | Ścisły JSON, matching, metryki i sparowane raporty. | [README](../src/market_levels/evaluation/README.md) |
+| experiments/refinement/ | Istniejący runner, preflight, checkpointy i wznowienie. | [README](../src/market_levels/experiments/README.md) |
+| cli/ | Dotychczasowe polecenia, argumenty, komunikaty i błędy. | [Entry pointy](../pyproject.toml) |
 
-Model i okresy nie zależą od wejścia/wyjścia. Walidacja zależy od modelu,
-parser Binance od walidacji. HTTP nie zna świec ani raportów, zapis nie pobiera
-i nie waliduje danych. Pipeline składa funkcje niższych warstw. Nie dodano
-hierarchii klas, interfejsów ani ogólnego mechanizmu wstrzykiwania zależności.
+W obszarach powtarzają się role:
 
-`Candle.source_archive` pozostaje wymagane. Model nie importuje Binance.
-Dla syntetycznych danych pole ma wartość `synthetic:<wersja>:<symbol>:<seed>`.
-Nie zmieniono kontraktu modelu. Wspólny storage rozszerzono o odczyt CSV;
-dotychczasowych funkcji zapisu i walidacji nie zmieniono.
+- domain/: modele, algorytmy, deterministyczne transformacje i walidacja;
+- workflows/: koordynacja konkretnego przypadku użycia;
+- io/: odczyt i zapis formatów właściwych obszarowi;
+- reporting/: prezentacja gotowych wyników;
+- config/ lub config.py: rzeczywiste ustawienia i ich walidacja.
 
-Przepływ syntetyczny: CLI → osobne ustawienia + jawne profile → wykonalne reżimy
-→ 12 kroków na świecę → wspólna walidacja + kontrola 120 świec i ciągłości ceny
-→ hash duplikatów → CSV w katalogu tymczasowym → odczyt kontrolny → metadane
-i manifest → rename całego katalogu partii. Błąd zatrzymuje całą partię,
-bez cichych ponowień losowania i bez częściowo opublikowanych przykładów.
-Kalibracja jest osobną operacją API i nigdy nie uruchamia się automatycznie.
-Szczegóły: [generator](SYNTHETIC_GENERATOR.md).
+Katalogi grupują istniejące odpowiedzialności. Nie tworzymy pustych warstw,
+klas Service/Repository/Factory ani globalnego katalogu zmiennych i utils.py.
+Małe spójne moduły, np. evaluation/protocol.py, pozostają osobnymi plikami.
 
-Kalibracja CLI korzysta z istniejących `calibrate_csv` i `save_profile`, po
-kontroli jawnego okresu przez `ChronologicalSplit.require_training`. Odczytuje
-pełny CSV, a estymacja wybiera tylko wskazaną część treningu. Profil v1 ma
-dodatkowe metadane podziału w `source.chronological_split`; status `unapproved`.
-Funkcje podstawowego API kalibracji i ich format nie uległy zmianie.
+## Zależności
 
-Porównanie: CSV → ograniczenie do treningu → ciągłe odcinki → pojemność okien
-→ deterministyczny wybór rozłącznych pozycji; osobno manifest → metadane/profil
-→ CSV → weryfikacja hasha, walidacji i zapisanych statystyk. Dopiero potem
-agregujemy surowe obserwacje wewnątrz okien. `series_observations` udostępnia
-te same wzory, których używa `series_statistics`, bez zmiany dotychczasowych
-wyników. Nie wprowadzono osobnych definicji zwrotów/knotów. Porównanie nie tworzy
-zwrotów ani par korelacyjnych między oknami. JSON i Markdown publikowane są
-razem przez rename katalogu. Nie jest to moduł końcowego podziału zbioru.
-Instrukcja: [kalibracja i porównanie](SYNTHETIC_CALIBRATION_COMPARISON.md).
+CLI wywołuje workflow. Workflow składa konfigurację, algorytmy, I/O i raporty.
+Domain nie importuje workflow, adapterów I/O ani CLI. Core i shared zależą
+od własnych modułów i biblioteki standardowej. Graf importów, także importów
+wewnątrz funkcji, nie zawiera cykli. Granice sprawdzają
+[testy architektury](../tests/unit/architecture/test_boundaries.py).
 
-## Wersja v2
+Pozostają jawne zależności między obszarami: datasets używa generatora,
+renderera i etykietowania, a evaluation wspólnego ATR i formatu przykładu.
+Funkcje techniczne nie wymagają importowania procesów pilotażowych.
+Obliczenia można importować bez Matplotlib; renderer ładuje tę bibliotekę lokalnie.
 
-`generator.py` jest zachowaną implementacją v1. `dispatch.py` wybiera ją lub
-`generator_v2.py`; domyślnie v1. `SyntheticSettings.document()` zachowuje
-historyczną reprezentację konfiguracji v1, bez dodatkowych kluczy.
-`stochastic_processes.py` zawiera most, mieszankę i AR(1), a `v2_parameters.py`
-ich parametry, ograniczenia i przełączniki wariantów. Planowanie faz jest wspólne.
+Pakiet labeling eksportuje LabelResult i label_window; data_processing.windows
+udostępnia Window, candidates, coverage, validate_selection i select_training.
+Inicjalizatory pakietów nie zawierają algorytmów. Importy wewnętrzne są względne,
+bez modyfikowania sys.path.
 
-`profile_v2.py` definiuje schemat 2 i pochodzenie parametrów; część empiryczną
-sprawdza wspólnym walidatorem pól v1. `calibration_v2.py` korzysta z istniejącej
-kalibracji bazowej, wyboru okien i agregacji oraz ograniczonej siatki na kilku
-seedach. Wspólne load/save_profile rozróżnia schematy; stary validate_profile
-nie zmienił kontraktu. Nie zapisujemy profili v2 do plików v1.
+## Dane rzeczywiste i publikacja
 
-`comparison.py` sprawdza manifesty obu wersji i przebieg zmienności v2.
-`experiments.py` zestawia zapisane porównania z identyczną referencją,
-pokazuje rozrzut po seedach i zmianę błędów względem V1. `--reports` jest osobnym
-trybem istniejącego CLI porównania; oba rodzaje raportów wykorzystują ten sam
-atomowy zapis JSON/Markdown. Nie dodano frameworka eksperymentów ani zależności.
+Adapter real/binance_vision zachowuje client / archives / parsing.
+Koordynator jest w real/workflows/download.py; configuration.py nadal ładuje
+konfigurację pobierania. Przepływ: konfiguracja i CLI → archiwa i CHECKSUM
+→ parser ZIP → walidacja okresu i OHLC → CSV → raport → manifest.
+Strict-gaps nadal przerywa po CSV i raporcie, przed nowym manifestem.
+Fallback dzienny zachowuje poprzednie warunki i ostatni zakończony miesiąc.
+Nie interpolujemy luk.
 
-Szczegóły: [generator v2](SYNTHETIC_GENERATOR_V2.md).
+Candle zachowuje Decimal, UTC, 4h i wymagane source_archive. CSV ma nagłówek
+open_time_utc,open,high,low,close. Osobny czytnik treningowy kończy na pierwszym
+późniejszym znaczniku czasu, bez analizowania OHLC validation/test.
+SHA źródła może obejmować cały plik.
 
-Publikacje partii, profili i porównań używają `data_processing/staging.py`.
-Kontekst `publication_workspace` ponawia blokady dostępu przy sprzątaniu,
-zachowuje pierwotny błąd operacji, a po udanej publikacji zgłasza wyczerpaną
-blokadę jako ostrzeżenie. Atomowe rename/hard link i formaty są niezmienione.
-Szczegóły: [poprawka Windows](WINDOWS_STAGING_CLEANUP_FIX.md).
+shared/publication.py zachowuje atomowy rename, cztery próby konfliktów dostępu
+oraz opóźnienia 0.05/0.15/0.30 s. Nie powtarza generowania zawartości.
+Sprzątanie nie zastępuje pierwotnego błędu; po sukcesie wyczerpana blokada jest
+ostrzeżeniem. Zachowano logger market_levels.data_processing.staging.
+Zapis profilu nadal używa hard linku bez nadpisywania.
 
-## Pakiet i uruchamianie
+shared/manifests.py obsługuje istniejący format zapieczętowanego katalogu.
+Manifesty pobierania, generatora i pilotażu zachowują odrębne formaty.
+Hash pliku, kanoniczny hash cen, hash profilu i fingerprint ewaluacji mają
+różne wejścia i kodowania. Podobnie osobne pozostają JSON raportów, etykiet,
+kanonizacja profilu i ścisły Decimal JSON protokołu ewaluacji.
 
-Setuptools odkrywa `market_levels*` w `src/`. Instalacja udostępnia
-`market_levels.cli.download`, `market-levels-download` oraz
-`market-levels-generate-synthetic` (moduł `market_levels.cli.generate_synthetic`). Python 3.10+,
-bez zewnętrznych zależności uruchomieniowych.
+## Generowanie i okna
 
-Pozostałe entry pointy: `market-levels-calibrate` (`cli.calibrate_synthetic`)
-i `market-levels-compare-synthetic` (`cli.compare_synthetic`). Wszystkie operacje
-danych mogą działać offline. Instalacja pakietu wymaga dostępnego setuptools.
+synthetic/domain/generation zawiera niezależne v1/v2, fazy, procesy
+stochastyczne, seedy i dispatch. Wersje, strumienie RNG i kolejność losowania
+pozostają niezmienione. Domyślny jest v1. V2 ma base, bridge, tails,
+volatility, full i bridge_volatility.
 
-Na prośbę autora usunięto warstwę zgodności: `src/download_data.py`,
-`src/validate_data.py` oraz `src/__init__.py`. `src` jest teraz wyłącznie
-katalogiem źródeł. Po instalacji pakietu należy używać importów `market_levels`
-i polecenia `market-levels-download` lub modułu `market_levels.cli.download`.
-Wewnętrzne importy są względne, bez modyfikowania `sys.path`.
-Instrukcja przygotowania środowiska znajduje się w głównym README.
+Profile są w domain/profiles. Walidacja profilu i audytu jest oddzielona od
+uruchamiania symulacji. Ustawienia wyszukiwania są w config, cechy i cele
+w domain, a wykonanie kalibracji/refinement w workflows. Audyt odtwarza cel
+bez generatora. Kalibracja jest jawna, treningowa i nie zatwierdza profilu.
+Partia zachowuje kontrolę seedów, duplikatów i round-trip CSV oraz atomową
+publikację; bez cichego ponawiania losowania. data/processed jest chronione
+również przy uruchomieniu z innego katalogu.
 
-Kod pozyskiwania i przetwarzania danych jest w `data_processing/`.
-Główny katalog projektu `data/` zawiera wyłącznie artefakty danych.
-`src/market_levels.egg-info/` to generowane metadane instalacji edytowalnej,
-ignorowane przez Git. Nie należy edytować ich ręcznie.
+Trzy reguły selekcji pozostają odrębne:
 
-## Stan modułów kolejnych etapów
+- diagnostyka generatora: pojemności ciągłych odcinków i rozłączne pozycje;
+- produkcja: kandydaci chronologiczni, warstwy train, prefiks validation/test;
+- pilotaż: pokrycie kategorii z deterministycznym rozstrzyganiem remisów.
 
-| Katalog pakietu | Planowana odpowiedzialność |
-| --- | --- |
-| `data_processing/windows/` (działa, 3.5) | okna 120 świec, fragmenty ciągłe, selekcja chronologiczna i walidacja |
-| `charts/` (MVP działa) | Matplotlib Agg, styl, rozdzielczość, PNG i diagnostyka; bez etykietowania |
-| `labeling/` (działa, etap 3.4) | model poziomów, deterministyczny algorytm, etykiety i diagnostyka pilotażu |
-| `datasets/` (działa, 3.5 część 2) | zatwierdzanie kopii profili, preflight, produkcja, neutralny JSONL, pełne odtworzenie i audyty |
-| `modeling/` | modele multimodalne bez narzuconej rodziny |
-| `training/` | dostrajanie, adaptery, checkpointy, logi |
-| `inference/` | obraz i instrukcja → JSON, niezależnie od treningu |
-| `evaluation/` (działa, 3.6 część 1) | ścisły JSON, ATR z etykietowania, optymalne pary, micro-P/R/F1, MAE, kompletność ID i sparowane raporty; bez inferencji |
-| `experiments/` | identyfikatory, wersje danych, konfiguracje i wyniki |
+Statystyki szeregu i metryki wykresu zachowują różnice konwersji Decimal/float
+oraz traktowania świec o zerowym zakresie. Nie zastępujemy jednego drugim.
+Matematyka: [v1](SYNTHETIC_GENERATOR.md), [v2](SYNTHETIC_GENERATOR_V2.md),
+[refinement](RAPORT_REFINEMENT_V2.md).
 
-Reguły etykietowania zaimplementowano w `labeling/algorithm.py`: ekstrema z trzema świecami po obu stronach,
-minimum dwie niezależne reakcje oddalone o minimum pięć świec, Wilder ATR(14),
-grupowanie 0,5 ATR i mediana ekstremów. Dalej: klasyfikacja względem ostatniego
-zamknięcia, pomijanie poziomów zbyt bliskich, ranking według reakcji, aktualności
-i odległości, maksymalnie trzy wsparcia i trzy opory. Mediana poprzedza filtrowanie
-reakcji. Filtrowanie wybiera najsilniejsze ekstremum jako pierwsze, usuwa sąsiadów
-bliższych niż pięć świec i powtarza; dla H siła to cena−mediana, dla L mediana−cena.
-Stały kontekst Decimal ma 50 cyfr. Zaokrąglenie ROUND_HALF_UP do dwóch miejsc
-dotyczy tylko odpowiedzi VLM; kolizje (również między stronami) rozstrzyga ranking.
-`labeling/pilot.py` oraz `cli/label_pilot.py` czytają wyłącznie 32 istniejące okna,
-sprawdzają SHA i publikują nowy katalog pod results/diagnostics przez wspólny staging.
-Pełne dane diagnostyczne i PNG z poziomami są oddzielone od odpowiedzi VLM.
-Nie wykonano niezależnej eksperckiej oceny. Stan etapu 3.5 opisano poniżej.
+## Wykresy i etykietowanie
 
-Etap 3.5, część 1: `windows.candidates` waliduje pełny CSV, dzieli według
-zatwierdzonej chronologii, restartuje siatkę na każdym ciągłym fragmencie.
-`select_training` dzieli chronologiczną pulę na N warstw o prawie równej
-liczebności i losuje po jednym indeksie lokalnym RNG. Validation/test używają
-chronologicznego prefiksu siatki, bez oceny cen i etykiet.
-`datasets.planning` przypina źródła/profil/seedy i wylicza sumy wyłącznie z
-`dataset_build.targets`. Historyczne pola sumy i udziałów nie sterują tym API.
-`synthetic_settings` integruje obecne ustawienia v2/full z produkcyjnym
-`diagnostic=False`; `require_production_ready` zachowuje dotychczasową blokadę
-niezatwierdzonych profili. Planowanie nie wykonuje generacji ani kalibracji.
-`datasets.packaging` składa obecny renderer i `label_window`, nie ma własnej
-wersji tych algorytmów. Zapewnia oddzielne metadane, JSONL, etykiety, kopie CSV,
-inwentarz, hash manifestu i odtworzenie. CLI `market-levels-build-dataset`
-udostępnia preflight/smoke/verify oraz nowe approve/build z części 2. Publikacja używa wspólnego stagingu
-i zabezpieczeń Windows. [Format](datasets/FORMAT.md), [raport](datasets/RAPORT_3_5_CZ1.md).
+charts/io/rendering.py zachowuje Agg, 1024 × 768, fonty, kolory, kolejność
+rysowania i metadane PNG. Domain zawiera metryki i selekcję, io/pilot.py
+czyta istniejący pilotaż 32 okien. labeling/io/overlays.py rysuje osobne
+nakładki diagnostyczne; obrazy z liniami nie są wejściem modelu.
 
-Część 2: `datasets.approval` sprawdza pierwotne profile i powiązanie z audytem,
-deleguje wspólne zatwierdzenie do `approve_profile` i waliduje pełny schemat v2.
-Walidator refinement dopuszcza kopię `approved` tylko z prawidłowym approval;
-historyczny audyt pozostaje niezmieniony. `datasets.production` kontroluje
-aktualność przypiętego planu, składa obecny generator/renderer/etykietowanie,
-zapisuje osobne splity i publikuje katalog po pełnym odtworzeniu z dysku.
-`verify_dataset` regeneruje wszystkie syntetyki oraz 800 obrazów/etykiet.
-`audit` jest opisowy, `review` zapisuje oddzielne overlays. Nowy preflight
-wyklucza master seedy także wobec opublikowanych zbiorów produkcyjnych.
-[Raport części 2](datasets/RAPORT_3_5_CZ2.md).
+labeling/domain/algorithm.py zachowuje ścisłe ekstrema 3+3, Wilder ATR(14),
+grupowanie przy 0.5 ATR, medianę przed filtrowaniem i minimum dwie reakcje
+oddalone o pięć świec. Najpierw wybiera najsilniejsze ekstremum i usuwa
+bliskich sąsiadów. Ranking, remisy, klasyfikacja względem ostatniego Close
+oraz limit trzech poziomów pozostają bez zmian. Kontekst Decimal ma 50 cyfr.
+ROUND_HALF_UP do centów dotyczy serializacji; kolizje również między stronami
+rozstrzyga ranking. Nie zastępujemy reguły maksymalizowaniem liczby reakcji.
 
-## Dane, wyniki i konfiguracja
+## Zbiory i ewaluacja
 
-Zachowano `data/raw`, `processed`, `reports`. Generator używa `data/synthetic`,
-a przyszłe artefakty mają katalogi `charts`, `labels`, `splits`. Wyniki mają miejsca
-`results/predictions`, `metrics`, `figures`, `logs`, `checkpoints`, `adapters`.
-`.gitkeep` utrzymuje strukturę; dane i wyniki są ignorowane.
+datasets/workflows rozdziela approval, plan, smoke, produkcję, verify i review.
+Domain/examples.py definiuje instrukcję, ID, metadane i dokładny liczbowy JSONL;
+diagnostyka jawnie ma split: null. Liczebności pochodzą z dataset_build.targets.
+Syntetyki trafiają tylko do train. Selekcja nie ocenia etykiet ani nie zmienia
+parametrów; audyt jest opisowy. Weryfikator niezależnie kontroluje kompletność,
+pochodzenie, hashe oraz odtwarza obrazy, etykiety i syntetyczne OHLC.
 
-`configs/experiment.json` jest domyślnie wczytywany przez CLI. Zachowano wszystkie
-zatwierdzone parametry i dodano sekcję `download` dla katalogu wyników, offline,
-kontroli luk i fallbacku. Zakres i symbole są pobierane z istniejących pól.
-Argumenty CLI nadpisują JSON, także w obu kierunkach wartości logicznych.
-`--config` wskazuje inny plik. Brak lub błąd pliku przerywa proces przed zapisem;
-nie ma cichego powrotu do stałych w kodzie. Ścieżki są względne wobec katalogu
-uruchomienia. Źródło, rynek, interwał i obsługiwane symbole są walidowane;
-rozszerzenie obsługi poza Binance spot 4h wymaga zmian w istniejącym pipeline.
-Koncepcyjnie oddzielamy pola źródła (`source`, rynek, symbole, interwał, zakres),
-eksperymentu (okna, przesunięcia, liczba i udziały) oraz obrazów (wymiary).
-Model i hiperparametry treningu nie są zatwierdzone. Pola przyszłych etapów
-nie sterują jeszcze żadnym wykonaniem. Stałe źródła skupiono w kliencie Binance,
-a wspólny odstęp 4h przy modelu świecy.
+evaluation/protocol.py zachowuje sr-eval-v1, hash reguł i własny JSON z Decimal.
+Parser odrzuca błędne odpowiedzi bez naprawy. Matching maksymalizuje TP,
+minimalizuje sumę błędów i rozstrzyga remisy indeksami. Agregacja zachowuje
+micro-P/R/F1, MAE i reguły pustych odpowiedzi. Domyślny jest validation,
+test wymaga wskazania, a train jest odrzucany. Brakujące, nieznane i powtórzone
+ID blokują raport. Porównanie wymaga tych samych referencji, modelu, instrukcji
+i ustawień inferencji. Ewaluator nie uruchamia inferencji.
 
-## Rozwój
+Instrukcje: [zbiory](datasets/INSTRUKCJA_POWERSHELL.md),
+[format](datasets/FORMAT.md), [ewaluacja](evaluation/PROTOKOL_3_6.md).
 
-Etap 3.6: `evaluation/protocol.py` zamraża `sr-eval-v1`; `scoring.py` używa
-istniejącego ATR i wyczerpującego dopasowania maksymalnie 3×3; `metrics.py`
-agreguje liczniki oraz błędy bez float. `inputs.py` weryfikuje przypięcie do
-jednego splitu, surowe predykcje i osobny manifest modelu. `pipeline.py`
-publikuje atomowo kompletne wyniki, odtwarza je oraz porównuje sparowane
-raporty tego samego modelu. CLI `evaluate` nie wybiera ani nie uruchamia VLM.
-Domyślnie validation, jawny test, brak train. Nie porównujemy algorytmu
-etykietującego z jego własnymi referencjami jako niezależnego konkurenta.
-[Protokół](evaluation/PROTOKOL_3_6.md).
+## Runner, pakiet i rozwój
 
-`data_processing/staging.publish_directory` jest wspólną granicą atomowej
-publikacji katalogów syntetyków i raportów. Ponawia tylko konflikty dostępu
-rename, kontrolując kolizje celu; nie powtarza tworzenia zawartości.
-Koordynator rozpoznaje tylko opublikowany układ katalogów, wykluczając staging.
-[Opis poprawki](WINDOWS_PUBLICATION_RETRY_FIX.md).
+experiments/refinement zawiera istniejący preflight, plan, MAX_PATH, subprocess,
+blokadę, checkpointy, wykonanie i raporty. CLI zachowuje ścieżkę i argumenty.
+Stare i świeże seedy nie są automatycznie łączone. Wznowienie nadal wymaga
+zgodności SHA kodu Python i wejść; historycznych run.json nie przepisujemy.
+Kontrola środowiska sprawdza też importowalność istniejących CLI; nie jest to
+zależność modułów algorytmicznych od warstwy CLI.
 
-`run_refinement_fresh_seeds.ps1` korzysta ze wspólnego koordynatora z flagą
-`--fresh-seeds`. Jawny plan ośmiu partii używa istniejących ośmiu profili
-i agreguje tylko nowo utworzone raporty 20261201/20261211. `STABILITY.md`
-prezentuje sześć wskazanych metryk z wyników dotychczasowego agregatora;
-nie zmienia definicji statystyk. [Opis próby](FRESH_SEEDS_EXPERIMENT.md).
+Setuptools odkrywa market_levels* w src. Entry pointy z pyproject.toml
+oraz python -m market_levels.cli.* są zachowane. Zależności nie zmieniły się:
+biblioteka standardowa i opcjonalne [charts]. Konfiguracja pozostaje
+w configs/experiment.json; CLI ma pierwszeństwo, a ścieżki są względem CWD.
+Nie przywrócono usuniętych src.download_data, src.validate_data ani src/__init__.py.
 
-Oficjalny `scripts/run_refinement_comparison.ps1` wskazuje interpreter projektu
-i wywołuje `cli/refinement_comparison.py`. Koordynator sprawdza środowisko i dane,
-wywołuje istniejące CLI generatora/porównania oraz walidatory wyników. Nie dodaje
-matematyki OHLC. Przebieg przypina SHA wejść i źródeł; checkpointy po etapach
-umożliwiają bezpieczne wznowienie. Szczegóły: [procedura](INSTRUKCJA_POWERSHELL.md).
-
-`synthetic/refinement.py` implementuje oddzielne `volatility_refinement_v1`.
-Jego CLI `refine_v2_volatility.py` dopasowuje tylko phi i stacjonarne std,
-wywołując niezmienioną matematykę generatora v2. `profile_v2.py` deleguje
-walidację pełnego audytu refinement; zapis zachowuje wspólny kontekst publikacji.
-Jawna mapa mechanizmów zawiera dodatkowo `bridge_volatility`. `experiments.py`
-oddziela wariant mechanizmów od rodziny profilu i nie miesza hashów w grupie.
-Szczegóły celu i przepływu: [RAPORT_REFINEMENT_V2.md](RAPORT_REFINEMENT_V2.md).
-
-Kolejny etap powinien otrzymać rzeczywiste funkcje, testy jednostkowe i lokalny
-test integracyjny w przewidzianym katalogu. Nowy pipeline może składać te funkcje.
-Nie ma atrap klas ani `NotImplementedError`. Biblioteki wykresów i ML należy
-dodawać dopiero podczas implementacji, jako opcjonalne grupy zależności.
-Aktualny proces danych pozostaje lekki; nie budujemy ogólnego frameworka giełd.
+data/ i results/ przechowują artefakty. Build, egg-info, cache i handoff nie są
+źródłem aktywnej implementacji. Parametry i decyzje pozostają w
+[konfiguracji](../configs/experiment.json) i [decyzjach autora](DECYZJE_3_3.md).
+Model, trening i inferencja wymagają osobnych zleceń.

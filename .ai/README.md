@@ -23,6 +23,10 @@ Samo istnienie katalogu nie gwarantuje odczytania go przez każde narzędzie.
 - [configs/experiment.json](../configs/experiment.json) jest źródłem bieżących parametrów; nie twórz ich drugiej aktywnej kopii w instrukcjach.
 - [DECYZJE_3_3.md](../docs/DECYZJE_3_3.md) zawiera zatwierdzone decyzje badawcze.
 - [ARCHITECTURE.md](../docs/ARCHITECTURE.md) opisuje moduły i podział odpowiedzialności.
+- [PLAN_REFAKTORYZACJI_SRC.md](../docs/PLAN_REFAKTORYZACJI_SRC.md) zawiera analizę
+  i plan reorganizacji z 2026-11-08; wykonanie opisuje raport poniżej.
+- [RAPORT_REFAKTORYZACJI_SRC.md](../docs/refactoring/RAPORT_REFAKTORYZACJI_SRC.md)
+  opisuje wdrożony podział, zachowanie kontraktów i wykonaną weryfikację.
 - [LICENCJA_DANYCH.md](../docs/LICENCJA_DANYCH.md) zachowuje ustalenia i otwarte kwestie licencyjne.
 - [README.md](../README.md) opisuje uruchamianie.
 - [REFACTORING_REPORT.md](../docs/REFACTORING_REPORT.md) jest raportem historycznym z etapów reorganizacji.

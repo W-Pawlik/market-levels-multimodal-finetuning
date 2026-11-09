@@ -7,8 +7,9 @@ from io import TextIOWrapper
 from pathlib import Path
 from zipfile import BadZipFile, ZipFile
 
-from ....core.candles import UTC, Candle, DataValidationError
-from ...validation import _positive_decimal, validate_candle_timestamp, validate_ohlc
+from ....core.ohlc.model import UTC, Candle, DataValidationError
+from ....core.ohlc.validation import _positive_decimal, validate_ohlc
+
 
 COLUMNS = ("open_time", "open", "high", "low", "close", "volume", "close_time",
            "quote_asset_volume", "number_of_trades", "taker_buy_base_asset_volume",

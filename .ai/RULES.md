@@ -22,6 +22,13 @@ NotImplementedError ani pustych konfiguracji na zapas.
 - Nie przywracaj src/download_data.py, src/validate_data.py ani src/__init__.py bez wyraźnego zlecenia.
 - Importuj market_levels; wewnątrz pakietu używaj importów względnych. Nie poprawiaj importów przez ręczne modyfikowanie sys.path.
 - Oddzielaj model i walidację od HTTP i zapisu. Pipeline koordynuje funkcje; main obsługuje argumenty i błędy.
+- W aktywnych obszarach utrzymuj podział domain / workflows / io / reporting / config,
+  tworząc tylko potrzebne role. Core grupuje wspólne modele i obliczenia;
+  shared operacje techniczne. Nie importuj workflow, I/O ani CLI do domain,
+  obszarów aplikacji do core/shared ani CLI do biblioteki. Nie dodawaj cykli,
+  także przez importy wewnątrz funkcji. Kontrola środowiska runnera może sprawdzić
+  importowalność istniejących CLI; nie przenoś takich kontroli do algorytmów.
+  Szczegóły i świadome API są w ARCHITECTURE.md.
 - Nazwy kodu pisz po angielsku. Dokumentację projektu i wyjaśnienia dla autora pisz po polsku.
 - Dodawaj zrozumiałe typowanie i krótkie docstringi tam, gdzie pomagają; unikaj nadmiaru komentarzy.
 

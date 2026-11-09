@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-08",
+  "baseline_revision": "092059aa5dd49e260b762cc6ccc0c660acebc166",
+  "environment": {
+    "python": "3.13.15",
+    "revision": "092059aa5dd49e260b762cc6ccc0c660acebc166",
+    "matplotlib": "3.11.2"
+  },
+  "tests": {
+    "count": 286,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 137.15
+  },
+  "behavioral_matrix": {
+    "examples": 28,
+    "ohlc_metadata_labels_diagnostics_metrics_csv_png_overlay_identical": true,
+    "calibration_refinement_and_selection_identical": true
+  },
+  "serialization": {
+    "diagnostic_and_production_jsonl_identical": 56,
+    "offline_stdout_stderr_identical": true
+  },
+  "cli": {
+    "help_contracts_identical": 10,
+    "parser_ast_identical": true,
+    "lifecycle_ast_identical": true
+  },
+  "offline_download": {
+    "identical": true,
+    "normalized_fields": [
+      "created_at_utc"
+    ],
+    "source": "BTCUSDT-4h-2020-01.zip",
+    "csv_rows": 186
+  },
+  "protected_files": {
+    "before_count": 12771,
+    "after_count": 12771,
+    "missing": [],
+    "added": [],
+    "changed": [],
+    "seconds": 3.467
+  },
+  "production_dataset": {
+    "verified": true,
+    "count": 800,
+    "split_counts": {
+      "train": 698,
+      "validation": 36,
+      "test": 66
+    },
+    "synthetic_regenerated": 440,
+    "png_replayed": 800,
+    "renderer_differences": [],
+    "source_csv_checked": true,
+    "seconds": 146.798
+  },
+  "existing_pilot": {
+    "png_replayed": 32,
+    "overlays_replayed": 32,
+    "identical": true
+  },
+  "ast_review": {
+    "definitions_checked": 296,
+    "differences": [],
+    "explicit_exceptions": [
+      "market_levels.charts.diversity.sha256_file (reviewed technical consolidation or CLI delegation)",
+      "market_levels.charts.diversity._child (reviewed technical consolidation or CLI delegation)",
+      "market_levels.cli.refinement_comparison.sha (reviewed technical consolidation or CLI delegation)",
+      "market_levels.cli.refinement_comparison.main (reviewed technical consolidation or CLI delegation)",
+      "market_levels.datasets.packaging._example_line (reviewed technical consolidation or CLI delegation)",
+      "market_levels.datasets.production.json_line (reviewed technical consolidation or CLI delegation)",
+      "logger name retained explicitly",
+      "market_levels.labeling.pilot.sha256 (reviewed technical consolidation or CLI delegation)",
+      "market_levels.labeling.pilot.child (reviewed technical consolidation or CLI delegation)"
+    ]
+  },
+  "packaging": {
+    "wheel": "market_levels-0.1.0-py3-none-any.whl",
+    "fresh_venv": true,
+    "console_entry_points_checked": 9,
+    "matplotlib_absent": true,
+    "offline_build": true,
+    "setuptools": "84.2.1",
+    "backend_installed_in_temporary_venv": true
+  },
+  "original_test_review": {
+    "retained": 277,
+    "assertion_differences_after_module_alias_normalization": []
+  }
+}

@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
-from ..data_processing.pipelines.synthetic import prepare_profiles, run
-from ..data_processing.synthetic.settings import SYMBOLS, load_synthetic_settings
-from ..data_processing.synthetic.v2_parameters import VARIANTS
+from ..data_processing.synthetic.io.profiles import prepare_profiles
+from ..data_processing.synthetic.workflows.generation import run
+from ..data_processing.synthetic.domain.parameters import SYMBOLS, VARIANTS
+from ..data_processing.synthetic.config.generation import load_synthetic_settings
 
 
 def main() -> None:

@@ -3,13 +3,16 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
-from ..datasets.planning import SYMBOLS, build_plan
-from ..datasets.packaging import publish_plan, run_smoke, verify_files, verify_smoke
-from ..datasets.approval import approve_configured_profiles
-from ..datasets.production import build_dataset, verify_dataset
+from ..datasets.config import SYMBOLS
+from ..datasets.workflows.planning import build_plan, publish_plan
+from ..datasets.workflows.smoke import run_smoke
+from ..shared.manifests import verify_files
+from ..datasets.workflows.verification import verify_smoke, verify_dataset
+from ..datasets.workflows.approval import approve_configured_profiles
+from ..datasets.workflows.production import build_dataset
 
 
 def main(argv=None):

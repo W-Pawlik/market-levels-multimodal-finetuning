@@ -3,11 +3,16 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
-from ..data_processing.synthetic.calibration import profile_hash, save_profile
-from ..data_processing.synthetic.refinement import (
-    REFINEMENT_VARIANTS, load_refinement_settings, refine_v2_volatility)
-from ..data_processing.synthetic.settings import SYMBOLS, load_synthetic_settings
-from ..data_processing.synthetic.training_period import load_chronological_split
+from ..data_processing.synthetic.domain.profiles.v1 import profile_hash
+from ..data_processing.synthetic.io.profiles import save_profile
+from ..data_processing.synthetic.config.refinement import (
+    REFINEMENT_VARIANTS,
+    load_refinement_settings,
+)
+from ..data_processing.synthetic.workflows.refinement import refine_v2_volatility
+from ..data_processing.synthetic.domain.parameters import SYMBOLS
+from ..data_processing.synthetic.config.generation import load_synthetic_settings
+from ..data_processing.io.chronology import load_chronological_split
 
 
 def main() -> None:

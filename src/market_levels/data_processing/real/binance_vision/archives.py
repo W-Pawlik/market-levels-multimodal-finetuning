@@ -1,15 +1,15 @@
 """Pozyskiwanie archiwów, kontrola SHA-256 i fallback na archiwa dzienne."""
 from __future__ import annotations
 
-from datetime import date
-import hashlib
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 from zipfile import is_zipfile
+from datetime import date
 
-from ....core.periods import _days_in_month, _last_closed_month
 from .client import DownloadError, INTERVAL, _get, _remote_url
+from ....core.time.calendar import _days_in_month, _last_closed_month
+from ....shared.integrity import sha256_file as _sha256_file
 
 
 def _expected_sha256(checksum_path: Path, zip_name: str) -> str:
@@ -22,14 +22,6 @@ def _expected_sha256(checksum_path: Path, zip_name: str) -> str:
     if Path(match.group(2)).name != zip_name:
         raise DownloadError(f"Suma kontrolna dotyczy innego archiwum: {checksum_path}")
     return match.group(1).lower()
-
-
-def _sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as file:
-        for chunk in iter(lambda: file.read(128 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def acquire_archive(symbol: str, period: str, category: str,

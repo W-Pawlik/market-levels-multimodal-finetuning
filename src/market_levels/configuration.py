@@ -1,11 +1,11 @@
 """Wczytywanie ustawień działającego etapu z konfiguracji eksperymentu."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
-from .core.periods import iter_months
+from .core.time.calendar import iter_months
 from .data_processing.real.binance_vision.client import INTERVAL, SYMBOLS
 
 

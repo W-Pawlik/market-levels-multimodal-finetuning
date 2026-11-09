@@ -5,10 +5,12 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
-from ..data_processing.pipelines.compare_synthetic import build_comparison, comparison_summary, save_comparison
-from ..data_processing.synthetic.settings import SYMBOLS
-from ..data_processing.synthetic.training_period import load_chronological_split
-from ..data_processing.synthetic.experiments import build_variant_summary, variant_summary_markdown
+from ..data_processing.synthetic.workflows.comparison import build_comparison, save_comparison
+from ..data_processing.synthetic.reporting.comparison import comparison_summary
+from ..data_processing.synthetic.domain.parameters import SYMBOLS
+from ..data_processing.io.chronology import load_chronological_split
+from ..data_processing.synthetic.workflows.summary import build_variant_summary
+from ..data_processing.synthetic.reporting.variants import variant_summary_markdown
 
 
 def main() -> None:

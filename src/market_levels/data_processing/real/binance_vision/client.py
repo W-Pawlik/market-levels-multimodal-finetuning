@@ -1,10 +1,11 @@
 """Adresy Binance Vision oraz transfer HTTP z ponawianiem i plikami .part."""
 from __future__ import annotations
 
-from pathlib import Path
 import time
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
 
 BASE = "https://data.binance.vision/data/spot"
 SYMBOLS = ("BTCUSDT", "ETHUSDT")

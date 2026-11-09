@@ -1,7 +1,21 @@
 # Aktualny stan projektu
 
-Aktualizacja: 2026-11-07. To opis stanu, nie zakaz realizacji kolejnych zleceń.
+Aktualizacja: 2026-11-08. To opis stanu, nie zakaz realizacji kolejnych zleceń.
 Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają.
+
+Zakończono reorganizację src: core/shared oraz powtarzalne domain, workflows,
+io, reporting i config. Runner refinement jest w experiments/refinement;
+CLI i parametry badawcze zachowano. Wewnętrzne ścieżki dawnych modułów zmieniły
+się; mapę podaje dokumentacja. Graf importów, również lokalnych, jest bez cykli.
+286 testów OK, bez pominięć; 28 przypadków generatorów zgodnych ze starym kodem,
+identyczne 32 PNG pilotażu i 32 nakładki, pełne odtworzenie 800 PNG/etykiet
+i 440 syntetyków bez różnic, ze sprawdzeniem źródeł. Wszystkie 12 771 plików
+w data/results mają ten sam inwentarz i SHA-256. Archiwum stycznia 2020
+porównano offline na kopiach: CSV, raporty i manifest zgodne. Bez nowego
+eksperymentu rynku, treningu i inferencji.
+[Architektura](../docs/ARCHITECTURE.md),
+[raport i ograniczenia kontroli](../docs/refactoring/RAPORT_REFAKTORYZACJI_SRC.md).
+Poniższe opisy wcześniejszych etapów zachowują kontekst historyczny.
 
 Najnowsze wykonanie: etap 3.5, część 2. Dwa nowe profile full-refined approved,
 bez zmiany parametrów i oryginałów; lokalny kompletny zbiór
@@ -151,8 +165,9 @@ Wznowienie nie przyjmuje manifestów/raportów z pozostałości stagingu.
 
 ## Dopiero planowane
 
-modeling, training, inference i experiments zawierają przestrzeń
-organizacyjną z README. Nie implementują jeszcze tych etapów.
+modeling, training i inference zawierają przestrzeń organizacyjną z README.
+Nie implementują jeszcze tych etapów. Experiments/refinement zawiera obecnie
+istniejący koordynator przeniesiony z CLI, bez nowego frameworka eksperymentów.
 Szczegółowe reguły etykietowania są w
 [ARCHITECTURE.md](../docs/ARCHITECTURE.md); ustalenia autora w
 [DECYZJE_3_3.md](../docs/DECYZJE_3_3.md).

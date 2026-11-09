@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import uuid
+from pathlib import Path
 
-from ..charts.pilot import run_audit
+from ..charts.workflows.audit import run_audit
 
 
 def main(argv=None) -> int:

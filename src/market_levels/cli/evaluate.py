@@ -1,11 +1,13 @@
 """Evaluate saved raw responses; no inference, training or model adapter."""
 import argparse
-from pathlib import Path
 import sys
+from pathlib import Path
 
-from ..evaluation.inputs import InputError
-from ..evaluation.pipeline import evaluate, compare, read_evaluation, read_comparison
-from ..datasets.packaging import verify_files
+from ..evaluation.io.inputs import InputError
+from ..evaluation.workflows.evaluate import evaluate
+from ..evaluation.workflows.compare import compare
+from ..evaluation.workflows.verification import read_evaluation, read_comparison
+from ..shared.manifests import verify_files
 from ..evaluation.protocol import dumps
 
 

@@ -1,14 +1,18 @@
-# Działający moduł etykietowania — etap 3.4
+# labeling
 
-`algorithm.py` udostępnia `label_window(list[Candle]) -> LabelResult`.
-Wejście: dokładnie 120 kolejnych poprawnych świec 4h, ceny `Decimal`.
-Nie przyjmuje metadanych generatora. `target_json()` serializuje wyłącznie
-`supports` i `resistances` jako liczby; `diagnostics()` zachowuje wszystkie cyfry
-obliczeń jako tekst JSON. `pilot.py` weryfikuje istniejący pilotaż i publikuje
-oddzielną diagnostykę, obrazy z liniami i manifest SHA-256.
+Etykietowanie S/R, wynik algorytmu i osobne nakładki diagnostyczne.
 
-Aktualna instrukcja: [PowerShell](../../../docs/labeling/INSTRUKCJA_POWERSHELL.md).
+[Architektura i reguły zależności](../../../docs/ARCHITECTURE.md).
 
-Etap 3.5 używa tego samego `label_window` i serializacji cen z dwoma miejscami
-po przecinku. Produkcja etykietuje dokładnie te świece, które renderuje;
-algorytmu ani rankingu nie zmieniono. Overlays są poza zbiorem wejściowym.
+Domain zawiera obliczenia i modele, workflows koordynuje wykonanie, io obsługuje pliki, reporting składa raporty, a config zawiera ustawienia. W core i shared podział odpowiada wspólnym odpowiedzialnościom bibliotecznym.
+
+| Moduł | Definicje i punkty wejścia |
+| --- | --- |
+| [domain/algorithm.py](domain/algorithm.py) | `find_extrema`, `price_groups`, `independent_reactions`, `rank_groups`, `select_groups`, `label_window` |
+| [domain/models.py](domain/models.py) | `Extremum`, `Group`, `LabelResult` |
+| [io/overlays.py](io/overlays.py) | `render_levels` |
+| [reporting/pilot.py](reporting/pilot.py) | `summarize`, `report_markdown` |
+| [workflows/pilot.py](workflows/pilot.py) | `run_labeling` |
+| [workflows/verification.py](workflows/verification.py) | `verify_labeling` |
+
+Testy z katalogu projektu: `.\.venv\Scripts\python.exe -m unittest discover -s tests`. Jednostkowe i integracyjne przypadki są pogrupowane według tych samych obszarów; wspólne fixture znajdują się w tests/support.

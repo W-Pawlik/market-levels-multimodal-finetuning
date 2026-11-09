@@ -1,9 +1,10 @@
 """Etykietowanie i weryfikacja 32 istniejących okien pilotażowych."""
 import argparse
-from pathlib import Path
 import uuid
+from pathlib import Path
 
-from ..labeling.pilot import run_labeling, verify_labeling
+from ..labeling.workflows.pilot import run_labeling
+from ..labeling.workflows.verification import verify_labeling
 
 
 def main(argv=None) -> int:

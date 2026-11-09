@@ -1,12 +1,13 @@
 """Frozen rules and exact JSON serialization for sr-eval-v1."""
 from __future__ import annotations
 
-from dataclasses import asdict, is_dataclass
-from decimal import Decimal, localcontext
 import hashlib
 import json
+from dataclasses import asdict, is_dataclass
+from decimal import Decimal, localcontext
 
-from ..labeling.algorithm import DECIMAL_CONTEXT
+from ..core.numeric.atr import DECIMAL_CONTEXT
+
 
 VERSION = 'sr-eval-v1'
 TOLERANCES = (Decimal('0.25'), Decimal('0.5'), Decimal('1.0'))

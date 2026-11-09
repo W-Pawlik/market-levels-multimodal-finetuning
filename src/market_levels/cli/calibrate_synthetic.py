@@ -5,11 +5,13 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
-from ..data_processing.synthetic.calibration import calibrate_csv, profile_hash, save_profile
-from ..data_processing.synthetic.settings import SYMBOLS
-from ..data_processing.synthetic.settings import load_synthetic_settings
-from ..data_processing.synthetic.calibration_v2 import calibrate_v2_csv, load_calibration_v2_settings
-from ..data_processing.synthetic.training_period import load_chronological_split
+from ..data_processing.synthetic.workflows.calibration import calibrate_csv, calibrate_v2_csv
+from ..data_processing.synthetic.domain.profiles.v1 import profile_hash
+from ..data_processing.synthetic.io.profiles import save_profile
+from ..data_processing.synthetic.domain.parameters import SYMBOLS
+from ..data_processing.synthetic.config.generation import load_synthetic_settings
+from ..data_processing.synthetic.config.calibration import load_calibration_v2_settings
+from ..data_processing.io.chronology import load_chronological_split
 
 
 def main() -> None:

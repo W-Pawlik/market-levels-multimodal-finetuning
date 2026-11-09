@@ -116,24 +116,36 @@ przy 404 albo braku lokalnego pliku offline. Błędna suma nie uruchamia fallbac
 ```text
 configs/experiment.json          zatwierdzone ustalenia
 src/market_levels/
-    configuration.py            odczyt i walidacja konfiguracji
-    cli/                        argumenty i obsługa błędów
-    core/                       model świecy i operacje na okresach
-    data_processing/real/binance_vision/   HTTP, archiwa i parser Binance
-    data_processing/validation.py          walidacja świec i szeregów
-    data_processing/storage.py             zapis CSV i JSON
-    data_processing/pipelines/             koordynacja procesu
-    ...                         przyszłe etapy, opisane w README katalogów
+    configuration.py            konfiguracja pobierania
+    cli/                        stabilne polecenia i argumenty
+    core/                       OHLC, czas, walidacja, statystyki i ATR
+    shared/                     integralność, ścieżki, manifesty i publikacja
+    data_processing/
+        real/                   Binance i workflow pobierania
+        synthetic/              generatory, profile, kalibracja i diagnostyka
+        windows/                okna oraz odrębne reguły selekcji
+        io/                     wspólny CSV i odczyt chronologii
+    charts/                     metryki, renderer i pilotaż
+    labeling/                   algorytm S/R i nakładki diagnostyczne
+    datasets/                   plan, budowa, audyt i odtworzenie zbioru
+    evaluation/                 zapisane odpowiedzi, metryki i porównania
+    experiments/refinement/     istniejący runner i wznowienie
+    modeling/, training/, inference/       planowane etapy z README
 data/                           lokalne dane i raporty
-results/                        przyszłe wyniki eksperymentów
-tests/unit/                     testy jednostkowe
-tests/integration/              testy offline i CLI
-tests/fixtures/                 wynik oryginalnej implementacji na próbce
+results/                        wyniki diagnostyki i ewaluacji
+tests/unit/                     testy jednostkowe według obszarów
+tests/integration/              testy offline i CLI według obszarów
+tests/support/                  współdzielone fixture i ścieżki testów
+tests/fixtures/                 niezmienne wzorce wyników
 docs/                           architektura, decyzje, licencja, raport
 pyproject.toml                  src-layout i polecenie pakietu
 ```
 
 Szczegóły: [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+W obszarach powtarzają się `domain`, `workflows`, `io`, `reporting` i `config`,
+stosownie do istniejących odpowiedzialności. README obszarów zawierają mapy
+plików i punktów wejścia. Refaktoryzacja zachowała polecenia, konfigurację
+i wyniki algorytmów; [raport i zakres kontroli](docs/refactoring/RAPORT_REFAKTORYZACJI_SRC.md).
 Testy nie wymagają Internetu; zachowano sześć pierwotnych przypadków testowych.
 
 ## Konfiguracja i plan rozwoju
