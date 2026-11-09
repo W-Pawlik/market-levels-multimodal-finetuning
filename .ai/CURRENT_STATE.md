@@ -3,6 +3,24 @@
 Aktualizacja: 2026-11-09. To opis stanu, nie zakaz realizacji kolejnych zleceń.
 Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają.
 
+Etap 4.1, część 1: autor zlecił audyt i lokalny pilot VLM. Potwierdzono RTX 3060 Ti
+8 GB, Windows 10/19045, CC 8.6 i natywne BF16 w rzeczywistym forward/backward
+PyTorch. WSL2 ma tylko docker-desktop; Ubuntu nie instalowano. Osobny Python
+3.12.12 i stos torch 2.10.0+cu128 / Transformers 5.3.0 są pod D:/ml-envs,
+wagi poza repo w D:/ml-cache/market-levels/hub. Projektowego .venv nie zmieniano.
+Oba przypięte checkpointy Qwen3-VL-2B-Instruct i Qwen3.5-2B wykonały po osiem
+validation przy 1024x768/768 tokenów i 704x512/352 tokenów. Wszystkie odpowiedzi
+S/R otaczają JSON Markdownem: 0/8 poprawnych w każdym wariancie, bez naprawiania.
+To pilot, nie pełna walidacja. Qwen3-VL wykonał jeden krok QLoRA na czterech train:
+skończone loss/gradienty, aktualizacja adaptera, obraz uczestniczy w obliczeniach.
+Globalny peak 7923/8192 MiB wymaga dalszej kontroli pamięci; pełny trening nie
+jest potwierdzony. Treningu Qwen3.5 nie wykonano. Rekomendacja kandydata A jest
+warunkowa, bez ostatecznego wyboru. Nie użyto testu ani zewnętrznej inferencji.
+317 testów projektu i 3 osobne testy maskowania OK. Wszystkie 12 771 historycznych
+plików, w tym 3212 plików zbioru produkcyjnego, mają niezmienione SHA-256 i liczbę.
+[Raport](../docs/vlm/RAPORT_4_1_WYBOR_MODELU_CZ1.md),
+[PowerShell](../docs/vlm/INSTRUKCJA_POWERSHELL_4_1.md).
+
 Refaktoryzację src wraz z końcową kontrolą zapisano i wypchnięto jako 4483906.
 Konfiguracja ma teraz punkt wejścia experiment.json (51 linii) i pięć fragmentów
 w configs/data, synthetic i datasets. Shared.configuration składa te same wartości,
@@ -177,8 +195,8 @@ Wznowienie nie przyjmuje manifestów/raportów z pozostałości stagingu.
 
 ## Dopiero planowane
 
-modeling, training i inference zawierają przestrzeń organizacyjną z README.
-Nie implementują jeszcze tych etapów. Experiments/refinement zawiera obecnie
+modeling, training i inference obsługują ograniczoną diagnostykę 4.1 opisaną
+powyżej; pełny trening pozostaje planowany. Experiments/refinement zawiera obecnie
 istniejący koordynator przeniesiony z CLI, bez nowego frameworka eksperymentów.
 Szczegółowe reguły etykietowania są w
 [ARCHITECTURE.md](../docs/ARCHITECTURE.md); ustalenia autora w

@@ -126,6 +126,17 @@ Duże obliczenia tej iteracji są przeznaczone do osobnego uruchomienia przez au
 
 ## Zamknięcie zadania
 
+Etap 4.1 ma osobny `python -m market_levels.cli.vlm_feasibility`
+(select/download/infer/train-step) i `configs/vlm/feasibility.json`.
+Próby uruchamiaj wyłącznie w osobnym środowisku VLM, nie w .venv danych.
+Inferencja obejmuje osiem deterministycznie wybranych validation, trening
+dokładnie jeden optimizer step na czterech train; test jest odrzucany.
+Ciężkie biblioteki są importowane leniwie, zwykłe unittest pozostaje offline.
+Dodatkowe `tests/checks/check_vlm_masking.py` wykonuje się jawnie Pythonem VLM.
+Zwykły ewaluator zachowuje wymóg kompletnego splitu; pomocnicza ocena ośmiu
+ID jest oddzielna. [Raport i ograniczenia](../docs/vlm/RAPORT_4_1_WYBOR_MODELU_CZ1.md),
+[polecenia](../docs/vlm/INSTRUKCJA_POWERSHELL_4_1.md).
+
 Ewaluator 3.6: `python -m market_levels.cli.evaluate evaluate|compare|verify`.
 Główna metryka i konwencje są zamrożone w sr-eval-v1. W części 1 uruchomiono
 wyłącznie ręczne fixture; nie twórz fikcyjnych predykcji dla produkcyjnego testu.

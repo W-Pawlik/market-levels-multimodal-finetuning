@@ -2,7 +2,8 @@
 
 Stan po reorganizacji z 2026-11-08. Jest to jeden pakiet badawczy market_levels
 w układzie src. Działają dane, generatory, wykresy, etykietowanie, zbiory
-oraz ewaluacja zapisanych odpowiedzi. Modeling, trening i inferencja są planowane.
+oraz ewaluacja zapisanych odpowiedzi. Etap 4.1 dodaje ograniczoną diagnostykę
+modeli VLM i jednego kroku adaptera; nie implementuje pełnego treningu.
 
 [Raport refaktoryzacji](refactoring/RAPORT_REFAKTORYZACJI_SRC.md),
 [pierwotny plan](PLAN_REFAKTORYZACJI_SRC.md),
@@ -21,6 +22,9 @@ oraz ewaluacja zapisanych odpowiedzi. Modeling, trening i inferencja są planowa
 | labeling/ | Algorytm S/R, modele wyniku, nakładki i pilotaż. | [README](../src/market_levels/labeling/README.md) |
 | datasets/ | Approval, plan, produkcja, próba, audyt i odtworzenie. | [README](../src/market_levels/datasets/README.md) |
 | evaluation/ | Ścisły JSON, matching, metryki i sparowane raporty. | [README](../src/market_levels/evaluation/README.md) |
+| modeling/ | Przypięte checkpointy, procesory, lokalne ładowanie i pomiary. | [README](../src/market_levels/modeling/README.md) |
+| inference/ | Osiem validation, wejście bez etykiet, surowe odpowiedzi i pomocnicza ocena. | [README](../src/market_levels/inference/README.md) |
+| training/ | Maskowanie SFT i dokładnie jeden krok adaptera na czterech train. | [README](../src/market_levels/training/README.md) |
 | experiments/refinement/ | Istniejący runner, preflight, checkpointy i wznowienie. | [README](../src/market_levels/experiments/README.md) |
 | cli/ | Dotychczasowe polecenia, argumenty, komunikaty i błędy. | [Entry pointy](../pyproject.toml) |
 
@@ -165,4 +169,11 @@ Nie przywrócono usuniętych src.download_data, src.validate_data ani src/__init
 data/ i results/ przechowują artefakty. Build, egg-info, cache i handoff nie są
 źródłem aktywnej implementacji. Parametry i decyzje pozostają w
 [konfiguracji](../configs/experiment.json) i [decyzjach autora](DECYZJE_3_3.md).
-Model, trening i inferencja wymagają osobnych zleceń.
+Diagnostykę 4.1 autor zlecił oddzielnie. Jej konfiguracja jest w
+`configs/vlm/feasibility.json`; nie zmienia `experiment.json` ani procesu danych.
+Ciężkie zależności są w osobnym środowisku, bez dodania ich do podstawowej
+instalacji pakietu. CLI `vlm_feasibility` obsługuje select/download/infer/train-step,
+odrzuca test i pełny trening. Inference korzysta z modeling; training z modelingu
+i wejść inference. Oba obszary używają istniejących funkcji evaluation bez zmiany
+reguł ani kontroli kompletności zwykłego ewaluatora.
+Pełny trening i ostateczny wybór modelu nadal wymagają osobnej decyzji autora.

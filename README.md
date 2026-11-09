@@ -1,12 +1,19 @@
 # Market Levels — projekt pracy inżynierskiej
 
-Aktualny etap: 3.5, część 2 — zatwierdzone kopie V2-full-refined i produkcyjny
+Etap 4.1, część 1 dodaje lokalny audyt i ograniczony pilot
+`python -m market_levels.cli.vlm_feasibility`: dwa oficjalne modele, osiem
+validation oraz kontrola jednego kroku adaptera na train, w osobnym środowisku.
+[Raport i rekomendacja](docs/vlm/RAPORT_4_1_WYBOR_MODELU_CZ1.md),
+[polecenia PowerShell](docs/vlm/INSTRUKCJA_POWERSHELL_4_1.md).
+Pełnego treningu i ostatecznego wyboru modelu nie wykonano.
+
+Etap 3.5, część 2 — zatwierdzone kopie V2-full-refined i produkcyjny
 proces zbioru 800 przykładów. Działają okna, renderer, etykietowanie,
-planowanie, budowa oraz pełne odtworzenie. Trening VLM nie został rozpoczęty.
+planowanie, budowa oraz pełne odtworzenie. Pełny trening VLM nie został rozpoczęty.
 [Raport części 2](docs/datasets/RAPORT_3_5_CZ2.md),
 [aktualne polecenia PowerShell](docs/datasets/INSTRUKCJA_POWERSHELL.md).
 Etap 3.6, część 1 dodaje ewaluator zapisanych odpowiedzi `sr-eval-v1`;
-wykonano wyłącznie ręczne fixture, bez inferencji ani treningu VLM.
+w tamtym etapie wykonano wyłącznie ręczne fixture, bez inferencji ani treningu VLM.
 [Protokół](docs/evaluation/PROTOKOL_3_6.md),
 [raport i testy](docs/evaluation/RAPORT_3_6_CZ1.md),
 [PowerShell ewaluacji](docs/evaluation/INSTRUKCJA_POWERSHELL.md).
@@ -40,7 +47,8 @@ wykresy, etykiety, zbiory treningowe, dostrajanie, inferencję i ewaluację.
 **Działają pobieranie i walidacja OHLC, generator V2-full-refined z profilami
 zatwierdzonymi do pierwszego zbioru, renderer świecowy oraz przetestowany algorytm
 etykietowania wsparć i oporów.** Przygotowano i zweryfikowano pełny zbiór 800
-przykładów. Wybór, dostrajanie i ewaluacja modelu VLM pozostają do wykonania.
+przykładów. Ostateczny wybór, pełne dostrajanie i pełna ewaluacja modelu VLM
+pozostają do wykonania; ograniczony pilot 4.1 opisano powyżej.
 Lokalnie potwierdzono pełny zakres 2020-01–2026-10: po 14 975
 świec BTCUSDT i ETHUSDT; w obu brak 2020-02-19 12:00 UTC. Nie interpolowano luk.
 
@@ -80,8 +88,8 @@ To samo CLI można uruchamiać jako moduł Pythona:
 
 Pakietowanie wymaga setuptools; podstawowa instalacja nie dodaje zależności
 uruchomieniowych. Renderer korzysta z Matplotlib dostępnego przez dodatek
-`[charts]`: `pip install -e ".[charts]"`. Biblioteki do treningu VLM nie zostały
-jeszcze wybrane.
+`[charts]`: `pip install -e ".[charts]"`. Zależności diagnostyki VLM są przypięte
+w `configs/vlm/` i instalowane wyłącznie w osobnym środowisku.
 Ścieżki danych są liczone względem bieżącego katalogu.
 Stare moduły `src.download_data` i `src.validate_data` zostały usunięte.
 `src` jest katalogiem źródeł, a importowany pakiet nazywa się `market_levels`.
@@ -130,7 +138,7 @@ src/market_levels/
     datasets/                   plan, budowa, audyt i odtworzenie zbioru
     evaluation/                 zapisane odpowiedzi, metryki i porównania
     experiments/refinement/     istniejący runner i wznowienie
-    modeling/, training/, inference/       planowane etapy z README
+    modeling/, training/, inference/       ograniczona diagnostyka VLM (4.1)
 data/                           lokalne dane i raporty
 results/                        wyniki diagnostyki i ewaluacji
 tests/unit/                     testy jednostkowe według obszarów
@@ -190,9 +198,8 @@ przesunięcie treningowe 60, walidacyjne/testowe 120, zatwierdzone 800 wykresów
 Te parametry nie są używane przez pobieranie; są aktywne w budowie zbioru.
 
 Działają okna cenowe, wykresy Matplotlib, etykiety i przygotowanie zbiorów
-obraz–instrukcja–JSON. Planowane są obsługa modeli,
-trening, osobna inferencja i ewaluacja. Model i hiperparametry wymagają osobnej
-decyzji; struktura nie narzuca rodziny modeli.
+obraz–instrukcja–JSON. Działa ograniczony pilot modeli, inferencji i kroku adaptera.
+Pełny trening, model i docelowe hiperparametry wymagają osobnej decyzji.
 
 ## Generator syntetyczny OHLC
 
