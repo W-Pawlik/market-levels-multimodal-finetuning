@@ -1,0 +1,29 @@
+{
+  "dataset": "data/datasets/ds35-800-20261107-a",
+  "cache": "D:/ml-cache/market-levels/hub",
+  "models": {
+    "qwen3-vl": {
+      "id": "Qwen/Qwen3-VL-2B-Instruct",
+      "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+      "architecture": "Qwen3VLForConditionalGeneration",
+      "enable_thinking": null
+    }
+  },
+  "generation": {
+    "do_sample": false,
+    "num_beams": 1,
+    "max_new_tokens": 256,
+    "use_cache": true
+  },
+  "image_budgets": {
+    "native": 786432
+  },
+  "min_pixels": 65536,
+  "seed": 20261109,
+  "training": {
+    "rank": 8,
+    "alpha": 16,
+    "learning_rate": 0.0002,
+    "gradient_checkpointing": true
+  }
+}

@@ -1,5 +1,15 @@
 # Sposób pracy i weryfikacji
 
+Etap 4.2 ma `python -m market_levels.cli.train_vlm` i
+`scripts/run_vlm_training.ps1` (domyślnie dry-run). Używaj środowiska VLM.
+Preflight i dry-run nie trenują. Smoke jest ograniczony; w zakończonej próbie
+iteracji wykonano 6 kroków GPU, nie powtarzaj jej automatycznie. Full wymaga
+osobnego zatwierdzenia autora, `pipeline.full_approved=true` i flagi
+`--approve-full-training`. Wznawiaj z pełnego checkpointu do nowego katalogu
+i tej samej konfiguracji. STOP kończy na granicy kroku; zamknięcie okna nie
+gwarantuje zapisu. Walidacja dopiero po zakończeniu procesu treningu. Nowy CLI
+zawsze odrzuca test split. [PowerShell 4.2](../docs/vlm/INSTRUKCJA_POWERSHELL_4_2.md).
+
 ## Przed zmianą
 
 1. Przeczytaj AGENTS.md, instrukcje .ai i aktualne zadanie autora.

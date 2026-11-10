@@ -1,0 +1,24 @@
+{
+  "runtime": {"$file": "stability.json"},
+  "pipeline": {
+    "epochs": 2,
+    "max_steps": null,
+    "gradient_accumulation": 4,
+    "batch_size": 1,
+    "scheduler": "linear",
+    "warmup_steps": 18,
+    "seed": 20261110,
+    "max_sequence_tokens": 2048,
+    "save_every_steps": 25,
+    "validate_every_steps": 175,
+    "log_every_steps": 1,
+    "smoke_examples": 9,
+    "smoke_steps": 3,
+    "empty_cache_reserved_mib": 8000,
+    "minimum_ram_mib": 4096,
+    "minimum_commit_headroom_mib": 8192,
+    "maximum_idle_vram_mib": 450,
+    "required_gpu": "NVIDIA GeForce RTX 3060 Ti",
+    "full_approved": false
+  }
+}

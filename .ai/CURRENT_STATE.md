@@ -1,5 +1,20 @@
 # Aktualny stan projektu
 
+Etap 4.2 (2026-11-10): wdrożono `market_levels.cli.train_vlm` i
+`scripts/run_vlm_training.ps1`, efektywną konfigurację, pełny checkpoint,
+deterministyczny sampler, scheduler i bezpieczne granice STOP/wznowienia.
+Sześć kroków Qwen GPU: A=3, B1=1, B2=2 po odtworzeniu w nowym procesie;
+adapter, AdamW, scheduler, sampler i RNG dokładnie równe. Osobna techniczna
+inferencja jednego train po reloadzie. 355/355 testów offline i 7/7 osobnych
+testów VLM CPU OK. Pełnego treningu i testu nie uruchomiono. Pamięć nadal
+ciasna: peak globalny próbek 7907/8192 MiB; brak gwarancji długiego treningu.
+Full wymaga osobnej decyzji i dwóch jawnych blokad. Diagnostyka po zdjęciu
+samego zewnętrznego Markdown odtwarza NF4 TP/FP/FN 48/168/99 i BF16 58/158/89
+przy 0,5 ATR; oficjalne F1 pozostaje 0 dla obu.
+[Raport](../docs/vlm/RAPORT_4_2_PIPELINE_TRENINGOWY.md),
+[PowerShell](../docs/vlm/INSTRUKCJA_POWERSHELL_4_2.md).
+Poniższe opisy planowanego pipeline dotyczą wcześniejszych etapów.
+
 Aktualizacja: 2026-11-09. To opis stanu, nie zakaz realizacji kolejnych zleceń.
 Przed rozpoczęciem pracy sprawdź, czy kod i konfiguracja nadal mu odpowiadają.
 

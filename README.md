@@ -1,5 +1,13 @@
 # Market Levels — projekt pracy inżynierskiej
 
+Etap 4.2: pipeline Qwen3-VL z pełnymi checkpointami i wznowieniem,
+`python -m market_levels.cli.train_vlm` oraz `scripts/run_vlm_training.ps1`.
+Skrypt domyślnie wykonuje dry-run. Pełny trening pozostaje do osobnego
+zatwierdzenia. Sprawdzono sześć kroków GPU i dokładną zgodność wznowienia;
+355 testów offline oraz 7 osobnych testów VLM CPU OK.
+[Raport 4.2](docs/vlm/RAPORT_4_2_PIPELINE_TRENINGOWY.md),
+[instrukcja PowerShell](docs/vlm/INSTRUKCJA_POWERSHELL_4_2.md).
+
 Etap 4.1, część 1 dodaje lokalny audyt i ograniczony pilot
 `python -m market_levels.cli.vlm_feasibility`: dwa oficjalne modele, osiem
 validation oraz kontrola jednego kroku adaptera na train, w osobnym środowisku.

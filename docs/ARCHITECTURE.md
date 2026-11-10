@@ -1,5 +1,16 @@
 # Architektura Market Levels
 
+Etap 4.2 rozszerza ścieżkę Qwen3-VL o pętlę PyTorch/PEFT:
+`training/config.py`, `domain/schedule.py`, `io/{data,checkpoints,resources,events}.py`
+i `workflows/pipeline.py`. Wykorzystuje istniejące ładowanie NF4, maskowanie
+i wejścia obrazu, bez zmiany interfejsów pilota. CLI `train_vlm` i skrypt
+`run_vlm_training.ps1` oddzielają dry-run/preflight/smoke/full. Pełny checkpoint
+ma AdamW, scheduler, sampler i RNG; eksport adaptera jest osobny. Granica
+walidacji kończy proces treningowy. `adapter_validation.py` wykonuje inferencję
+w kolejnym procesie; diagnostyka cen w osobnych modułach inference używa
+niezmienionych funkcji evaluation. Pełny trening czeka na osobną decyzję.
+[Raport](vlm/RAPORT_4_2_PIPELINE_TRENINGOWY.md).
+
 Stan po reorganizacji z 2026-11-08. Jest to jeden pakiet badawczy market_levels
 w układzie src. Działają dane, generatory, wykresy, etykietowanie, zbiory
 oraz ewaluacja zapisanych odpowiedzi. Etap 4.1 dodaje ograniczoną diagnostykę
