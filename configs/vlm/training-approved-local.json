@@ -1,0 +1,52 @@
+{
+  "runtime": {
+    "dataset": "data/datasets/ds35-800-20261107-a",
+    "cache": "D:/ml-cache/market-levels/hub",
+    "models": {
+      "qwen3-vl": {
+        "id": "Qwen/Qwen3-VL-2B-Instruct",
+        "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+        "architecture": "Qwen3VLForConditionalGeneration",
+        "enable_thinking": null
+      }
+    },
+    "generation": {
+      "do_sample": false,
+      "num_beams": 1,
+      "max_new_tokens": 256,
+      "use_cache": true
+    },
+    "image_budgets": {
+      "native": 786432
+    },
+    "min_pixels": 65536,
+    "seed": 20261109,
+    "training": {
+      "rank": 8,
+      "alpha": 16,
+      "learning_rate": 0.0002,
+      "gradient_checkpointing": true
+    }
+  },
+  "pipeline": {
+    "epochs": 2,
+    "max_steps": null,
+    "gradient_accumulation": 4,
+    "batch_size": 1,
+    "scheduler": "linear",
+    "warmup_steps": 18,
+    "seed": 20261110,
+    "max_sequence_tokens": 2048,
+    "save_every_steps": 25,
+    "validate_every_steps": 175,
+    "log_every_steps": 1,
+    "smoke_examples": 9,
+    "smoke_steps": 3,
+    "empty_cache_reserved_mib": 8000,
+    "minimum_ram_mib": 4096,
+    "minimum_commit_headroom_mib": 8192,
+    "maximum_idle_vram_mib": 450,
+    "required_gpu": "NVIDIA GeForce RTX 3060 Ti",
+    "full_approved": true
+  }
+}

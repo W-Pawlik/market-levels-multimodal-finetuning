@@ -20,7 +20,8 @@ DEFAULTS = {
 
 def load_config(path: Path) -> dict:
     config = read_configuration(path)
-    if set(config) != {'runtime', 'pipeline'} or set(config['pipeline']) - DEFAULTS.keys():
+    if (set(config) not in ({'runtime', 'pipeline'}, {'runtime', 'pipeline', 'extra_epoch'})
+            or set(config['pipeline']) - DEFAULTS.keys()):
         raise ValueError('Unknown training configuration fields')
     runtime = config['runtime']
     if set(runtime) != {'dataset', 'cache', 'models', 'generation', 'image_budgets', 'min_pixels', 'seed', 'training'}:
@@ -56,7 +57,7 @@ def load_config(path: Path) -> dict:
     if settings['smoke_steps'] > 10 or settings['smoke_examples'] > 32:
         raise ValueError('Smoke must stay bounded: <=10 steps, <=32 examples')
     runtime = {**runtime, 'seed': settings['seed']}
-    return {'runtime': runtime, 'pipeline': settings,
+    effective = {'runtime': runtime, 'pipeline': settings,
             'fixed': {'quantization': 'NF4', 'double_quantization': True, 'compute_dtype': 'bfloat16',
                 'vision_dtype': 'bfloat16', 'other_unquantized_frozen_dtype': 'float32',
                 'lora_targets': 'language self_attn q_proj/v_proj only', 'lora_dropout': 0.0,
@@ -69,3 +70,23 @@ def load_config(path: Path) -> dict:
                 'loss_aggregation': 'mean of per-example mean supervised-token losses; divide by actual group size',
                 'workers': 0, 'image_size': [1024, 768], 'instruction_version': 'pl-sr-v1',
                 'retention': 'keep all; no automatic deletion', 'ordering': 'shuffle sorted train IDs with Random(seed+epoch)'}}
+    if 'extra_epoch' in config:
+        extra = config['extra_epoch']
+        required = {'approved', 'parent_experiment', 'parent_checkpoint_step', 'parent_adapter',
+                    'parent_checkpoint', 'parent_adapter_sha256', 'parent_manifest_sha256',
+                    'parent_checkpoint_manifest_sha256'}
+        if not isinstance(extra, dict) or set(extra) != required or type(extra['approved']) is not bool:
+            raise ValueError('Invalid extra-epoch provenance/approval fields')
+        if (extra['parent_checkpoint_step'] != 350 or type(extra['parent_checkpoint_step']) is not int
+                or any(not isinstance(extra[k], str) or not extra[k].strip()
+                       for k in ('parent_experiment', 'parent_adapter', 'parent_checkpoint'))):
+            raise ValueError('Extra epoch requires the parent experiment at step 350')
+        for key in ('parent_adapter_sha256', 'parent_manifest_sha256', 'parent_checkpoint_manifest_sha256'):
+            value = extra[key]
+            if not isinstance(value, str) or len(value) != 64 or any(c not in '0123456789abcdef' for c in value):
+                raise ValueError(f'Invalid SHA-256: {key}')
+        expected = DEFAULTS | {'epochs': 1, 'warmup_steps': 9, 'seed': 20261112}
+        if settings != expected or runtime['training']['learning_rate'] != 0.00005:
+            raise ValueError('Extra epoch requires approved 698/175 plan, LR=0.00005, warmup=9, seed=20261112 and unchanged guards')
+        effective['extra_epoch'] = extra
+    return effective

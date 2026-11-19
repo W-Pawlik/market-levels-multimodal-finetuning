@@ -1,0 +1,62 @@
+{
+  "runtime": {
+    "dataset": "data/datasets/ds35-800-20261107-a",
+    "cache": "D:/ml-cache/market-levels/hub",
+    "models": {
+      "qwen3-vl": {
+        "id": "Qwen/Qwen3-VL-2B-Instruct",
+        "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+        "architecture": "Qwen3VLForConditionalGeneration",
+        "enable_thinking": null
+      }
+    },
+    "generation": {
+      "do_sample": false,
+      "num_beams": 1,
+      "max_new_tokens": 256,
+      "use_cache": true
+    },
+    "image_budgets": {
+      "native": 786432
+    },
+    "min_pixels": 65536,
+    "seed": 20261112,
+    "training": {
+      "rank": 8,
+      "alpha": 16,
+      "learning_rate": 5e-05,
+      "gradient_checkpointing": true
+    }
+  },
+  "pipeline": {
+    "epochs": 1,
+    "max_steps": null,
+    "gradient_accumulation": 4,
+    "batch_size": 1,
+    "scheduler": "linear",
+    "warmup_steps": 9,
+    "seed": 20261112,
+    "max_sequence_tokens": 2048,
+    "save_every_steps": 25,
+    "validate_every_steps": 175,
+    "log_every_steps": 1,
+    "smoke_examples": 9,
+    "smoke_steps": 3,
+    "empty_cache_reserved_mib": 8000,
+    "minimum_ram_mib": 4096,
+    "minimum_commit_headroom_mib": 8192,
+    "maximum_idle_vram_mib": 450,
+    "required_gpu": "NVIDIA GeForce RTX 3060 Ti",
+    "full_approved": false
+  },
+  "extra_epoch": {
+    "approved": true,
+    "parent_experiment": "vlm43-part3-2708-16743",
+    "parent_checkpoint_step": 350,
+    "parent_adapter": "results/vlm43-part3-2708-16743/adapter",
+    "parent_checkpoint": "results/vlm43-part3-2708-16743/checkpoints/step-000350",
+    "parent_adapter_sha256": "3b7af8dd8835923a561aa356248b075042fa022f45be5426833bf2b2662c4a7c",
+    "parent_manifest_sha256": "d8e50682e6193623b0fb5e48f44fe24f9ac645458e0a9dea16fe7d5fa6acc690",
+    "parent_checkpoint_manifest_sha256": "eee55e55fb08ed5b717b7a3c6c47d0251b0b962d68ad7c2865c699ee07f03b68"
+  }
+}

@@ -1,5 +1,48 @@
 # Sposób pracy i weryfikacji
 
+Końcowa ocena 4.6 ma oddzielną ścieżkę: `market_levels.cli.final_test`
+(dry-run/prepare/infer/verify-variant/verify-pair/score-pair), PowerShell
+`scripts/run_vlm_final_test.ps1`. Domyślnie dry-run, bez modelu/CUDA i bez
+odczytu wartości referencji. Zgody treningowe nie zezwalają na test.
+Rzeczywiste wykonanie wymaga planu `configs/vlm/final-test.json` i osobnej
+flagi `-ApproveFinalTest`. Jedna sesja, najpierw base-nf4, potem finetuned-nf4;
+metryki dopiero po obu kompletnych manifestach. Instrukcja:
+`docs/vlm/INSTRUKCJA_POWERSHELL_4_6.md`. W przygotowaniu 4.6A nie wykonuje się
+żadnej produkcyjnej inferencji ani ewaluacji testowej. Po audycie wykona je autor.
+Nie zmieniać FINAL_MODEL_SELECTION.json na podstawie testu ani ponawiać
+ukończonych generacji. Resume tylko tej samej przerwanej sesji, z tym samym kodem.
+
+Po etapie 4.5 eksperymenty treningowe są zamknięte. Bieżący wybór utrwala
+`docs/vlm/FINAL_MODEL_SELECTION.json`; raport:
+`docs/vlm/RAPORT_KONCOWY_DOSTRAJANIA_4_1_4_4.md`.
+Nie wykonywać treningu, nowych danych, GPU validation ani oceny testowej
+bez nowego zlecenia. Test wymaga osobnego zatwierdzenia po audycie.
+Audyt istniejących źródeł: `.venv/Scripts/python.exe scripts/audit_vlm45.py analyze`.
+Tryb `before` zapisuje nowy punkt odniesienia i odmawia nadpisania katalogu;
+`after` porównuje go bez zmiany źródeł. Małe skrypty w handoff służą analizie
+zapisanych artefaktów, wymagają lokalnego repozytorium i dostępnych oryginałów.
+Poniższe procedury treningowe dokumentują wcześniejsze etapy, nie polecenie wznowienia.
+
+Etap 4.4: użyj `configs/vlm/extra-epoch-approved-local.json`,
+`-Mode extra-epoch -ApproveExtraEpoch`. Pierwszy proces wymaga
+`-InitializeAdapter results/vlm43-part3-2708-16743/adapter -StopAfter 25`;
+drugi używa wyłącznie `-ResumeCheckpoint <checkpoint NOWEGO etapu> -StopAfter 150`.
+Dry-run/preflight tej konfiguracji również wymagają `-ApproveExtraEpoch`.
+Scheduler od początku ma 175 kroków. Agent w części przygotowawczej nie uruchamia
+GPU, aktualizacji Qwen ani walidacji. Autor wykonuje je po zamknięciu IDE/Codexa.
+Nie zmieniaj epochs starego eksperymentu ani state.pt. Źródłowe artefakty 350
+pozostają lokalnie wymagane do kontroli pochodzenia przy wznowieniu.
+[Instrukcja 4.4](../docs/vlm/INSTRUKCJA_POWERSHELL_4_4.md).
+
+Etap 4.3 część 1: plan dwóch epok/350 kroków jest zatwierdzony; kopia
+`configs/vlm/training-approved-local.json` nadal wymaga flagi wykonania.
+Autor uruchamia ręcznie wyłącznie `-Mode full -StopAfter 25 -ApproveFullTraining`
+z tą konfiguracją, w osobnym PowerShellu po zamknięciu IDE/Codexa.
+Agent nie uruchamia GPU, walidacji ani wznowienia w ramach przygotowania.
+[Aktualna instrukcja](../docs/vlm/INSTRUKCJA_POWERSHELL_4_3_CZ1.md) podaje preflight,
+kontrole wyniku i mały ZIP. Zapis konsoli jest obok przebiegu. Pełna konfiguracja
+ma pusty klucz `device_map`; w PowerShell 5.1 wybieraj sekcje JSON przez Pythona.
+
 Etap 4.2 ma `python -m market_levels.cli.train_vlm` i
 `scripts/run_vlm_training.ps1` (domyślnie dry-run). Używaj środowiska VLM.
 Preflight i dry-run nie trenują. Smoke jest ograniczony; w zakończonej próbie

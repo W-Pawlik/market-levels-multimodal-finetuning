@@ -18,9 +18,13 @@ from ..io.data import read_train, make_batch
 from ..io.checkpoints import save_checkpoint, load_checkpoint, export_adapter, checkpoint_metadata
 from ..io.resources import snapshot, pressure, guard, ResourceMonitor
 from ..io.events import Events
+from ..io.initialization import extra_context, load_initial_adapter
+from ..domain.provenance import stage_progress
 
 
 def plan(config, mode):
+    if ('extra_epoch' in config) != (mode == 'extra-epoch'):
+        raise ValueError('Extra-epoch configuration requires extra-epoch mode; full/smoke remain separate')
     config = copy.deepcopy(config)
     rows, binding = read_train(Path(config['runtime']['dataset']))
     ids = sorted(rows)
@@ -50,6 +54,7 @@ def verify_base(runtime):
 
 def preflight(config, mode='full', resume=None):
     effective, rows, binding = plan(config, mode)
+    provenance = extra_context(effective, resume) if mode == 'extra-epoch' else None
     before = guard(effective['pipeline'])  # Before creating a CUDA context/model.
     torch = setup(effective['pipeline']['seed'])
     if (torch.cuda.device_count() != 1 or torch.cuda.get_device_name(0) != effective['pipeline']['required_gpu']
@@ -68,8 +73,11 @@ def preflight(config, mode='full', resume=None):
             if meta['identity'][key] != value:
                 raise ValueError(f'Resume identity mismatch: {key}')
         validate_state(meta['sampler'], list(rows), effective['pipeline'])
-    return {'memory_before_cuda': before, 'memory_after_cuda': snapshot(torch), 'environment': versions,
-            'base': base, 'dataset': binding, 'total_steps': total_steps(len(rows), effective['pipeline'])}
+    report = {'memory_before_cuda': before, 'memory_after_cuda': snapshot(torch), 'environment': versions,
+              'base': base, 'dataset': binding, 'total_steps': total_steps(len(rows), effective['pipeline'])}
+    if provenance is not None:
+        report['provenance'] = provenance
+    return report
 
 
 def train_loop(settings, ids, state, backend, events, stop_requested, stop_after=None):
@@ -99,9 +107,10 @@ def train_loop(settings, ids, state, backend, events, stop_requested, stop_after
         session_steps += 1
         memory = backend.memory()
         if state['global_step'] % settings['log_every_steps'] == 0:
+            progress = stage_progress(backend.identity, state) if hasattr(backend, 'identity') else {}
             events.emit('step', epoch=epoch, step=state['global_step'], total_steps=total,
                         processed_examples=state['processed_examples'], seconds=seconds,
-                        elapsed_seconds=state['elapsed_seconds'], memory=memory, **stats)
+                        elapsed_seconds=state['elapsed_seconds'], memory=memory, **progress, **stats)
         reasons = pressure(memory, settings)
         status = None
         if reasons:
@@ -188,11 +197,24 @@ class TorchBackend:
         self.events.emit('checkpoint', step=state['global_step'], path=str(self.latest))
 
 
-def run_training(config, output: Path, mode, resume=None, stop_after=None):
-    if mode not in ('smoke-test', 'full'):
+def run_training(config, output: Path, mode, resume=None, stop_after=None, initialize_adapter=None):
+    if mode not in ('smoke-test', 'full', 'extra-epoch'):
         raise ValueError('Unsupported training mode')
+    if ('extra_epoch' in config) != (mode == 'extra-epoch'):
+        raise ValueError('Extra epoch cannot use original full/smoke/resume identity')
     if mode == 'full' and not config['pipeline']['full_approved']:
         raise ValueError('Full training is not approved')
+    if mode == 'extra-epoch':
+        if not config['extra_epoch']['approved']:
+            raise ValueError('Extra epoch is not approved')
+        if (resume is None) == (initialize_adapter is None):
+            raise ValueError('Extra epoch requires exactly one of --initialize-adapter or --resume')
+        if not output.name.startswith('vlm44-'):
+            raise ValueError('Extra epoch output must use a new vlm44- identifier')
+        # Invalid old resumes/parents fail before CUDA or creating the output.
+        extra_context(config, resume, initialize_adapter)
+    elif initialize_adapter is not None:
+        raise ValueError('Adapter initialization is exclusive to extra-epoch')
     workflow_started = time.perf_counter()
     output.mkdir(parents=True, exist_ok=False)
     events = Events(output / 'events.jsonl')
@@ -224,6 +246,10 @@ def run_training(config, output: Path, mode, resume=None, stop_after=None):
         if (any(p.requires_grad for p in visual.parameters()) or any('lora_' not in name for name, p in model.named_parameters() if p.requires_grad)
                 or sum(p.numel() for p in trainable) != 1605632):
             raise ValueError('Unexpected trainable parameters')
+        initialization = None
+        if initialize_adapter is not None:
+            initialization = load_initial_adapter(torch, model, initialize_adapter,
+                                                  config['extra_epoch']['parent_adapter_sha256'])
         optimizer = torch.optim.AdamW(trainable, lr=runtime['training']['learning_rate'],
                                       betas=(0.9, 0.999), eps=1e-8, weight_decay=0.01)
         scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer,
@@ -231,11 +257,18 @@ def run_training(config, output: Path, mode, resume=None, stop_after=None):
         identity = {'config': config, 'dataset': binding, 'environment': checked['environment'], 'base': checked['base'],
                     'processor': processor.to_dict(), 'image_processor': processor.image_processor.to_dict(),
                     'tokenizer': processor.tokenizer.init_kwargs, 'lora_targets': targets}
+        if mode == 'extra-epoch':
+            identity['provenance'] = checked['provenance']
         # Normalize tuples/enums to the same JSON representation used in metadata.
         identity = json.loads(json.dumps(identity, default=str))
         write_json(output / 'identity.json', identity)
         write_json(output / 'model.json', details)
         state = initial_state(list(rows), settings)
+        if initialization is not None:
+            if optimizer.state or scheduler.last_epoch != 0:
+                raise ValueError('Extra epoch must start with a fresh optimizer/scheduler')
+            write_json(output / 'initialization.json', initialization)
+            events.emit('initialized_from_adapter', **{**initialization, **stage_progress(identity, state)})
         if resume is not None:
             state = load_checkpoint(torch, resume, identity, model, optimizer, scheduler)
             validate_state(state, list(rows), settings)
@@ -251,7 +284,7 @@ def run_training(config, output: Path, mode, resume=None, stop_after=None):
             backend.save(state)
         export_adapter(model, output / 'adapter', identity)
         result = {'status': status, 'sampler': state, 'latest_checkpoint': str(backend.latest),
-                  'adapter': str(output / 'adapter'), 'memory': snapshot(torch)}
+                  'adapter': str(output / 'adapter'), 'memory': snapshot(torch), **stage_progress(identity, state)}
         write_json(output / 'result.json', result)
         events.emit('finished', **result)
         return 0 if status != 'memory_stop' else 3

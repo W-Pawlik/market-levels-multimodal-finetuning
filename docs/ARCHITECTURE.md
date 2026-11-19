@@ -1,5 +1,28 @@
 # Architektura Market Levels
 
+Etap 4.6A dodaje niezależną ścieżkę końcowego testu: `inference/final_config.py`,
+`io/final_inputs.py` (tylko manifest/PNG), `io/final_state.py` (atomowe rekordy,
+łańcuch hashy, blokada procesu), `io/final_model.py` (dotychczasowe NF4/dekodowanie,
+adapter wyłącznie do inferencji), `workflows/final_test.py` i `final_scoring.py`.
+CLI `market_levels.cli.final_test` i osobny PowerShell wymagają zgody testowej.
+Stała sesja rezerwuje jedną parę; oficjalny ewaluator jest wywoływany dopiero
+po kontroli obu kompletnych surowych wyników. Training, validate-adapter,
+read_split i sr-eval-v1 zachowują dotychczasową semantykę. Implementacja
+i offline/mocki są sprawdzone; produkcyjnego testu nie uruchomiono.
+[Raport 4.6A](vlm/RAPORT_4_6A_PRZYGOTOWANIE_TESTU.md).
+
+Etap 4.4 dodaje `training/io/initialization.py` (manifesty rodzica, dokładne
+tensory i inicjalizacja wyłącznie wag LoRA) oraz `domain/provenance.py`
+(lokalny postęp nowego eksperymentu). CLI/PowerShell mają tryb `extra-epoch`,
+oddzielne zatwierdzenie, rozłączne initialize/resume i konfigurację jednej
+epoki/175 kroków. Wspólna pętla/checkpointy pozostają; dodatkowe metadane
+wiążą nowy eksperyment z adapterem po 350. Stare identity/resume nie są osłabione.
+[Raport 4.4](vlm/RAPORT_4_4_PRZYGOTOWANIE_DODATKOWEJ_EPOKI.md).
+
+Etap 4.3 część 1 przygotowuje zatwierdzoną konfigurację 350 kroków i ręczny
+odcinek 25 kroków bez zmian pipeline'u. Nie uruchomiono Qwen ani walidacji.
+Aktualny sposób uruchamiania: [PowerShell 4.3](vlm/INSTRUKCJA_POWERSHELL_4_3_CZ1.md).
+
 Etap 4.2 rozszerza ścieżkę Qwen3-VL o pętlę PyTorch/PEFT:
 `training/config.py`, `domain/schedule.py`, `io/{data,checkpoints,resources,events}.py`
 i `workflows/pipeline.py`. Wykorzystuje istniejące ładowanie NF4, maskowanie

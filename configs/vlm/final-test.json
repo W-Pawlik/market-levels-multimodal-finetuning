@@ -1,0 +1,19 @@
+{
+  "purpose": "one_final_test_pair_v1",
+  "execution_approved": true,
+  "selection": "docs/vlm/FINAL_MODEL_SELECTION.json",
+  "selection_sha256": "287e45bd688de30293b129a536086133be380116202ca74a0fe69c6ab9bd921e",
+  "dataset": "data/datasets/ds35-800-20261107-a",
+  "split": "test",
+  "output": "results/vlm46-final-test",
+  "runtime": {
+    "$file": "stability.json"
+  },
+  "resources": {
+    "required_gpu": "NVIDIA GeForce RTX 3060 Ti",
+    "maximum_idle_vram_mib": 450,
+    "minimum_ram_mib": 4096,
+    "minimum_commit_headroom_mib": 8192
+  },
+  "image_input_fingerprint": "086698fa04fff5b8466e1cfc2f8e4986dced0dc18692722d23ad86085988a06d"
+}

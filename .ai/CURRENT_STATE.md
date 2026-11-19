@@ -1,5 +1,81 @@
 # Aktualny stan projektu
 
+Etap 4.6B (2026-11-12): autor zakończył jednorazowy test; istnieją dwa
+kompletne przebiegi po 66 odpowiedzi i trzy oficjalne raporty. Dokumentacja
+offline potwierdza finetuned micro-F1=0,4082397004 przy 0,5 ATR
+(TP/FP/FN=109/168/148, JSON 66/66); oficjalna baza NF4 ma F1=0 i JSON 0/66.
+Osobna historyczna diagnostyka zdjęcia wyłącznie zewnętrznego Markdown daje
+bazie F1=0,2235834609; nie zastępuje oficjalnego wyniku. Odtworzono oceny
+i porównanie, verify-pair oraz manifesty; 4039 chronionych plików bez zmian,
+w tym 3212 plików datasetu. Wybór adaptera z 4.5 zachowany. Nie wykonano
+Qwen, treningu ani nowej inferencji w pracy dokumentacyjnej. Raport:
+[4.6B](../docs/vlm/RAPORT_4_6B_KONCOWA_EWALUACJA_TESTOWA.md),
+dowody `docs/vlm/final46b/`, ZIP `handoff/vlm46b-final-report-20261112.zip`.
+Eksperymenty zakończone; poniższe opisy przygotowania są historyczne.
+
+Etap 4.6A (2026-11-12): przygotowano osobne CLI `market_levels.cli.final_test`
+i `scripts/run_vlm_final_test.ps1`, plan `configs/vlm/final-test.json`.
+Odrębna zgoda: `execution_approved=true` oraz `--approve-final-test` /
+`-ApproveFinalTest`. Jedna sesja `results/vlm46-final-test`, dwa osobne procesy
+NF4 base → NF4 z wybranym adapterem; kontrola obu kompletnych surowych przebiegów
+poprzedza ocenę. Loader czyta manifest i obrazy, bez wartości etykiet/OHLC.
+Wznowienie sprawdza tożsamość i hashe, pomija zatwierdzone odpowiedzi;
+zakończony wariant nie pozwala na ponowne wykonanie. Stare blokady bez zmian.
+407/407 testów offline i 2/2 końcowe testy lekkiego CPU PyTorch/PEFT OK.
+Nie uruchomiono Qwen ani inferencji/oceny produkcyjnego testu, nie utworzono
+sesji wykonawczej. Wstępny test lekkiego PEFT wykrył inicjalizację CUDA;
+końcowy test blokuje ją przed importem PEFT. Szczegóły i ograniczenia:
+[raport 4.6A](../docs/vlm/RAPORT_4_6A_PRZYGOTOWANIE_TESTU.md),
+[instrukcja autora](../docs/vlm/INSTRUKCJA_POWERSHELL_4_6.md).
+Agent zatrzymuje się po przygotowaniu; oba procesy i ocenę wykona autor
+po niezależnym audycie. Wybór modelu z 4.5 pozostaje niezmieniony.
+
+Etap 4.5 (2026-11-11): zamknięto eksperymenty 4.1–4.4 na podstawie oryginalnych
+artefaktów. Wybrano `results/vlm44-part2-17554-5354/adapter`, oficjalne validation
+micro-F1=0,4682274247 przy 0,5 ATR (TP/FP/FN=70/82/77, JSON 36/36).
+Adapter po 350 krokach zachowano jako alternatywny. To dwa harmonogramy:
+350 aktualizacji głównych i 175 dodatkowych z nowym AdamW/schedulerem/RNG.
+Wybór i hashe: [FINAL_MODEL_SELECTION.json](../docs/vlm/FINAL_MODEL_SELECTION.json).
+[Raport końcowy](../docs/vlm/RAPORT_KONCOWY_DOSTRAJANIA_4_1_4_4.md) zawiera
+ograniczenia małej walidacji i wybór dodatkowego eksperymentu po jej analizie.
+Sprawdzono offline oficjalne oceny, diagnostyki, logi, checkpointy i stany CPU;
+nie uruchomiono treningu ani inferencji GPU. Test pozostaje niewykorzystany
+do wyboru i wymaga osobnej decyzji autora po niezależnym audycie.
+Nie wykonywać następnych epok, nowych danych ani zmiany ewaluatora.
+Poniższe wpisy opisują historyczne etapy, także wcześniejszy wybór adaptera 350.
+
+Etap 4.4, część 1 (2026-11-11): przygotowano nowy eksperyment od wag adaptera
+po kroku 350, z nowym AdamW/schedulerem/RNG, 1 epoką/175 lokalnymi krokami,
+LR=0,00005, warmup=9, seed=20261112. Tryb `extra-epoch` ma własną konfigurację
+i flagę zatwierdzenia; inicjalizacja i resume są rozłączne. Starego checkpointu
+nie można wznowić nową konfiguracją. CPU potwierdziło dokładnie 112 tensorów
+rodzica i 1 605 632 parametrów oraz zgodność kontynuacji 25+150.
+Treningu ani walidacji GPU etapu 4.4 nie uruchomiono.
+Końcowa kontrola: 377/377 testów repozytorium i 12/12 osobnych testów VLM CPU OK.
+[Raport](../docs/vlm/RAPORT_4_4_PRZYGOTOWANIE_DODATKOWEJ_EPOKI.md),
+[CMD/PowerShell](../docs/vlm/INSTRUKCJA_POWERSHELL_4_4.md).
+
+Autor ręcznie zakończył etap 4.3: 350 kroków/1396 przykładów, dwie epoki.
+Zweryfikowane oceny validation: krok 175 — oficjalne F1=0,3972125436;
+krok 350 — F1=0,4651162791 przy 0,5 ATR, oba 36/36 poprawnych JSON.
+Wybrany adapter: `results/vlm43-part3-2708-16743/adapter`; checkpoint
+`checkpoints/step-000350` w tym samym przebiegu. Test pozostaje niewykorzystany.
+Rozszerzenie badań o 4.4 autor zatwierdził po obejrzeniu tych wyników validation;
+przy remisie F1/udziału JSON pozostaje wcześniejszy adapter 350.
+Poniższy opis przygotowania 4.3 zachowuje stan historyczny z 2026-11-10.
+
+Etap 4.3, część 1 (2026-11-10): autor zatwierdził jeden eksperyment dwóch epok,
+350 kroków, odcinki 25 → 175 → 350. Przygotowano rozwiniętą kopię
+`configs/vlm/training-approved-local.json` (jedyna zmiana wartości: approval=true),
+bez zmiany `training.json`. Dry-run: 698 train / 350 kroków. 360/360 testów
+repozytorium i 8/8 osobnych testów VLM CPU OK, w tym pełny zapis/odtworzenie
+AdamW, schedulera, adaptera i RNG oraz krok 26 po checkpointcie 25 na małym CPU.
+Nie wykonano treningu Qwen, preflight GPU ani walidacji. Autor uruchamia tylko
+25 kroków z dodatkową flagą zatwierdzenia po zamknięciu IDE i Codexa.
+[Raport](../docs/vlm/RAPORT_4_3_PRZYGOTOWANIE_25_KROKOW.md),
+[PowerShell](../docs/vlm/INSTRUKCJA_POWERSHELL_4_3_CZ1.md).
+Historyczne zapisy o braku zatwierdzenia tego eksperymentu opisują wcześniejszy stan.
+
 Etap 4.2 (2026-11-10): wdrożono `market_levels.cli.train_vlm` i
 `scripts/run_vlm_training.ps1`, efektywną konfigurację, pełny checkpoint,
 deterministyczny sampler, scheduler i bezpieczne granice STOP/wznowienia.

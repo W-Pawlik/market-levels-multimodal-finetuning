@@ -7,6 +7,7 @@ from ..training.config import load_config
 from ..training.domain.schedule import total_steps
 from ..training.workflows.pipeline import plan, preflight, run_training
 from ..training.io.checkpoints import checkpoint_metadata
+from ..training.io.initialization import require_extra_approval, extra_context
 from ..inference.io.pilot import write_json
 
 
@@ -17,21 +18,31 @@ def require_full_approval(config, explicit):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('preflight', 'dry-run', 'smoke-test', 'full', 'verify-checkpoint',
+    parser.add_argument('command', choices=('preflight', 'dry-run', 'smoke-test', 'full', 'extra-epoch', 'verify-checkpoint',
                                            'diagnostics', 'validate-adapter', 'probe-adapter'))
     parser.add_argument('--config', type=Path, default=Path('configs/vlm/training.json'))
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--resume', type=Path)
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument('--resume', type=Path)
+    source.add_argument('--initialize-adapter', type=Path, help='New extra experiment: load only pinned LoRA weights')
     parser.add_argument('--checkpoint', type=Path)
     parser.add_argument('--adapter', type=Path)
     parser.add_argument('--predictions', type=Path)
     parser.add_argument('--split', choices=('train', 'validation'), help='test is always forbidden')
     parser.add_argument('--stop-after', type=int, help='Stop this process after N optimizer steps; does not change scheduler')
     parser.add_argument('--approve-full-training', action='store_true')
+    parser.add_argument('--approve-extra-epoch', action='store_true')
     parser.add_argument('--smoke-plan', action='store_true', help='Use bounded smoke identity for preflight/dry-run')
     args = parser.parse_args(argv)
     try:
         config = load_config(args.config)
+        extra = 'extra_epoch' in config
+        if args.command == 'extra-epoch' or (extra and args.command in ('preflight', 'dry-run')):
+            require_extra_approval(config, args.approve_extra_epoch)
+        if args.initialize_adapter is not None and (not extra or args.command not in ('extra-epoch', 'preflight', 'dry-run')):
+            raise ValueError('--initialize-adapter is only valid for the extra experiment')
+        if extra and (args.smoke_plan or args.command in ('smoke-test', 'full')):
+            raise ValueError('Use extra-epoch mode for the extra experiment')
         if args.split is not None and args.split != ('validation' if args.command in ('diagnostics', 'validate-adapter') else 'train'):
             raise ValueError('Wrong split for this command')
         if args.stop_after is not None and args.stop_after < 1:
@@ -49,6 +60,9 @@ def main(argv=None):
             require_full_approval(config, args.approve_full_training)
         if args.command in ('full', 'smoke-test'):
             return run_training(config, args.output, args.command, args.resume, args.stop_after)
+        if args.command == 'extra-epoch':
+            return run_training(config, args.output, args.command, args.resume, args.stop_after,
+                                initialize_adapter=args.initialize_adapter)
         if args.command == 'diagnostics':
             if args.predictions is None:
                 parser.error('--predictions required')
@@ -60,7 +74,8 @@ def main(argv=None):
                 parser.error('--adapter required')
             from ..inference.workflows.adapter_validation import validate_adapter
             return validate_adapter(config, args.adapter, args.output, probe=args.command == 'probe-adapter')
-        mode = 'smoke-test' if args.smoke_plan else 'full'
+        mode = 'extra-epoch' if extra else ('smoke-test' if args.smoke_plan else 'full')
+        provenance = extra_context(config, args.resume, args.initialize_adapter) if extra else None
         if args.command == 'preflight':
             report = preflight(config, mode, args.resume)
         else:
@@ -72,13 +87,15 @@ def main(argv=None):
             report = {'effective_config': effective, 'dataset': binding, 'examples': len(rows),
                       'total_steps': total_steps(len(rows), effective['pipeline']), 'loads_model': False,
                       'checkpoint_pattern': 'checkpoints/step-NNNNNN', 'full_training_started': False}
+            if provenance is not None:
+                report['provenance'] = provenance
         args.output.mkdir(parents=True, exist_ok=False)
         write_json(args.output / 'report.json', report)
         print(json.dumps({'command': args.command, 'output': str(args.output),
                           'examples': report.get('examples', len(report.get('dataset', {}).get('selected_ids', []))),
                           'total_steps': report.get('total_steps'), 'status': 'ok'}, ensure_ascii=False))
         return 0
-    except (ValueError, OSError, RuntimeError, KeyError, TypeError) as error:
+    except (ValueError, OSError, RuntimeError, KeyError, TypeError, ImportError) as error:
         print(f'Błąd pipeline: {error}', flush=True)
         return 1
 

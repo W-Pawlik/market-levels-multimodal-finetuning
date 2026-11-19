@@ -1,5 +1,23 @@
 # Market Levels — projekt pracy inżynierskiej
 
+Etap 4.6B: zakończono jednorazową ewaluację 66 wykresów. Oficjalne
+micro-F1 modelu dostrojonego przy 0,5 ATR wynosi 0,4082397004, JSON 66/66;
+bazowy NF4 ma oficjalne F1=0 wskutek formatu odpowiedzi. Wyboru modelu nie
+zmieniono. [Raport końcowy i audyt](docs/vlm/RAPORT_4_6B_KONCOWA_EWALUACJA_TESTOWA.md).
+
+Historyczne przygotowanie 4.6A: gotowy odrębnie autoryzowany mechanizm końcowego testu NF4 base
+i NF4 z wybranym adapterem, z zapisem surowych odpowiedzi oraz wznowieniem.
+**Produkcji testowej jeszcze nie wykonano.**
+[Przygotowanie i testy](docs/vlm/RAPORT_4_6A_PRZYGOTOWANIE_TESTU.md),
+[instrukcja ręcznego wykonania](docs/vlm/INSTRUKCJA_POWERSHELL_4_6.md).
+
+Etap 4.5: zamknięto dostrajanie Qwen3-VL. Wybrany adapter po dodatkowym
+eksperymencie ma oficjalne micro-F1 validation **0,4682274247** przy 0,5 ATR;
+model po 350 krokach zachowano. [Raport końcowy](docs/vlm/RAPORT_KONCOWY_DOSTRAJANIA_4_1_4_4.md),
+[wybór i SHA-256](docs/vlm/FINAL_MODEL_SELECTION.json).
+Test nie został wykorzystany do wyboru; jego ocena wymaga osobnego zlecenia
+po niezależnym audycie. Poniższe opisy etapów zachowują ich historyczny stan.
+
 Etap 4.2: pipeline Qwen3-VL z pełnymi checkpointami i wznowieniem,
 `python -m market_levels.cli.train_vlm` oraz `scripts/run_vlm_training.ps1`.
 Skrypt domyślnie wykonuje dry-run. Pełny trening pozostaje do osobnego

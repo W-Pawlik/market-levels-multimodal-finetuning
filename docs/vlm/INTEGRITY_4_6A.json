@@ -1,0 +1,21 @@
+{
+  "protected_files": 14260,
+  "changed": [],
+  "removed": [],
+  "dataset_files": 3212,
+  "dataset_manifest_sha256": "0f9093fbdcbd39243fcf802bfdd723cb913b15838aa4a3cc469787d5e7e462d0",
+  "selection_sha256": "287e45bd688de30293b129a536086133be380116202ca74a0fe69c6ab9bd921e",
+  "selected_adapter_sha256": "20cbbb8e39ca636108d9533e8e8cc4543371b48eb322fff97999a9b8454ebdf6",
+  "alternative_adapter_sha256": "3b7af8dd8835923a561aa356248b075042fa022f45be5426833bf2b2662c4a7c",
+  "production_session_created": false,
+  "production_test_inference_run": false,
+  "production_test_evaluation_run": false,
+  "test_reference_values_analyzed": false,
+  "initial_lightweight_cpu_check_initialized_cuda": true,
+  "final_cpu_checks_block_cuda_initialization": true,
+  "full_unittest_count": 407,
+  "full_unittest_exit": 0,
+  "separate_cpu_test_count": 2,
+  "separate_cpu_exit": 0,
+  "scope": "data/results/handoff/configs/src/scripts and historical docs/vlm, docs/evaluation before/after; active .ai/README/architecture updated separately"
+}

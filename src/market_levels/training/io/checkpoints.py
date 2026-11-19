@@ -10,6 +10,7 @@ from pathlib import Path
 from ...shared.manifests import seal, verify_files
 from ...shared.publication import publish_directory
 from ...shared.json_io import write_json
+from ..domain.provenance import stage_progress
 
 SCHEMA = 1
 
@@ -62,6 +63,7 @@ def save_checkpoint(torch, model, optimizer, scheduler, state, identity, root: P
             stream.flush()
             os.fsync(stream.fileno())
         write_json(stage / 'metadata.json', {'schema': SCHEMA, 'identity': identity, 'sampler': state,
+                                            **stage_progress(identity, state),
                                             'trusted_local_torch_state_only': True})
         seal(stage, {'kind': 'vlm_training_checkpoint', 'schema': SCHEMA, 'status': 'complete'})
         checkpoint_metadata(stage, identity, allow_staging=True)
