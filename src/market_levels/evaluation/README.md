@@ -18,6 +18,8 @@ Domain zawiera obliczenia i modele, workflows koordynuje wykonanie, io obsługuj
 | [io/reports.py](io/reports.py) |  |
 | [protocol.py](protocol.py) | `ratio`, `dumps`, `reject_constant`, `unique_object`, `loads` |
 | [reporting/markdown.py](reporting/markdown.py) |  |
+| [reporting/figures.py](reporting/figures.py) | `comparison_figure`, `save_figure` |
+| [workflows/visualization.py](workflows/visualization.py) | `load_visualization_examples` |
 | [workflows/compare.py](workflows/compare.py) | `compare` |
 | [workflows/evaluate.py](workflows/evaluate.py) | `evaluate` |
 | [workflows/verification.py](workflows/verification.py) | `read_evaluation`, `read_comparison` |

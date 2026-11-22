@@ -1,5 +1,14 @@
 # Aktualny stan projektu
 
+Rysunki pracy, podrozdział 5.4 (2026-11-22): skrypt
+`scripts/create_thesis_figures_5_4.py` wygenerował rysunki 5.1 ETHUSDT i 5.2 BTCUSDT
+w `docs/thesis/figures/` (PNG 4080 × 1650, 300 DPI oraz wektorowe SVG).
+Źródłem są wyłącznie istniejące dane i predykcje końcowego testu; bez modelu,
+inferencji, treningu i nowych cen. Renderer obsługuje opcjonalny SubFigure,
+nakładki współdzielą draw_levels; 28 regresji PNG/nakładek zgodnych z wzorcem.
+407 istniejących i 3 nowe testy OK; 3408 chronionych plików bez zmian SHA-256
+i inwentarza. [Opis i ponowne generowanie](../docs/thesis/README.md).
+
 Etap 4.6B (2026-11-12): autor zakończył jednorazowy test; istnieją dwa
 kompletne przebiegi po 66 odpowiedzi i trzy oficjalne raporty. Dokumentacja
 offline potwierdza finetuned micro-F1=0,4082397004 przy 0,5 ATR

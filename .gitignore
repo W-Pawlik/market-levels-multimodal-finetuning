@@ -4,6 +4,10 @@
 /results/*/**
 !/results/*/.gitkeep
 
+# Lokalne wykresy pochodne danych i dowody weryfikacji pracy.
+/docs/thesis/figures*/
+/docs/thesis/verification/
+
 # Wagi, adaptery, checkpointy, logi i pliki częściowe.
 *.pt
 *.pth

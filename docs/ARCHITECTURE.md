@@ -147,6 +147,14 @@ Matematyka: [v1](SYNTHETIC_GENERATOR.md), [v2](SYNTHETIC_GENERATOR_V2.md),
 
 ## Wykresy i etykietowanie
 
+Rysunki pracy korzystają z `evaluation/workflows/visualization.py` do odczytu
+i sprawdzenia istniejących referencji, surowych predykcji oraz raportu testowego.
+`evaluation/reporting/figures.py` składa dwa panele i zapisuje PNG/SVG.
+Nie wykonuje inferencji. `build_figure(..., figure=...)` może rysować na SubFigure,
+a `labeling/io/overlays.draw_levels()` współdzieli istniejący styl poziomów.
+Domyślne PNG renderera i nakładki pozostają identyczne bajtowo.
+[Rysunki 5.1 i 5.2, uruchomienie i kontrola](thesis/README.md).
+
 charts/io/rendering.py zachowuje Agg, 1024 × 768, fonty, kolory, kolejność
 rysowania i metadane PNG. Domain zawiera metryki i selekcję, io/pilot.py
 czyta istniejący pilotaż 32 okien. labeling/io/overlays.py rysuje osobne

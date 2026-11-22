@@ -12,8 +12,8 @@ from ..domain.validation import validate_window
 from ...shared.paths import require_short_path
 
 
-def build_figure(candles: list[Candle]):
-    """Only candles and generic axes can enter the figure; no metadata input."""
+def build_figure(candles: list[Candle], *, figure=None):
+    """Draw candles on a new Figure or supplied (Sub)Figure; no metadata input."""
     validate_window(candles)
     import matplotlib as mpl
     from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -24,8 +24,9 @@ def build_figure(candles: list[Candle]):
 
     with mpl.rc_context(rc=mpl.rcParamsDefault):
         mpl.rcParams.update({"font.family": VISUALIZATION["font"], "font.size": 11})
-        fig = Figure(figsize=(10.24, 7.68), dpi=100, facecolor="white")
-        FigureCanvasAgg(fig)
+        fig = figure if figure is not None else Figure(figsize=(10.24, 7.68), dpi=100, facecolor="white")
+        if figure is None:
+            FigureCanvasAgg(fig)
         ax = fig.add_axes((0.115, 0.095, 0.85, 0.87))
         segments, colors = [], []
         for x, candle in enumerate(candles, 1):

@@ -1,5 +1,8 @@
 # Market Levels — projekt pracy inżynierskiej
 
+[Rysunki 5.1 i 5.2 do pracy](docs/thesis/README.md): gotowe PNG 300 DPI i SVG,
+skrypt odtwarzania z istniejących wyników testowych oraz raport weryfikacji.
+
 Etap 4.6B: zakończono jednorazową ewaluację 66 wykresów. Oficjalne
 micro-F1 modelu dostrojonego przy 0,5 ATR wynosi 0,4082397004, JSON 66/66;
 bazowy NF4 ma oficjalne F1=0 wskutek formatu odpowiedzi. Wyboru modelu nie

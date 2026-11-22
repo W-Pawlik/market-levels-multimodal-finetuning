@@ -10,7 +10,7 @@ Domain zawiera obliczenia i modele, workflows koordynuje wykonanie, io obsługuj
 | --- | --- |
 | [domain/algorithm.py](domain/algorithm.py) | `find_extrema`, `price_groups`, `independent_reactions`, `rank_groups`, `select_groups`, `label_window` |
 | [domain/models.py](domain/models.py) | `Extremum`, `Group`, `LabelResult` |
-| [io/overlays.py](io/overlays.py) | `render_levels` |
+| [io/overlays.py](io/overlays.py) | `render_levels`, `draw_levels` |
 | [reporting/pilot.py](reporting/pilot.py) | `summarize`, `report_markdown` |
 | [workflows/pilot.py](workflows/pilot.py) | `run_labeling` |
 | [workflows/verification.py](workflows/verification.py) | `verify_labeling` |
